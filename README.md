@@ -25,8 +25,8 @@ If [available in Hex](https://hex.pm/docs/publish), the package can be installed
 
 ## Usage
 
-Run the following commands:
-cd TransportScheduler
-mix deps.get
-mix compile
-mix test
+Run the following commands:  
+cd TransportScheduler  
+mix deps.get  
+mix compile  
+mix test  
