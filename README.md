@@ -22,3 +22,11 @@ If [available in Hex](https://hex.pm/docs/publish), the package can be installed
     end
     ```
 
+
+## Usage
+
+Run the following commands:
+cd TransportScheduler
+mix deps.get
+mix compile
+mix test
