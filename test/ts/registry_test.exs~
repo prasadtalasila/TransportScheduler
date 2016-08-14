@@ -1,0 +1,27 @@
+defmodule RegistryTest do
+  use ExUnit.Case, async: true
+
+  setup do
+    {:ok, registry} = Registry.start_link
+    {:ok, registry: registry}
+  end
+
+  test "spawns stations", %{registry: registry} do
+    assert Registry.lookup(registry, "VascoStation") == :error
+
+    Registry.create(registry, "VascoStation")
+    assert {:ok, station} = Registry.lookup(registry, "VascoStation")
+	end
+	
+  test "spawn and update stations", %{registry: registry} do
+    Registry.create(registry, "VascoStation")
+    assert {:ok, station} = Registry.lookup(registry, "VascoStation")
+    
+    station.update(%{:delay => 0.38, :congestion => "high", :disturbance => "no"})
+    assert station.state == :delay
+    
+	end	
+	
+end
+
+

@@ -1,0 +1,23 @@
+defmodule TSTest do
+  use ExUnit.Case 
+
+  test "initial state is nodata" do
+    assert TS.new.state == :nodata
+  end
+
+	test "update" do
+		x = TS.new |> TS.update(%{delay: 0.38, congestion: "low", disurbance = "no"}) 
+		assert x.state == :hasdata
+		IO.puts x.data
+	end
+	
+	test "can drink multiple times from the TS" do
+		x = TS.new |> TS.fill(7)
+		IO.puts x.data
+		assert x.data == 7
+	end
+
+
+end
+
+
