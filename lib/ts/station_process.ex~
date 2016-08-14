@@ -1,0 +1,30 @@
+
+
+
+
+defmodule StationProcess do
+  @doc """
+  Starts a transport station.
+  """
+  def start_link do
+    Agent.start_link(fn -> %{} end)
+  end
+
+  @doc """
+  Gets local variables of transport station.
+  """
+  def get(station, key) do
+
+  end
+
+  @doc """
+  Puts local variables of transport station.
+  """
+  def put(bucket, key, value) do
+  	
+  end
+  
+
+end
+
+

@@ -1,0 +1,47 @@
+defmodule TS.Bucket do
+  @doc """
+  Starts a transport station.
+  """
+  def start_link do
+    Agent.start_link(fn -> %{} end)
+  end
+
+  @doc """
+  Gets a value from the transport station `bucket` by local variable name `key`.
+  """
+  def get(bucket, key) do
+    Agent.get(bucket, &Map.get(&1, key))
+  end
+
+  @doc """
+  Puts the `value` for the given local variable name `key` in the transport station `bucket`.
+  """
+  def put(bucket, key, value) do
+  	Agent.update(bucket, &Map.put(&1, key, value))
+  	case(key) do
+  		"congestion" ->
+  			case(value) do
+  				"low" ->
+  				  delayValue = Agent.get(bucket, &Map.get(&1, "delay"))*2
+  					Agent.update(bucket, &Map.put(&1, "delay", delayValue))
+  				"high" ->
+  				  delayValue = Agent.get(bucket, &Map.get(&1, "delay"))
+  					Agent.update(bucket, &Map.put(&1, "delay", delayValue*5))
+  			end
+  		_ -> {:ok}
+  	end	
+  end
+  
+  @doc """
+	Deletes local variable name `key` from transport station `bucket`.
+
+	Returns the current value of local variable name `key`, if `key` exists.
+	"""
+	def delete(bucket, key) do
+		Agent.get_and_update(bucket, &Map.pop(&1, key))
+	end
+
+
+end
+
+

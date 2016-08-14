@@ -1,0 +1,16 @@
+defmodule TS do
+  use Fsm, initial_state: :nodata, initial_data: [delay: nil, congestion: nil, disturbance: nil]
+	
+	defstate nodata do
+		defevent update(values) do          
+		  next_state(:hasdata, values)
+		end
+	end
+
+	defstate hasdata do
+		defevent update(values) do
+		  next_state(:hasdata, values)
+		end
+	end
+
+end
