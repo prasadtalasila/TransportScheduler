@@ -24,25 +24,25 @@ defmodule Station2 do
   # Server (callbacks)
 
   def handle_event(:cast, newVars, state, vars) do
-		case(newVars.disturbance) do
-			"yes"	->
-				{:next_state, :disturbance, newVars}
-			"no"	-> 
-				case(newVars.congestion) do
-					"none"	->
-						{:next_state, :delay, newVars}
-					"low"		->
-						updateVars = %{newVars | :delay => Map.get(newVars, :delay) * 2.0}
-						{:next_state, :delay, updateVars}
-					"high"	->
-						updateVars = %{newVars | :delay => Map.get(newVars, :delay) * 3.0}
-						{:next_state, :delay, updateVars}
-					_				->
-						{:next_state, :delay, newVars}	
-				end
-			_			->
-				{:next_state, :delay, newVars}
-		end          
+    case(newVars.disturbance) do
+      "yes"	->
+	{:next_state, :disturbance, newVars}
+      "no"	-> 
+	case(newVars.congestion) do
+	  "none"	->
+	    {:next_state, :delay, newVars}
+	  "low"		->
+	    updateVars = %{newVars | :delay => Map.get(newVars, :delay) * 2.0}
+	    {:next_state, :delay, updateVars}
+	  "high"	->
+	    updateVars = %{newVars | :delay => Map.get(newVars, :delay) * 3.0}
+	    {:next_state, :delay, updateVars}
+	  _				->
+	    {:next_state, :delay, newVars}	
+	end
+      _			->
+	{:next_state, :delay, newVars}
+    end          
   end
 
   def handle_event({:call, from}, :get_vars, state, vars) do

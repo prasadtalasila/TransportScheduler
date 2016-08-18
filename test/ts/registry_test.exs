@@ -13,9 +13,9 @@ defmodule RegistryTest do
 
     Registry.create(registry, "VascoStation")
     assert {:ok, station} = Registry.lookup(registry, "VascoStation")
-	end
+  end
 
-	
+  
 end
 
 

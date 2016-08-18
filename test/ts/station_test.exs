@@ -10,17 +10,17 @@ defmodule StationTest do
     assert x.data == nil
   end
 
-	test "new plus update 1" do
-		x = Station.new |> Station.update(%{:delay => 0.38, :congestion => "high", :disturbance => "no"}) 
-		assert x.state == :delay
-		IO.puts x.data.delay
-	end
-	
-	test "new plus update 2" do
-		x = Station.new |> Station.update(%{:delay => 0.38, :congestion => "none", :disturbance => "yes"}) 
-		assert x.state == :disturbance
-		#IO.puts x.data
-	end
+  test "new plus update 1" do
+    x = Station.new |> Station.update(%{:delay => 0.38, :congestion => "high", :disturbance => "no"}) 
+    assert x.state == :delay
+    IO.puts x.data.delay
+  end
+  
+  test "new plus update 2" do
+    x = Station.new |> Station.update(%{:delay => 0.38, :congestion => "none", :disturbance => "yes"}) 
+    assert x.state == :disturbance
+    #IO.puts x.data
+  end
 
 end
 
