@@ -1,3 +1,6 @@
+# Module to create station FSM, fails to link FSM with process
+# Use station2.ex module instead
+
 defmodule Station do
   use Fsm, initial_state: :nodata, initial_data: nil
   

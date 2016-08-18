@@ -2,7 +2,6 @@ defmodule StationTest do
   use ExUnit.Case 
 
   test "initial state is nodata" do
-    {:ok, station} = Station.start_link
     x = Station.new
     assert x.state == :nodata
     assert x.data == nil

@@ -1,3 +1,5 @@
+# Module to test LocVarMap
+
 defmodule LocVarMapTest do
   use ExUnit.Case
   

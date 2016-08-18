@@ -1,3 +1,6 @@
+# Module to test Station
+# Fails to link process with FSM
+
 defmodule StationTest do
   use ExUnit.Case 
 

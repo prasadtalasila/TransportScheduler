@@ -1,3 +1,5 @@
+# Module to test Registry
+
 defmodule RegistryTest do
   use ExUnit.Case, async: true
 

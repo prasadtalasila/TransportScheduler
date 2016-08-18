@@ -1,3 +1,5 @@
+# Module to create registry process for monitoring all station processes
+
 defmodule Registry do
   use GenServer
 

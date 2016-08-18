@@ -16,7 +16,7 @@ defmodule TS.Mixfile do
   #
   # Type "mix help compile.app" for more information
   def application do
-    [applications: [:logger]]
+    [applications: [:gen_state_machine]]
   end
 
   # Dependencies can be Hex packages:
@@ -29,7 +29,7 @@ defmodule TS.Mixfile do
   #
   # Type "mix help deps" for more examples and options
   defp deps do
-    [{:fsm, "~> 0.2.0"}]
+    [{:fsm, "~> 0.2.0"}, {:exactor, "~> 2.1.0"}, {:gen_state_machine, "~> 1.0"}]
   end
   
 

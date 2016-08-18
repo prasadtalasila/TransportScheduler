@@ -12,15 +12,7 @@ defmodule RegistryTest do
     Registry.create(registry, "VascoStation")
     assert {:ok, station} = Registry.lookup(registry, "VascoStation")
 	end
-	
-  test "spawn and update stations", %{registry: registry} do
-    Registry.create(registry, "VascoStation")
-    assert {:ok, station} = Registry.lookup(registry, "VascoStation")
-    
-    station.update(%{:delay => 0.38, :congestion => "high", :disturbance => "no"})
-    assert station.state == :delay
-    
-	end	
+
 	
 end
 

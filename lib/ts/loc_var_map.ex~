@@ -1,4 +1,4 @@
-# Module to pull local variable data in date,time=>locvars map format
+# Module to pull local variable data in date-time-locvars format
 
 defmodule LocVarMap do
   use GenServer
