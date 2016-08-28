@@ -11,8 +11,8 @@ defmodule RegistryTest do
   test "spawns stations", %{registry: registry} do
     assert Registry.lookup(registry, "VascoStation") == :error
 
-    Registry.create(registry, "VascoStation")
-    assert {:ok, station} = Registry.lookup(registry, "VascoStation")
+    assert Registry.create(registry, "VascoStation") == :ok
+    {:ok, pid} = Registry.lookup(registry, "VascoStation")
   end
 
   
