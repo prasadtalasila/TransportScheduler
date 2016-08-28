@@ -55,3 +55,4 @@ defmodule InputParser do
   end
 
 end
+
