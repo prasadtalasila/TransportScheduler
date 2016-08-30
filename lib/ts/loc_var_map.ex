@@ -18,7 +18,10 @@ defmodule LocVarMap do
   end
 
   def init do
-    locvarmap=%{}
+    locvarmap=%{
+    	{{2016, 8, 14}, {8, 00}}=>%{:delay => 0.38, :congestion => "high", :disturbance => "no"},
+      {{2016, 8, 14}, {10, 38}}=>%{:delay => 0.38, :congestion => "none", :disturbance => "yes"}
+      }
     start_link(locvarmap)
   end
 
