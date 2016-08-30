@@ -8,7 +8,8 @@ defmodule TS.Mixfile do
       elixir: "~> 1.3",
       build_embedded: Mix.env == :prod,
       start_permanent: Mix.env == :prod,
-      deps: deps
+      deps: deps,
+      escript: escript
     ]
   end
 
@@ -16,7 +17,7 @@ defmodule TS.Mixfile do
   #
   # Type "mix help compile.app" for more information
   def application do
-    [applications: [:gen_state_machine]]
+    [applications: [:gen_state_machine, :logger]]
   end
 
   # Dependencies can be Hex packages:
@@ -32,5 +33,8 @@ defmodule TS.Mixfile do
     [{:fsm, "~> 0.2.0"}, {:exactor, "~> 2.1.0"}, {:gen_state_machine, "~> 1.0"}]
   end
   
+   def escript do
+    [main_module: Main]
+  end
 
 end
