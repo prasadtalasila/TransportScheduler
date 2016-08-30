@@ -30,3 +30,5 @@ Run the following commands:
 `mix deps.get`  
 `mix compile`  
 `mix test`  
+`mix escript.build`  
+`./ts`  
