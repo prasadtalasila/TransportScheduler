@@ -1,22 +1,123 @@
 defmodule InputParser do
+  use GenServer
+
+  ## Client
+
+  def start_link(n) do
+    GenServer.start_link(__MODULE__, n)
+  end
+
+  def get_station_map(pid) do
+    GenServer.call(pid, :get_station_map)
+  end
+
+  def get_schedules(pid) do
+    GenServer.call(pid, :get_schedules)
+  end
+
+  def get_schedule(pid, code) do
+    GenServer.call(pid, {:get_schedule, code})
+  end
+
+  def get_local_variables(pid, code) do
+    GenServer.call(pid, {:get_loc_vars, code})
+  end
+
+  def get_city_code(pid, city) do
+    GenServer.call(pid, {:get_city_code, city})
+  end
+
+  def stop(pid) do
+    GenServer.stop(pid, :normal, 100)
+  end
+
+  ## Server (callbacks)
+
+  def init(n) do
+    station_map=obtain_stations(n)
+    schedule=obtain_schedules(n)
+    locvarmap=obtain_loc_var_map(n)
+    {:ok, {station_map, schedule, locvarmap}}
+  end
+
+  def handle_call(:get_station_map, _from, {station_map, _, _}=state) do
+    {:reply, station_map, state}
+  end
+
+  def handle_call(:get_schedules, _from, {_, schedule, _}=state) do
+    {:reply, schedule, state}
+  end
+
+  def handle_call({:get_loc_vars, code}, _from, {_, _, locvarmap}=state) do
+    {:reply, Map.fetch!(locvarmap, code), state}
+  end
+
+  def handle_call({:get_city_code, city}, _from, {station_map, _, _}=state) do
+    {:reply, Map.fetch!(station_map, city), state}
+  end
+
+  def handle_call({:get_schedule, code}, _from, {_, schedule, _}=state) do
+    {:reply, Keyword.get_values(schedule, String.to_atom(Integer.to_string(code))), state}
+  end
+
+  def terminate(reason, state) do
+    # Call the default implementation from GenServer
+    super(reason, state)
+  end
+
+  ## Implemented functions.
+
+  @doc """
+  Returns a map of the stations.
+  """
+  def obtain_stations(n) do
+    station_map=Map.new
+    {_, file}=open_file("stations.txt")
+    obtain_station(file, n, station_map)
+  end
+
+  @doc """
+  Returns a map of the schedule.
+  """
+  def obtain_schedules(n) do
+    schedule=Keyword.new
+    {_, file}=open_file("schedule.txt")
+    obtain_schedule(file, n, schedule)
+  end
+
+  @doc """
+  Returns a map of the local variables.
+  """
+  def obtain_loc_var_map(n) do
+    locvarmap=Map.new
+    {_, file}=open_file("local_variables.txt")
+    obtain_loc_vars(file, n, locvarmap)
+  end
+
+  # Opens the file specified by 'filename' parameter.
   defp open_file(filename) do
     File.open(filename, [:read, :utf8])
   end
 
+  # 'Loops' through the n entries of the 'stations.txt' file and saves 
+  # The city name and city code as a (key, value) tuples in a map.
   defp obtain_station(file, n, station_map) when n > 0 do
     [code | city]=IO.read(file, :line) |> String.trim() |> 
       String.split(" ", parts: 2)
     city=List.to_string(city)
     code=String.to_integer(code)
-    station_map=Map.put(station_map, code, city)
+    station_map=Map.put(station_map, city, code)
     obtain_station(file, n-1, station_map)
   end
 
+  # Closes the file after reading data of n stations.
   defp obtain_station(file, _, station_map) do
     close_file(file)
     station_map
   end
 
+  # 'Loops' through the n entries of the 'schedule.txt' file and saves 
+  # The variables as entries in a data structure called Keyword.
   defp obtain_schedule(file, n, schedule) when n > 0 do
     [vehicle_id | tail]=IO.read(file, :line) |> String.trim() |>
       String.split(" ", parts: 6)
@@ -37,11 +138,14 @@ defmodule InputParser do
     obtain_schedule(file, n-1, schedule)
   end
 
+  # Closes the file after reading schedules of n stations.
   defp obtain_schedule(file, _, schedule) do
     close_file(file)
     schedule
   end
 
+  # 'Loops' through the n entries of the 'local_variables.txt' file and saves 
+  # The local variables as (key, value) tuples in a map.
   defp obtain_loc_vars(file, n, locvarmap) when n > 0 do
     [stationCode | tail]=IO.read(file, :line) |> String.trim() |>
       String.split(" ", parts: 7)
@@ -62,40 +166,15 @@ defmodule InputParser do
     obtain_loc_vars(file, n-1, locvarmap)
   end
 
+  # Closes the file after reading the local variables values of n stations.
   defp obtain_loc_vars(file, _, locvarmap) do
     close_file(file)
     locvarmap
   end
 
+  # Closes the file handle specified by 'file_handle' parameter.
   defp close_file(file_handle) do
     File.close(file_handle)
-  end
-
-  @doc """
-  Returns a map of the stations
-  """
-  def obtain_stations(n) do
-    station_map=Map.new
-    {_, file}=open_file("stations.txt")
-    obtain_station(file, n, station_map)
-  end
-
-    @doc """
-  Returns a map of the schedule
-  """
-  def obtain_schedules(n) do
-    schedule=Keyword.new
-    {_, file}=open_file("schedule.txt")
-    obtain_schedule(file, n, schedule)
-  end
-
-  @doc """
-  Returns a map of the local variables
-  """
-  def obtain_loc_var_map(n) do
-    locvarmap=Map.new
-    {_, file}=open_file("local_variables.txt")
-    obtain_loc_vars(file, n, locvarmap)
   end
 
 end
