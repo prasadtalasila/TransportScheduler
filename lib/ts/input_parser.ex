@@ -26,6 +26,14 @@ defmodule InputParser do
   def get_city_code(pid, city) do
     GenServer.call(pid, {:get_city_code, city})
   end
+  
+  def get_station_struct(pid, city) do
+    s=%StationStruct{}
+    code=get_city_code(pid, city)
+    %{s | locVars: Map.merge(s.locVars, get_local_variables(pid, code)), 
+    schedule: get_schedule(pid, code), station_number: code, 
+    station_name: city}
+  end
 
   def stop(pid) do
     GenServer.stop(pid, :normal, 100)
