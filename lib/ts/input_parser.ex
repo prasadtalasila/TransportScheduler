@@ -80,7 +80,7 @@ defmodule InputParser do
   """
   def obtain_stations(n) do
     station_map=Map.new
-    {_, file}=open_file("stations.txt")
+    {_, file}=open_file("../data/stations.txt")
     obtain_station(file, n, station_map)
   end
 
@@ -89,7 +89,7 @@ defmodule InputParser do
   """
   def obtain_schedules(n) do
     schedule=Keyword.new
-    {_, file}=open_file("schedule.txt")
+    {_, file}=open_file("../data/schedule.txt")
     obtain_schedule(file, n, schedule)
   end
 
@@ -98,7 +98,7 @@ defmodule InputParser do
   """
   def obtain_loc_var_map(n) do
     locvarmap=Map.new
-    {_, file}=open_file("local_variables.txt")
+    {_, file}=open_file("../data/local_variables.txt")
     obtain_loc_vars(file, n, locvarmap)
   end
 
