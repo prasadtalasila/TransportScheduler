@@ -32,14 +32,16 @@ defmodule Station do
 	  "none"	->
 	    {:next_state, :delay, newVars}
 	  "low"		->
-	    {congestionDelay, y} = Code.eval_string(newVars.congestion_low, [delay: newVars.locVars.delay])
+	    # {congestionDelay, y} = Code.eval_string(newVars.congestion_low, [delay: newVars.locVars.delay])
+	    congestionDelay = StationFunctions.compute_congestion_delay(newVars.locVars.delay, newVars.congestion_low)
 	    {x, updateLocVars} = Map.get_and_update(newVars.locVars, :congestionDelay, fn delay -> {delay, congestionDelay} end)
-	    updateVars = %StationStruct{locVars: updateLocVars, schedule: newVars.schedule, }
+	    updateVars = %StationStruct{locVars: updateLocVars, schedule: newVars.schedule }
 	    {:next_state, :delay, updateVars}
 	  "high"	->
-	    {congestionDelay, y} = Code.eval_string(newVars.congestion_high, [delay: newVars.locVars.delay])
+	    # {congestionDelay, y} = Code.eval_string(newVars.congestion_high, [delay: newVars.locVars.delay])
+	    congestionDelay = StationFunctions.compute_congestion_delay(newVars.locVars.delay, newVars.congestion_high)
 	    {x, updateLocVars} = Map.get_and_update(newVars.locVars, :congestionDelay, fn delay -> {delay, congestionDelay} end)
-	    updateVars = %StationStruct{locVars: updateLocVars, schedule: newVars.schedule, }
+	    updateVars = %StationStruct{locVars: updateLocVars, schedule: newVars.schedule }
 	    {:next_state, :delay, updateVars}
 	  _				->
 	    {:next_state, :delay, newVars}	
