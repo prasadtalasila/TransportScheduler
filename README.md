@@ -1,6 +1,6 @@
 # TS
 
-TransportScheduler using functional FSM for station and GenServer for registry.
+TransportScheduler using GenStateMachine for station FSM and GenServer for IPC.
 
 ## Installation
 
