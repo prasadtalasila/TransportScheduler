@@ -15,7 +15,7 @@ defmodule API do
   
   version "schedule" do
     get do
-      schedule = %StationStruct{locVars: %{"delay": 0.38, "congestion": "low", "disturbance": "no"}, schedule: [], congestion_low: 4, choose_fn: 1}
+      schedule =[%{arrival_time: 63300, dept_time: 300, dst_station: 7, mode_of_transport: "train", src_station: 5, vehicleID: 19019}]
       json(conn, schedule)
     end 
   end
