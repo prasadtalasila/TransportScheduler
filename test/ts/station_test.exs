@@ -7,9 +7,9 @@ defmodule StationTest do
   test "station" do
     
     # Start the server
-    {:ok, station} = GenStateMachine.start_link(Station, {:nodata, nil})
+    {:ok, station} = Station.start_link()
 
-    Station.update(station, ss = %StationStruct{locVars: %{"delay": 0.38, "congestion": "low", "disturbance": "no"}, schedule: [], congestion_low: "delay * 4"})
+    Station.update(station, ss = %StationStruct{locVars: %{"delay": 0.38, "congestion": "low", "disturbance": "no"}, schedule: [], congestion_low: 4, choose_fn: 1})
 
     assert Station.get_vars(station).locVars.delay == 0.38
     assert Station.get_vars(station).locVars.congestionDelay == 0.38*4
