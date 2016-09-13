@@ -11,6 +11,8 @@ defmodule APITest do
   end
 
   test "/ schedule" do
-     assert %{"choose_fn" => 1, "congestion_high" => nil, "congestion_low" => 4, "locVars" => %{"congestion" => "low", "delay" => 0.38, "disturbance" => "no"}, "pid" => nil, "schedule" => [], "station_name" => nil, "station_number" => nil} =  get("/", "schedule") |> json_response
+     assert [%{"arrival_time" => 63300, "dept_time" => 300, "dst_station" => 7,
+              "mode_of_transport" => "train", "src_station" => 5,
+              "vehicleID" => 19019}] =  get("/", "schedule") |> json_response
   end
 end
