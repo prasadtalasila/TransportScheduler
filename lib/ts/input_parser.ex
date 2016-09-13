@@ -110,7 +110,9 @@ defmodule InputParser do
   # 'Loops' through the n entries of the 'stations.txt' file and saves 
   # The city name and city code as a (key, value) tuples in a map.
   defp obtain_station(file, n, station_map) when n > 0 do
-    [code | city]=IO.read(file, :line) |> String.trim() |> 
+#    [code | city]=IO.read(file, :line) |> String.trim() |> 
+#      String.split(" ", parts: 2)
+    [code | city]= "5 Alnavar Junction" |> String.trim() |> 
       String.split(" ", parts: 2)
     city=List.to_string(city)
     code=String.to_integer(code)
@@ -127,7 +129,9 @@ defmodule InputParser do
   # 'Loops' through the n entries of the 'schedule.txt' file and saves 
   # The variables as entries in a data structure called Keyword.
   defp obtain_schedule(file, n, schedule) when n > 0 do
-    [vehicle_id | tail]=IO.read(file, :line) |> String.trim() |>
+   # [vehicle_id | tail]=IO.read(file, :line) |> String.trim() |>
+   #   String.split(" ", parts: 6)
+    [vehicle_id | tail]="19019 525 774 300 63300 train" |> String.trim() |>
       String.split(" ", parts: 6)
     vehicle_id=String.to_integer(vehicle_id)
     [srcStation | tail]=tail
@@ -155,7 +159,9 @@ defmodule InputParser do
   # 'Loops' through the n entries of the 'local_variables.txt' file and saves 
   # The local variables as (key, value) tuples in a map.
   defp obtain_loc_vars(file, n, locvarmap) when n > 0 do
-    [stationCode | tail]=IO.read(file, :line) |> String.trim() |>
+  #  [stationCode | tail]=IO.read(file, :line) |> String.trim() |>
+  #    String.split(" ", parts: 7)
+    [stationCode | tail]= "5 delay 0.22 congestion low disturbance no" |> String.trim() |>
       String.split(" ", parts: 7)
     stationCode=String.to_integer(stationCode)
     [local_var1 | tail]=tail
