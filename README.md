@@ -6,7 +6,7 @@ TransportScheduler using GenStateMachine for station FSM and GenServer for IPC.
 
 If [available in Hex](https://hex.pm/docs/publish), the package can be installed as:
 
-1. Add `fsm`, `exactor`, `gen_state_machine` and `maru` to your list of dependencies in `mix.exs`:
+* Add `fsm`, `exactor`, `gen_state_machine` and `maru` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
@@ -14,14 +14,15 @@ def deps do
 end
 ```
 
-2. Ensure `gen_state_machine`, `logger` and `maru` are started before your application:
+* Ensure `gen_state_machine`, `logger` and `maru` are started before your application:
 
 ```elixir
 def application do
   [applications: [:gen_state_machine, :logger, :maru]]
 end
 ```
-3. Finally, make sure that `escript` is included in `mix.exs`:
+
+* Finally, make sure that `escript` is included in `mix.exs`:
 
 ```elixir
 def escript do
