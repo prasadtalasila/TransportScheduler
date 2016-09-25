@@ -80,7 +80,7 @@ defmodule InputParser do
   """
   def obtain_stations(n) do
     station_map=Map.new
-    {_, file}=open_file("../data/stations.txt")
+    {_, file}=open_file("data/stations.txt")
     obtain_station(file, n, station_map)
   end
 
@@ -89,7 +89,7 @@ defmodule InputParser do
   """
   def obtain_schedules(n) do
     schedule=Keyword.new
-    {_, file}=open_file("../data/schedule.txt")
+    {_, file}=open_file("data/schedule.txt")
     obtain_schedule(file, n, schedule)
   end
 
@@ -98,7 +98,7 @@ defmodule InputParser do
   """
   def obtain_loc_var_map(n) do
     locvarmap=Map.new
-    {_, file}=open_file("../data/local_variables.txt")
+    {_, file}=open_file("data/local_variables.txt")
     obtain_loc_vars(file, n, locvarmap)
   end
 
@@ -110,10 +110,7 @@ defmodule InputParser do
   # 'Loops' through the n entries of the 'stations.txt' file and saves 
   # The city name and city code as a (key, value) tuples in a map.
   defp obtain_station(file, n, station_map) when n > 0 do
-#    [code | city]=IO.read(file, :line) |> String.trim() |> 
-#      String.split(" ", parts: 2)
-    [code | city]= "5 Alnavar Junction" |> String.trim() |> 
-      String.split(" ", parts: 2)
+    [code | city]= IO.read(file, :line) |> String.trim() |> String.split(" ", parts: 2)
     city=List.to_string(city)
     code=String.to_integer(code)
     station_map=Map.put(station_map, city, code)
@@ -129,10 +126,7 @@ defmodule InputParser do
   # 'Loops' through the n entries of the 'schedule.txt' file and saves 
   # The variables as entries in a data structure called Keyword.
   defp obtain_schedule(file, n, schedule) when n > 0 do
-   # [vehicle_id | tail]=IO.read(file, :line) |> String.trim() |>
-   #   String.split(" ", parts: 6)
-    [vehicle_id | tail]="19019 525 774 300 63300 train" |> String.trim() |>
-      String.split(" ", parts: 6)
+    [vehicle_id | tail]=IO.read(file, :line) |> String.trim() |> String.split(" ", parts: 6)
     vehicle_id=String.to_integer(vehicle_id)
     [srcStation | tail]=tail
     srcStation=String.to_integer(srcStation)
@@ -146,7 +140,7 @@ defmodule InputParser do
     sched=Map.new |> Map.put(:vehicleID, vehicle_id) |> Map.put(:src_station, srcStation)
       |> Map.put(:dst_station, dstStation) |> Map.put(:dept_time, deptTime) |>
       Map.put(:arrival_time, arrivalTime) |> Map.put(:mode_of_transport, modeOfTransport)
-    schedule=Keyword.put(schedule, Integer.to_string(srcStation) |> String.to_atom, sched)
+    schedule=Enum.into(schedule, [{Integer.to_string(srcStation) |> String.to_atom, sched}])
     obtain_schedule(file, n-1, schedule)
   end
 
@@ -159,10 +153,7 @@ defmodule InputParser do
   # 'Loops' through the n entries of the 'local_variables.txt' file and saves 
   # The local variables as (key, value) tuples in a map.
   defp obtain_loc_vars(file, n, locvarmap) when n > 0 do
-  #  [stationCode | tail]=IO.read(file, :line) |> String.trim() |>
-  #    String.split(" ", parts: 7)
-    [stationCode | tail]= "5 delay 0.22 congestion low disturbance no" |> String.trim() |>
-      String.split(" ", parts: 7)
+    [stationCode | tail]=IO.read(file, :line) |> String.trim() |> String.split(" ", parts: 7)
     stationCode=String.to_integer(stationCode)
     [local_var1 | tail]=tail
     local_var1=String.to_atom(local_var1)
