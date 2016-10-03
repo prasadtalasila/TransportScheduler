@@ -30,7 +30,12 @@ defmodule TS.Mixfile do
   #
   # Type "mix help deps" for more examples and options
   defp deps do
-    [{:fsm, "~> 0.2.0"}, {:exactor, "~> 2.1.0"}, {:gen_state_machine, "~> 1.0"}, {:maru, "~> 0.10"},{:poison, "~> 2.0"} ]
+    [{:fsm, "~> 0.2.0"},
+     {:exactor, "~> 2.1.0"},
+     {:gen_state_machine, "~> 1.0"},
+     {:maru, "~> 0.10"},
+     {:exrm, "~> 1.0"},
+     {:poison, "~> 2.0"} ]
   end
   
    def escript do
