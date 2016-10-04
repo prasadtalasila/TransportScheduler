@@ -32,9 +32,9 @@ Run the following commands to compile:
 `mix deps.get`  
 `mix compile`  
 `mix test`  
-Run the following commands to deploy (currently server and user are localhost):
-`mix edeliver build release`
-`mix edeliver deploy release`
-Run the following commands to run:
-`mix edeliver start`
-Visit `http://localhost:8880/schedule?stn_code=1` for testing API
+Run the following commands to deploy (currently server and user are localhost):   
+`mix edeliver build release`   
+`mix edeliver deploy release`   
+Run the following commands to run:   
+`mix edeliver start`   
+Visit `http://localhost:8880/schedule?stn_code=1` for testing API   
