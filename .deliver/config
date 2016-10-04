@@ -8,4 +8,4 @@ BUILD_AT="/tmp/edeliver/ts/builds"
 
 STAGING_HOSTS=localhost
 STAGING_USER=$USER
-TEST_AT="/test/ts"
+TEST_AT="/home/$USER/test/ts"
