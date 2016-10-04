@@ -17,7 +17,7 @@ defmodule TS.Mixfile do
   #
   # Type "mix help compile.app" for more information
   def application do
-    [applications: [:gen_state_machine, :logger, :maru]]
+    [applications: [:gen_state_machine, :logger, :maru, :edeliver]]
   end
 
   # Dependencies can be Hex packages:
@@ -35,7 +35,8 @@ defmodule TS.Mixfile do
      {:gen_state_machine, "~> 1.0"},
      {:maru, "~> 0.10"},
      {:exrm, "~> 1.0"},
-     {:poison, "~> 2.0"} ]
+     {:poison, "~> 2.0"},
+     {:edeliver, "~> 1.4.0"}]
   end
   
    def escript do

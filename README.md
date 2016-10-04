@@ -1,6 +1,6 @@
 # TS
 
-TransportScheduler using GenStateMachine for station FSM and GenServer for IPC.
+TransportScheduler using GenStateMachine for station FSM and GenServer for IPC. Edeliver using Exrm for building releases and deployment.
 
 ## Installation
 

@@ -1,0 +1,11 @@
+# .deliver/config
+
+APP="ts"
+
+BUILD_HOST=localhost
+BUILD_USER=$USER
+BUILD_AT="/tmp/edeliver/ts/builds"
+
+STAGING_HOSTS=localhost
+STAGING_USER=$USER
+TEST_AT="/home/triya/test/ts"
