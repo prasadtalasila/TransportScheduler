@@ -1,0 +1,258 @@
+// Base: Get itinerary from src to dest
+
+$.ajax({
+	url: "/api/search",
+	dataType: "json",
+	data: {
+		query: {
+			"source": 11052,
+			"destination": 11562,
+			"start_time": "11:30",
+			"date": "04-10-2016"
+		}
+	},
+	type: "GET",
+	success: function(response) {
+		// Display itineraries to user
+	},
+	failure: function(err) {
+		// Print error msg
+	}
+});
+
+response={
+	source: 11052,
+	destination: 11562,
+	itineraries: [
+		{ first itinerary },
+		{ second itinerary },
+        ...
+    ]
+}
+err={
+	error: "Invalid data"
+}
+
+curl -X GET --header 'Accept: application/json' '{baseUrl}/api/search?source=11052&destination=11562&start_time=11h30m&date=4-10-2016'
+
+Request URL: {baseUrl}/api/search?source=11052&destination=11562&start_time=11h30m&date=4-10-2016
+
+Response Code:  200 (Success)
+				400 (invalid value/itinerary not found)
+
+// 1. Get schedule at source (or current) station
+
+$.ajax({
+	url: "/api/station/schedule",
+	dataType: "json",
+	data: {
+		src: {
+			"source": 11052,
+			"date": "04-10-2016"
+		}
+	},
+	type: "GET",
+	success: function(response) {
+		// Display schedule to user
+	},
+	failure: function(err) {
+		// Print error msg
+	}
+});
+
+response=[
+	{
+		arrival_time: 45000,
+		dept_time: 900,
+		dst_station: 11562,
+		mode_of_transport: "train",
+		src_station: 11052,
+		vehicleID: 11043
+	},
+	{
+		arrival_time: 63300,
+		dept_time: 300,
+		dst_station: 11357,
+		mode_of_transport: "train",
+		src_station: 11052,
+		vehicleID: 19019
+	}
+]
+err={
+	error: "Invalid data"
+}
+
+curl -X GET --header 'Accept: application/json' '{baseUrl}/api/station/schedule?source=11052&date=4-10-2016'
+
+Request URL: {baseUrl}/api/station/schedule?source=11052&date=4-10-2016
+
+Response Code:  200 (Success)
+				400 (invalid value/schedule not found)
+
+// 3. Get state of source (or current) station
+
+$.ajax({
+	url: "/api/station/state",
+	dataType: "json",
+	data: {
+		cur: {
+			"source": 11052
+		}
+	},
+	type: "GET",
+	success: function(response) {
+		// Display schedule to user
+	},
+	failure: function(err) {
+		// Print error msg
+	}
+});
+
+response={
+	congestion: "low",
+	delay: 0.22,
+	disturbance: "no"
+}
+err={
+	error: "Invalid data"
+}
+
+curl -X GET --header 'Accept: application/json' '{baseUrl}/api/station/state?source=11052'
+
+Request URL: {baseUrl}/api/station/state?source=11052
+
+Response Code:  200 (Success)
+				400 (invalid value/station not found)
+
+// 4. Update state of source (or current) station
+
+$.ajax({
+	url: "/api/station/state",
+	dataType: "json",
+	data: {
+		cur: {
+			"source": 11052,
+			"congestion": "low",
+			"delay": 0.22,
+			"disturbance": "no"
+		}
+	},
+	type: "POST",
+	success: function(response) {
+		// Display schedule to user
+	},
+	failure: function(err) {
+		// Print error msg
+	}
+});
+
+No response
+err={
+	error: "Invalid data"
+}
+
+curl -X POST --header 'Content-Type: application/x-www-form-urlencoded' --header 'Accept: application/json' -d 'source=11052&congestion=low&delay=0.22&disturbance=no' '{baseUrl}/api/station/state?source=11052&congestion=low&delay=0.22&disturbance=no'
+
+Request URL: {baseUrl}/api/station/state?source=11052&congestion=low&delay=0.22&disturbance=no
+
+Response Code:  200 (Success)
+				405 (Invalid input)
+
+// 5. Create a new station
+
+$.ajax({
+	url: "/api/station/create",
+	dataType: "json",
+	data: {
+		station: {
+			locVars: {
+				delay: nil,
+				congestionDelay: nil,
+				congestion: nil,
+				disturbance: nil
+			},
+			schedule: [
+				{
+					vehicleID: nil,
+					src_station: nil,
+					dst_station: nil,
+					dept_time: nil,
+					arrival_time: nil,
+					mode_of_transport: nil
+				}
+			],
+			station_number: nil,
+			station_name: nil,
+			pid: nil,
+			congestion_low: nil,
+			congestion_high: nil,
+			choose_fn: nil
+		}
+	},
+	type: "POST",
+	success: function(response) {
+		// Display schedule to user
+	},
+	failure: function(err) {
+		// Print error msg
+	}
+});
+
+response={
+			locVars: {
+				delay: nil,
+				congestionDelay: nil,
+				congestion: nil,
+				disturbance: nil
+			},
+			schedule: [
+				{
+					vehicleID: nil,
+					src_station: nil,
+					dst_station: nil,
+					dept_time: nil,
+					arrival_time: nil,
+					mode_of_transport: nil
+				}
+			],
+			station_number: nil,
+			station_name: nil,
+			pid: nil,
+			congestion_low: nil,
+			congestion_high: nil,
+			choose_fn: nil
+		}
+
+err={
+	error: "Invalid data"
+} 
+
+curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{ \ 
+	locVars: { \
+   		delay: nil, \
+		congestionDelay: nil, \
+		congestion: nil, \
+		disturbance: nil \
+	}, \
+	schedule: [ \
+		{ \
+			vehicleID: nil, \
+			src_station: nil, \
+			dst_station: nil, \
+			dept_time: nil, \
+			arrival_time: nil, \
+			mode_of_transport: nil \
+		} \
+	], \
+	station_number: nil, \
+			station_name: nil, \
+			pid: nil, \
+			congestion_low: nil, \
+			congestion_high: nil, \
+			choose_fn: nil \
+}' '{baseUrl}/api/station/create'
+
+Request URL: {baseUrl}/api/station/create
+
+Response Code:  200 (Success)
+				405 (Invalid input)
