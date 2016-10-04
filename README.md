@@ -1,6 +1,8 @@
 # TS
 
-TransportScheduler using GenStateMachine for station FSM and GenServer for IPC. Edeliver using Exrm for building releases and deployment.
+TransportScheduler application.
+GenStateMachine for station FSM and GenServer for IPC.
+Edeliver using Exrm for building releases and deployment.
 
 ## Installation
 
@@ -25,10 +27,14 @@ end
 
 ## Usage
 
-Run the following commands:  
+Run the following commands to compile:  
 `cd TransportScheduler`  
 `mix deps.get`  
 `mix compile`  
 `mix test`  
-`mix escript.build`  
-`./ts`  
+Run the following commands to deploy (currently server and user are localhost):
+`mix edeliver build release`
+`mix edeliver deploy release`
+Run the following commands to run:
+`mix edeliver start`
+Visit `http://localhost:8880/schedule?stn_code=1` for testing API
