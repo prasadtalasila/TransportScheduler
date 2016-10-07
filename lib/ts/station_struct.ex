@@ -1,5 +1,5 @@
 defmodule StationStruct do
-  defstruct locVars: %{delay: nil, congestionDelay: nil, congestion: nil, disturbance: nil}, schedule: [%{vehicleID: nil, src_station: nil, dst_station: nil, dept_time: nil, arrival_time: nil, mode_of_transport: nil}], station_number: nil, station_name: nil, pid: nil, congestion_low: nil, congestion_high: nil, choose_fn: nil
+  defstruct locVars: %{delay: nil, congestionDelay: nil, congestion: nil, disturbance: nil}, schedule: [%{vehicleID: nil, src_station: nil, dst_station: nil, dept_time: nil, arrival_time: nil, mode_of_transport: nil}], station_number: nil, station_name: nil, pid: nil, congestion_low: 2, congestion_high: 3, choose_fn: 1
 
 end
 
