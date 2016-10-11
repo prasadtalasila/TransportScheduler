@@ -3,6 +3,7 @@
 TransportScheduler application.
 GenStateMachine for station FSM and GenServer for IPC.
 Edeliver using Exrm for building releases and deployment.
+Travis for continuous integration.
 
 ## Installation
 
