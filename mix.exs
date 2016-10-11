@@ -34,8 +34,9 @@ defmodule TS.Mixfile do
      {:exactor, "~> 2.1.0"},
      {:gen_state_machine, "~> 1.0"},
      {:maru, "~> 0.10"},
-     {:exrm, "~> 1.0"},
-     {:poison, "~> 2.0"},
+     # {:exrm, "~> 1.0"},
+     # {:poison, "~> 2.0"},
+     {:distillery, ">= 0.9.0", warn_missing: false},
      {:edeliver, "~> 1.4.0"}]
   end
   
