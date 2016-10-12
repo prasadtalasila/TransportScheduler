@@ -12,5 +12,5 @@ script:
 after_success:
 - mix edeliver build release
 - mix edeliver deploy release
-- ssh $USER@localhost
-- test/ts/ts/bin/ts start
+- mix edeliver start
+- curl http://localhost:8880/schedule?stn_code=1
