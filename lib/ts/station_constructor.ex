@@ -35,6 +35,10 @@ defmodule StationConstructor do
   def stop(server) do
     GenServer.stop(server)
   end
+  
+  def send_node(dest) do
+    Station.send_message(self(), dest)
+  end
 
   ## Server callbacks
 
