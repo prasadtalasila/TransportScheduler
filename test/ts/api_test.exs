@@ -1,33 +1,23 @@
 defmodule APITest do
   use ExUnit.Case, async: true
-  use Plug.Test
+  use Maru.Test, for: API
 
-  @opts API.init([])
-
-  test "returns hello world" do
-    # Create a test connection
-    conn = conn(:get, "/hello")
-
-    # Invoke the plug
-    conn = API.call(conn, @opts)
-
-    # Assert the response and status
-    assert conn.state == :sent
-    assert conn.status == 200
-    assert conn.resp_body == "world"
+  test "returns welcome message" do
+    assert "Welcome to TransportScheduler API" == get("/api")|>text_response
   end
 
-  test "returns schedule" do
-    # Create a test connection
-    conn = conn(:get, "/schedule?stn_code=1")
-
-    # Invoke the plug
-    conn = API.call(conn, @opts)
+  setup do
+    conn=build_conn()|>put_req_header("content-type", "application/json")
+    |>put_plug(Plug.Parsers, parsers: [:json], pass: ["*/*"], json_decoder: Poison)
+    {:ok, %{conn: conn}}
+  end
+  test "returns schedule", %{conn: conn} do
+    assert %Plug.Conn{}=conn|>put_body_or_params(~s({"source": 1, "date": "1/11/2016"}))|>get("/api/station/schedule")
 
     # Assert the response and status
-    assert conn.state == :sent
-    assert conn.status == 200
-    assert conn.resp_body == "[{\"vehicleID\":19019,\"src_station\":5,\"mode_of_transport\":\"train\",\"dst_station\":7,\"dept_time\":300,\"arrival_time\":63300}]"
+    #assert conn.state == :sent
+    #assert conn.status == 200
+    #assert conn.resp_body == "[{\"vehicleID\":19019,\"src_station\":5,\"mode_of_transport\":\"train\",\"dst_station\":7,\"dept_time\":300,\"arrival_time\":63300}]"
   end
 
 end
