@@ -13,15 +13,9 @@ defmodule StationTest do
 
     assert Station.get_vars(station).locVars.delay == 0.38
     assert Station.get_vars(station).locVars.congestionDelay == 0.38*4
-    {_, p1}=Station.start_link
-    {_, p2}=Station.start_link
-    {_, nc}=StationConstructor.start_link
-    assert StationConstructor.send_node(p1)==:msg_received_from_NC
-    assert Station.send_proc(p1, p2)==:msg_received_from_proc
 
-    # sort schedule according to Enum.sort_by(schedule, &(schedule.dept_time))
-    # implement robust pattern check of string passed as function for congestions
   end
+
 
 end
 

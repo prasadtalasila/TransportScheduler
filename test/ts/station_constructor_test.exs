@@ -38,6 +38,21 @@ defmodule StationConstructorTest do
     assert Station.get_vars(stn) ==   %StationStruct{choose_fn: 1, congestion_high: 3, congestion_low: 2, pid: nil, station_name: nil, station_number: nil, locVars: %{congestion: "low", congestionDelay: 0.44, delay: 0.22, disturbance: "no"}, schedule: [%{arrival_time: 45000, dept_time: 900, dst_station: 2, mode_of_transport: "train", src_station: 5, vehicleID: 11043}, %{arrival_time: 63300, dept_time: 300, dst_station: 7, mode_of_transport: "train", src_station: 5, vehicleID: 19019}]}
 
   end
+
+
+  test "messages" do
+    {_, p1}=Station.start_link
+    Station.update(p1, %StationStruct{locVars: %{"delay": 0.01, "congestion": "low", "disturbance": "no"}, schedule: [], congestion_low: 4, choose_fn: 1, station_number: 1})
+    {_, p2}=Station.start_link
+   Station.update(p1, %StationStruct{locVars: %{"delay": 0.02, "congestion": "low", "disturbance": "no"}, schedule: [], congestion_low: 4, choose_fn: 1, station_number: 2})
+    {_, nc}=StationConstructor.start_link
+    assert StationConstructor.send_message_stn(nc, p1)==:msg_sent_to_stn
+    assert Station.send_message_stn(p1, p2)==:msg_sent_to_stn
+    #Get StationConstructor to receive messages
+    #assert Station.send_message_NC(p2, nc)==:msg_sent_to_NC
+
+  end
+
 end
 
 
