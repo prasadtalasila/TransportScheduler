@@ -1,75 +1,134 @@
-# defmodule API do
-#   use Maru.Router
-
-#   version "v1" do
-#     get do
-#       text(conn, "hello")
-#     end 
-#   end
-  
-#   version "v2" do
-#     get do
-#       json(conn, %{hello: :world})
-#     end 
-#   end
-  
-#   version "schedule" do
-#     get do
-#       schedule =[%{arrival_time: 63300, dept_time: 300, dst_station: 7, mode_of_transport: "train", src_station: 5, vehicleID: 19019}]
-#       json(conn, schedule)
-#     end 
-#   end
-
-# end
-
 defmodule API do
-  import Plug.Conn
-  use Plug.Router
+  use Maru.Router
+  use Maru.Type
+  
+  namespace :api do
+    get do
+      text(conn, "Welcome to TransportScheduler API")
+    end
+    
+    namespace :search do
+      desc "get itinerary from source to destination"
+      params do
+        requires :source, type: Integer
+        requires :destination, type: Integer
+        requires :start_time, type: String
+        requires :date, type: String
+      end
+      get do
+        text(conn, "api/search")
+        # Obtain itinerary
+      end
+    end
 
-  @userid   "uid"
-  @password "pwd"
+    namespace :station do
+      namespace :schedule do
+        desc "get a station\'s schedule"
+        params do
+          requires :source, type: Integer
+          requires :date, type: String
+        end
+        get do
+          text(conn, "api/station/schedule")
+          # Get station schedule
+          st_map=obtain_stations(10)
+          city=Map.fetch!(st_map, :source)
+          {:ok, registry}=StationConstructor.start_link
+          {:ok, {code, station}}=StationConstructor.lookup(registry, city)
+          st_str=Station.get_vars(station)
+          Map.fetch!(st_str, :schedule)
+        end
+      end
+      
+      namespace :state do
+        desc "get state of a station"
+        params do
+          requires :source, type: Integer
+        end
+        get do
+          text(conn, "api/station/state")
+          # Get state vars of that station
+          st_map=obtain_stations(10)
+          city=Map.fetch!(st_map, :source)
+          {:ok, registry}=StationConstructor.start_link
+          {:ok, {code, station}}=StationConstructor.lookup(registry, city)
+          Station.get_vars(station)
+        end
 
-  @stn_code   "stn_code"
+        desc "update state of a station"
+        params do
+          requires :source, type: Integer
+          requires :congestion, type: Atom, values: [:none, :low, :high], default: :low
+          requires :delay, type: Float
+          requires :disturbance, type: Atom, values: [:yes, :no], default: :no
+          # at_least_one_of [:congestion, :delay, :disturbance]
+        end
+        post do
+          # Update state vars of that station
+        end
+      end
 
-  plug :match
-  plug :dispatch
-
-  # Root path
-  get "/" do
-    conn = fetch_query_params(conn)
-    %{ @userid => usr, @password => pass } = conn.params
-    send_resp(conn, 200, "Hello #{usr}. Your password is #{pass}")
+      namespace :create do
+        desc "create a new station"
+        params do
+          requires :station, type: Map do
+            requires :locVars, type: Json do
+              requires :congestion, type: Atom, values: [:none, :low, :high], default: :low
+              requires :delay, type: Float
+              requires :disturbance, type: Atom, values: [:yes, :no], default: :no
+            end
+            requires :schedule, type: Json |> List do
+              requires :vehicleID, type: Integer
+              requires :src_station, type: Integer
+              requires :dst_station, type: Integer
+              requires :dept_time, type: Integer
+              requires :arrival_time, type: Integer
+              requires :mode_of_transport, type: String
+            end
+            requires :station_number, type: Integer
+            requires :station_name, type: String
+            #requires :congestion_low
+            #requires :congestion_high
+            #requires :choose_fn
+          end
+        end
+        post do
+          text(conn, "api/station/create")
+          # Add new station's details
+          {:ok, registry}=StationConstructor.start_link
+          StationConstructor.create(registry, :station_name, :station_number)
+          {:ok, {code, station}} = StationConstructor.lookup(registry, :station_name)
+          stn_str=%StationStruct{locVars: %{delay: :delay, congestion: :congestion, disturbance: :disturbance}, schedule: :schedule, station_number: :station_number, station_name: :station_name}
+          Station.update(station, %StationStruct{})
+          Station.update(station, stn_str)
+        end
+      end
+    end
   end
 
-  get "/hello" do
-    send_resp(conn, 200, "world")
+  rescue_from :all do
+    conn |> put_status(500) |> text("Server Error")
   end
 
-  get "/schedule" do
-    conn = fetch_query_params(conn)
-    %{ @stn_code => stn_code } = conn.params
-
-    schedule =[%{arrival_time: 63300, dept_time: 300, dst_station: 7, mode_of_transport: "train", src_station: 5, vehicleID: 19019}]
-
-    # {:ok, {code, station}} = StationConstructor.lookup(registry, "Alnavar Junction")
-    #schedule = Station.get_vars(station)
-
-    send_resp(conn, 200, Poison.encode!(schedule))
+  def obtain_stations(n) do
+    station_map=Map.new
+    {_, file}=File.open("data/stations.txt", [:read, :utf8])
+    obtain_station(file, n, station_map)
   end
 
-  match _ do
-    send_resp(conn, 404, "oops")
+  # 'Loops' through the n entries of the 'stations.txt' file and saves 
+  # The city name and city code as a (key, value) tuples in a map.
+  defp obtain_station(file, n, station_map) when n > 0 do
+    [code | city]= IO.read(file, :line) |> String.trim() |> String.split(" ", parts: 2)
+    city=List.to_string(city)
+    code=String.to_integer(code)
+    station_map=Map.put(station_map, code, city)
+    obtain_station(file, n-1, station_map)
+  end
+
+  # Closes the file after reading data of n stations.
+  defp obtain_station(file, _, station_map) do
+    File.close(file)
+    station_map
   end
 end
-
-
-#PATH: /
-#QUERY STRING: uid=ToddFlanders&pwd=MyTestPword
-#QUERY PARAMS: [ uid: "ToddFlanders", pwd: "MyTestPword" ]
-#http://localhost:4000/?uid=ToddFlanders&pwd=MyTestPword
-
-#
-# PATH: /
-# QUERY STRING: stn_code=1
-# QUERY PARAMS: [ stn_code: 1 ]
-#http://localhost:4000/schedule?stn_code=1
