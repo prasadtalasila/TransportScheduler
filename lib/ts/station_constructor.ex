@@ -36,8 +36,12 @@ defmodule StationConstructor do
     GenServer.stop(server)
   end
   
-  def send_message_stn(src, dest) do
-    Station.send_message_stn(src, dest)
+
+  @doc """
+  Messages.
+  """
+  def send_message_stn(src, dest, itinerary) do
+    Station.send_message_stn(src, dest, itinerary)
   end
 
   ## Server callbacks

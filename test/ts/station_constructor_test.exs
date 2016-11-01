@@ -42,12 +42,15 @@ defmodule StationConstructorTest do
 
   test "messages" do
     {_, p1}=Station.start_link
-    Station.update(p1, %StationStruct{locVars: %{"delay": 0.01, "congestion": "low", "disturbance": "no"}, schedule: [], congestion_low: 4, choose_fn: 1, station_number: 1})
+    Station.update(p1, ss = %StationStruct{locVars: %{"delay": 0.38, "congestion": "low", "disturbance": "no", "congestion_low": 4, "choose_fn": 1}, schedule: [%{vehicleID: 1111, src_station: 1, dst_station: 2, dept_time: "07:12:00", arrival_time: "16:32:00", mode_of_transport: "train"}, %{vehicleID: 2222, src_station: 1, dst_station: 2, dept_time: "13:12:00", arrival_time: "14:32:00", mode_of_transport: "train"}, %{vehicleID: 3333, src_station: 1, dst_station: 2, dept_time: "03:12:00", arrival_time: "10:32:00", mode_of_transport: "train"}, %{vehicleID: 4444, src_station: 1, dst_station: 2, dept_time: "19:12:00", arrival_time: "20:32:00", mode_of_transport: "train"}]})
     {_, p2}=Station.start_link
-   Station.update(p1, %StationStruct{locVars: %{"delay": 0.02, "congestion": "low", "disturbance": "no"}, schedule: [], congestion_low: 4, choose_fn: 1, station_number: 2})
+    Station.update(p2, ss = %StationStruct{locVars: %{"delay": 0.38, "congestion": "low", "disturbance": "no", "congestion_low": 4, "choose_fn": 1}, schedule: [%{vehicleID: 5555, src_station: 2, dst_station: 3, dept_time: "17:12:00", arrival_time: "19:32:00", mode_of_transport: "train"}]})
     {_, nc}=StationConstructor.start_link
-    assert StationConstructor.send_message_stn(nc, p1)==:msg_sent_to_stn
-    assert Station.send_message_stn(p1, p2)==:msg_sent_to_stn
+    itinerary  = [%{src_station: 1, dst_station: 3, time: "04:42:00"}]
+    {:msg_sent_to_stn, it1} = StationConstructor.send_message_stn(nc, p1, itinerary)
+    #IO.puts it1
+    {:msg_sent_to_stn, it2} = Station.send_message_stn(p1, p2, it1)
+    #IO.puts it2
     #Get StationConstructor to receive messages
     #assert Station.send_message_NC(p2, nc)==:msg_sent_to_NC
 
