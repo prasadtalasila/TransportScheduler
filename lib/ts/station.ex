@@ -25,9 +25,15 @@ defmodule Station do
     GenStateMachine.call(dst, :send_msg_stn)
   end
 
+  def check_neighbours(station, time) do
+    GenStateMachine.call(station, {:check_neighbours, time})
+  end
+
   # Server (callbacks)
 
-  def handle_event(:cast, newVars, state, vars) do
+  def handle_event(:cast, oldVars, state, vars) do
+    schedule = Enum.sort(oldVars.schedule)
+    newVars =  %StationStruct{locVars: oldVars.locVars, schedule: schedule, station_number: oldVars.station_number, station_name: oldVars.station_name, pid: oldVars.pid, congestion_low: oldVars.congestion_low, congestion_high: oldVars.congestion_high, choose_fn: oldVars.choose_fn}
     case(newVars.locVars.disturbance) do
       "yes"	->
 	{:next_state, :disturbance, newVars}
@@ -69,6 +75,11 @@ defmodule Station do
 
   def handle_event({:call, from}, :send_msg_stn, state, vars) do
     {:next_state, state, vars, [{:reply, from, :msg_sent_to_stn}]}
+  end
+
+  def handle_event({:call, from}, {:check_neighbours,time}, state, vars) do
+    [chosenDestination | tail] = Enum.filter(vars.schedule, fn(x) -> x.dept_time > time end)
+    {:next_state, state, vars, [{:reply, from, chosenDestination}]}
   end
 
   def handle_event(event_type, event_content, state, vars) do
