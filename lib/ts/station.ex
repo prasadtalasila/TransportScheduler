@@ -27,7 +27,9 @@ defmodule Station do
 
   # Server (callbacks)
 
-  def handle_event(:cast, newVars, state, vars) do
+  def handle_event(:cast, oldVars, state, vars) do
+    schedule = Enum.sort(oldVars.schedule)
+    newVars =  %StationStruct{locVars: oldVars.locVars, schedule: schedule, station_number: oldVars.station_number, station_name: oldVars.station_name, pid: oldVars.pid, congestion_low: oldVars.congestion_low, congestion_high: oldVars.congestion_high, choose_fn: oldVars.choose_fn}
     case(newVars.locVars.disturbance) do
       "yes"	->
 	{:next_state, :disturbance, newVars}
