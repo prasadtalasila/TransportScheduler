@@ -36,8 +36,8 @@ defmodule StationConstructor do
     GenServer.stop(server)
   end
   
-  def send_node(dest) do
-    Station.send_message(self(), dest)
+  def send_message_stn(src, dest) do
+    Station.send_message_stn(src, dest)
   end
 
   ## Server callbacks
@@ -73,5 +73,6 @@ defmodule StationConstructor do
   def handle_info(_msg, state) do
     {:noreply, state}
   end
+
 
 end

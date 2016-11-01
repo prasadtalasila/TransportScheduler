@@ -21,12 +21,8 @@ defmodule Station do
     GenStateMachine.call(station, :get_state)
   end
 
-  def send_message(src, dst) do
-    GenStateMachine.call(dst, :send_msg_NC)
-  end
-
-  def send_proc(src, dst) do
-    GenStateMachine.call(dst, :send_proc)
+  def send_message_stn(src, dst) do
+    GenStateMachine.call(dst, :send_msg_stn)
   end
 
   # Server (callbacks)
@@ -67,17 +63,12 @@ defmodule Station do
     {:next_state, state, vars, [{:reply, from, vars}]}
   end
 
-  def handle_event({:call, from}, :send_msg_NC, state, vars) do
-    #IO.puts "msg_received from #{from}"
-    {:next_state, state, vars, [{:reply, from, :msg_received_from_NC}]}
-  end
-
-  def handle_event({:call, from}, :send_proc, state, vars) do
-    {:next_state, state, vars, [{:reply, from, :msg_received_from_proc}]}
-  end
-
   def handle_event({:call, from}, :get_state, state, vars) do
     {:next_state, state, vars, [{:reply, from, state}]}
+  end
+
+  def handle_event({:call, from}, :send_msg_stn, state, vars) do
+    {:next_state, state, vars, [{:reply, from, :msg_sent_to_stn}]}
   end
 
   def handle_event(event_type, event_content, state, vars) do
