@@ -41,5 +41,6 @@ Run the following commands to deploy (currently server and user are localhost):
 Run the following commands to start application:   
 `mix edeliver start`   
 
-Visit `http://localhost:8880/schedule?stn_code=1` for testing API   
+Visit `http://localhost:8880/api` for homepage.
 
+For testing the API, following Curl commands are issued to:
