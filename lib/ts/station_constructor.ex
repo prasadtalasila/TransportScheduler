@@ -35,13 +35,16 @@ defmodule StationConstructor do
   def stop(server) do
     GenServer.stop(server)
   end
-  
 
   @doc """
   Messages.
   """
-  def send_message_src(src, dest, itinerary) do
-    Station.send_message_src(src, dest, itinerary)
+  def send_message_stn(src, dest, itinerary) do
+    Station.send_message_stn(src, dest, itinerary)
+  end
+
+  def rcv_stn(server, msg) do
+    GenServer.call(server, {:rcv_stn, msg})
   end
 
   ## Server callbacks
@@ -54,6 +57,10 @@ defmodule StationConstructor do
 
   def handle_call({:lookup, name}, _from, {names, _} = state) do
     {:reply, Map.fetch(names, name), state}
+  end
+
+  def handle_call({:rcv_stn, msg}, _from, {_, _}) do
+    {:reply, msg}
   end
 
   def handle_cast({:create, name, code}, {names, refs}) do

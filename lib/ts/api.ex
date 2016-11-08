@@ -4,6 +4,21 @@ defmodule API do
   
   namespace :api do
     get do
+      {:ok, registry} = StationConstructor.start_link
+      Process.register(registry, :sc)
+      {:ok, pid} = InputParser.start_link(10)
+      stn_map = InputParser.get_station_map(pid)
+      stn_sched = InputParser.get_schedules(pid)
+      for stn_key <- Map.keys(stn_map) do
+        stn_code = Map.get(stn_map, stn_key)
+        stn_struct = InputParser.get_station_struct(pid, stn_key)
+        StationConstructor.create(:sc, stn_key, stn_code)
+        {:ok, {code, station}} = StationConstructor.lookup(:sc, stn_key)
+        #IO.puts Station.get_state(station)
+        Station.update(station, %StationStruct{})
+        #IO.puts Station.get_state(station)
+        Station.update(station, stn_struct)
+      end
       text(conn, "Welcome to TransportScheduler API")
     end
     
@@ -23,37 +38,43 @@ defmodule API do
 
     namespace :station do
       namespace :schedule do
-        desc "get a station\'s schedule"
-        params do
-          requires :source, type: Integer
-          requires :date, type: String
+        route_param :source, type: Integer do
+          desc "get a station\'s schedule"
+          get do
+            #text(conn, "api/station/schedule")
+            # Get station schedule
+            st_map=obtain_stations(10) |> IO.inspect
+            # params[:source]|>IO.inspect
+            city=Map.fetch!(st_map, params[:source]) |> IO.puts
+            #text(conn, "yel")
+            #{:ok, registry}=StationConstructor.start_link
+            {:ok, {code, station}}=StationConstructor.lookup(:sc, city)|>IO.inspect
+            st_str=Station.get_vars(station) |> IO.inspect
+            res=Map.fetch!(st_str, :schedule)
+            text(conn, "yel")
+          end
         end
-        get do
-          text(conn, "api/station/schedule")
-          # Get station schedule
-          st_map=obtain_stations(10)
-          city=Map.fetch!(st_map, :source)
-          {:ok, registry}=StationConstructor.start_link
-          {:ok, {code, station}}=StationConstructor.lookup(registry, city)
-          st_str=Station.get_vars(station)
-          Map.fetch!(st_str, :schedule)
-        end
+        #desc "get a station\'s schedule"
+        #params do
+        #  requires :source, type: Integer
+        #  requires :date, type: String
+        #end
       end
       
       namespace :state do
-        desc "get state of a station"
-        params do
-          requires :source, type: Integer
+        route_param :source do
+          desc "get state of a station"
+          get do
+            text(conn, "api/station/state")
+            # Get state vars of that station
+            st_map=obtain_stations(10)
+            city=Map.fetch!(st_map, :source)
+            {:ok, :sc}=StationConstructor.start_link
+            {:ok, {code, station}}=StationConstructor.lookup(:sc, city)
+            Station.get_vars(station)
+          end
         end
-        get do
-          text(conn, "api/station/state")
-          # Get state vars of that station
-          st_map=obtain_stations(10)
-          city=Map.fetch!(st_map, :source)
-          {:ok, registry}=StationConstructor.start_link
-          {:ok, {code, station}}=StationConstructor.lookup(registry, city)
-          Station.get_vars(station)
-        end
+        
 
         desc "update state of a station"
         params do
@@ -63,7 +84,7 @@ defmodule API do
           requires :disturbance, type: Atom, values: [:yes, :no], default: :no
           # at_least_one_of [:congestion, :delay, :disturbance]
         end
-        post do
+        put do
           # Update state vars of that station
         end
       end
@@ -95,9 +116,9 @@ defmodule API do
         post do
           text(conn, "api/station/create")
           # Add new station's details
-          {:ok, registry}=StationConstructor.start_link
-          StationConstructor.create(registry, :station_name, :station_number)
-          {:ok, {code, station}} = StationConstructor.lookup(registry, :station_name)
+          {:ok, :sc}=StationConstructor.start_link
+          StationConstructor.create(:sc, :station_name, :station_number)
+          {:ok, {code, station}} = StationConstructor.lookup(:sc, :station_name)
           stn_str=%StationStruct{locVars: %{delay: :delay, congestion: :congestion, disturbance: :disturbance}, schedule: :schedule, station_number: :station_number, station_name: :station_name}
           Station.update(station, %StationStruct{})
           Station.update(station, stn_str)
