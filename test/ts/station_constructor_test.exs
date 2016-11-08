@@ -47,7 +47,7 @@ defmodule StationConstructorTest do
     Station.update(p2, ss = %StationStruct{locVars: %{"delay": 0.38, "congestion": "low", "disturbance": "no", "congestion_low": 4, "choose_fn": 1}, schedule: [%{vehicleID: 5555, src_station: 2, dst_station: 3, dept_time: "17:12:00", arrival_time: "19:32:00", mode_of_transport: "train"}]})
     {_, nc}=StationConstructor.start_link
     itinerary  = [%{src_station: 1, dst_station: 3, time: "04:42:00"}]
-    {:msg_sent_to_stn, it1} = StationConstructor.send_message_stn(nc, p1, itinerary)
+    {:msg_sent_to_src, it1} = StationConstructor.send_message_src(nc, p1, itinerary)
     #IO.puts it1
     {:msg_sent_to_stn, it2} = Station.send_message_stn(p1, p2, it1)
     #IO.puts it2

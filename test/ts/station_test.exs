@@ -25,7 +25,7 @@ defmodule StationTest do
      
     #IO.puts Station.get_vars(station).schedule
     #IO.puts Station.check_neighbours(station, time)
-    assert Station.check_neighbours(station, time) ==  %{arrival_time: "14:32:00", dept_time: "13:12:00", dst_station: 2, mode_of_transport: "train", src_station: 1, vehicleID: 2222}
+    assert Station.check_neighbours(station, time) == [%{arrival_time: "14:32:00", dept_time: "13:12:00", dst_station: 2, mode_of_transport: "train", src_station: 1, vehicleID: 2222}, %{arrival_time: "16:32:00", dept_time: "07:12:00", dst_station: 2, mode_of_transport: "train", src_station: 1, vehicleID: 1111}, %{arrival_time: "20:32:00", dept_time: "19:12:00", dst_station: 2, mode_of_transport: "train", src_station: 1, vehicleID: 4444}]
   end
 
 end

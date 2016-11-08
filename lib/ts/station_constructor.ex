@@ -40,8 +40,8 @@ defmodule StationConstructor do
   @doc """
   Messages.
   """
-  def send_message_stn(src, dest, itinerary) do
-    Station.send_message_stn(src, dest, itinerary)
+  def send_message_src(src, dest, itinerary) do
+    Station.send_message_src(src, dest, itinerary)
   end
 
   ## Server callbacks
