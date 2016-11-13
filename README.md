@@ -48,8 +48,12 @@ For testing the API, following Curl commands are issued to:
 
 1. Obtain Schedule of a Station:
 
-`curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{"source": 5, "date": "11-09-2016"}' 'http://127.0.0.1:8880/api/station/schedule'`
+```
+curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{"source": 5, "date": "11-09-2016"}' 'http://localhost:8880/api/station/schedule'
+```
 
 2. Obtain State of a Station:
 
-`curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{"source": 5}' 'http://127.0.0.1:8880/api/station/state'`
+```
+curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{"source": 5}' 'http://localhost:8880/api/station/state'
+```
