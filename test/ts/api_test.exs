@@ -11,8 +11,9 @@ defmodule APITest do
     |>put_plug(Plug.Parsers, parsers: [:json], pass: ["*/*"], json_decoder: Poison)
     {:ok, %{conn: conn}}
   end
+
   test "returns schedule", %{conn: conn} do
-    assert %Plug.Conn{}=conn|>put_body_or_params(~s({"source": 1, "date": "1/11/2016"}))|>get("/api/station/schedule")
+    assert %Plug.Conn{}=conn|>put_body_or_params(~s({"source": 5, "date": "1/11/2016"}))|>post("/api/station/schedule")
 
     # Assert the response and status
     #assert conn.state == :sent
