@@ -1,27 +1,36 @@
 defmodule API do
-  use Maru.Router
+  use Maru.Router, make_plug: true
   use Maru.Type
+
+  before do
+    plug Plug.Parsers,
+    pass: ["*/*"],
+    json_decoder: Poison,
+    parsers: [:urlencoded, :json, :multipart]
+  end
   
   namespace :api do
     get do
       {:ok, registry} = StationConstructor.start_link
-      Process.register(registry, :sc)
+      #Process.register(registry, :sc)
       {:ok, pid} = InputParser.start_link(10)
+      #:global.register_name(StCon, registry)
+      #StCon|>IO.inspect
       stn_map = InputParser.get_station_map(pid)
       stn_sched = InputParser.get_schedules(pid)
       for stn_key <- Map.keys(stn_map) do
         stn_code = Map.get(stn_map, stn_key)
         stn_struct = InputParser.get_station_struct(pid, stn_key)
-        StationConstructor.create(:sc, stn_key, stn_code)
-        {:ok, {code, station}} = StationConstructor.lookup(:sc, stn_key)
+        StationConstructor.create(registry, stn_key, stn_code)
+        {:ok, {code, station}} = StationConstructor.lookup(registry, stn_key) |> IO.inspect
         #IO.puts Station.get_state(station)
         Station.update(station, %StationStruct{})
         #IO.puts Station.get_state(station)
         Station.update(station, stn_struct)
       end
-      text(conn, "Welcome to TransportScheduler API")
+      conn|>put_status(200)|>text("Welcome to TransportScheduler API")
     end
-    
+
     namespace :search do
       desc "get itinerary from source to destination"
       params do
@@ -30,59 +39,57 @@ defmodule API do
         requires :start_time, type: String
         requires :date, type: String
       end
-      get do
-        text(conn, "api/search")
+      post do
+        conn|>put_status(200)|>text("api/search")
         # Obtain itinerary
       end
     end
 
     namespace :station do
       namespace :schedule do
-        route_param :source, type: Integer do
-          desc "get a station\'s schedule"
-          get do
-            #text(conn, "api/station/schedule")
-            # Get station schedule
-            st_map=obtain_stations(10) |> IO.inspect
-            # params[:source]|>IO.inspect
-            city=Map.fetch!(st_map, params[:source]) |> IO.puts
-            #text(conn, "yel")
-            #{:ok, registry}=StationConstructor.start_link
-            {:ok, {code, station}}=StationConstructor.lookup(:sc, city)|>IO.inspect
-            st_str=Station.get_vars(station) |> IO.inspect
-            res=Map.fetch!(st_str, :schedule)
-            text(conn, "yel")
-          end
+        @desc "get a station\'s schedule"
+        params do
+          requires :source, type: Integer
+          requires :date, type: String
         end
-        #desc "get a station\'s schedule"
-        #params do
-        #  requires :source, type: Integer
-        #  requires :date, type: String
-        #end
+        get do
+          #text(conn, "api/station/schedule")
+          # Get station schedule
+          #StCon|>IO.inspect
+          st_map=obtain_stations(10)
+          # params[:source]|>IO.inspect
+          city=Map.fetch!(st_map, params[:source])
+          #text(conn, "yel")
+          #{:ok, registry}=StationConstructor.start_link
+          #{:ok, {code, station}}=StationConstructor.lookup(city)|>IO.inspect
+          #st_str=Station.get_vars(station) |> IO.inspect
+          #res=Map.fetch!(st_str, :schedule)
+          conn|>put_status(200)|>text(city)
+        end
       end
       
       namespace :state do
-        route_param :source do
-          desc "get state of a station"
-          get do
-            text(conn, "api/station/state")
-            # Get state vars of that station
-            st_map=obtain_stations(10)
-            city=Map.fetch!(st_map, :source)
-            {:ok, :sc}=StationConstructor.start_link
-            {:ok, {code, station}}=StationConstructor.lookup(:sc, city)
-            Station.get_vars(station)
-          end
-        end
-        
-
-        desc "update state of a station"
+        @desc "get state of a station"
         params do
           requires :source, type: Integer
-          requires :congestion, type: Atom, values: [:none, :low, :high], default: :low
+        end
+        post do
+          text(conn, "api/station/state")
+          # Get state vars of that station
+          st_map=obtain_stations(10)
+          city=Map.fetch!(st_map, :source)
+          {:ok, :sc}=StationConstructor.start_link
+          {:ok, {code, station}}=StationConstructor.lookup(:sc, city)
+          conn|>put_status(200)|>json(Station.get_vars(station))
+        end
+
+        @desc "update state of a station"
+        params do
+          requires :source, type: Integer
+          requires :congestion, type: Atom, values: [:none, :low, :high], default: :none
           requires :delay, type: Float
           requires :disturbance, type: Atom, values: [:yes, :no], default: :no
-          # at_least_one_of [:congestion, :delay, :disturbance]
+          at_least_one_of [:congestion, :delay, :disturbance]
         end
         put do
           # Update state vars of that station
@@ -117,9 +124,9 @@ defmodule API do
           text(conn, "api/station/create")
           # Add new station's details
           {:ok, :sc}=StationConstructor.start_link
-          StationConstructor.create(:sc, :station_name, :station_number)
-          {:ok, {code, station}} = StationConstructor.lookup(:sc, :station_name)
-          stn_str=%StationStruct{locVars: %{delay: :delay, congestion: :congestion, disturbance: :disturbance}, schedule: :schedule, station_number: :station_number, station_name: :station_name}
+          StationConstructor.create(:sc, params[:station_name], params[:station_number])
+          {:ok, {code, station}} = StationConstructor.lookup(:sc, params[:station_name])
+          stn_str=%StationStruct{locVars: %{delay: params[:delay], congestion: params[:congestion], disturbance: params[:disturbance]}, schedule: params[:schedule], station_number: params[:station_number], station_name: params[:station_name]}
           Station.update(station, %StationStruct{})
           Station.update(station, stn_str)
         end
