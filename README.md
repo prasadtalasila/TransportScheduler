@@ -4,6 +4,7 @@ TransportScheduler application.
 GenStateMachine for station FSM and GenServer for IPC.
 Edeliver using Exrm for building releases and deployment.
 Travis for continuous integration.
+Maru provides a RESTful API implementation.
 
 ## Installation
 
@@ -41,6 +42,14 @@ Run the following commands to deploy (currently server and user are localhost):
 Run the following commands to start application:   
 `mix edeliver start`   
 
-Visit `http://localhost:8880/api` for homepage.
+Visit `http://localhost:8880/api` for homepage. This does the initialisation work for the network.
 
 For testing the API, following Curl commands are issued to:
+
+1. Obtain Schedule of a Station:
+
+`curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{"source": 5, "date": "11-09-2016"}' 'http://127.0.0.1:8880/api/station/schedule'`
+
+2. Obtain State of a Station:
+
+`curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{"source": 5}' 'http://127.0.0.1:8880/api/station/state'`
