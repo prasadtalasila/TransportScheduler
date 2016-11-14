@@ -21,12 +21,16 @@ defmodule Station do
     GenStateMachine.call(station, :get_state)
   end
 
-  def send_message_stn(src, dst, itinerary) do
-    GenStateMachine.call(dst, {:send_msg_stn, itinerary})
+  def receive_at_src(src, dst, itinerary) do
+    GenStateMachine.call(dst, {:receive_at_src, itinerary})
   end
 
-  def send_to_NC(server) do
-    StationConstructor.rcv_stn(server, "Return to NC")
+  def send_to_stn(src, dst, itinerary) do
+    GenStateMachine.call(dst, {:receive_at_stn, src, itinerary})
+  end
+
+  def send_to_NC(server, itinerary) do
+    StationConstructor.receive_from_dest(server, itinerary)
   end
 
   def check_neighbours(station, time) do
@@ -77,15 +81,19 @@ defmodule Station do
     {:next_state, state, vars, [{:reply, from, state}]}
   end
 
-  def handle_event({:call, from}, {:send_msg_stn, itinerary}, state, vars) do
+  def handle_event({:call, from}, {:receive_at_src, itinerary}, state, vars) do
+    {:next_state, state, vars, [{:reply, from, {:msg_received_at_src, itinerary}}]}
+  end
+
+  def handle_event({:call, from}, {:receive_at_stn, src, itinerary}, state, vars) do
    # newNode = Station.check_neighbours() with time passed from itinerary head
     newNode =  %{vehicleID: 2222, src_station: 1, dst_station: 2, dept_time: "13:12:00", arrival_time: "14:32:00", mode_of_transport: "train"}
     newItinerary = [itinerary | newNode]
-    {:next_state, state, vars, [{:reply, from, {:msg_sent_to_stn, newItinerary}}]}
+    {:next_state, state, vars, [{:reply, from, {:msg_received_at_stn, newItinerary}}]}
   end
 
   def handle_event({:call, from}, {:check_neighbours,time}, state, vars) do
-    [chosenDestination | tail] = Enum.filter(vars.schedule, fn(x) -> x.dept_time > time end)
+    chosenDestination = Enum.filter(vars.schedule, fn(x) -> x.dept_time > time end)
     {:next_state, state, vars, [{:reply, from, chosenDestination}]}
   end
 
