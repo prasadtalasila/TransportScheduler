@@ -17,8 +17,12 @@ defmodule StationConstructor do
 
   Returns `{:ok, pid}` if the station exists, `:error` otherwise.
   """
-  def lookup(server, name) do
-    GenServer.call(server, {:lookup, name})
+  def lookup_name(server, name) do
+    GenServer.call(server, {:lookup_name, name})
+  end
+
+  def lookup_code(server, code) do
+    GenServer.call(server, {:lookup_code, code})
   end
 
   @doc """
@@ -51,34 +55,41 @@ defmodule StationConstructor do
 
   def init(:ok) do
     names = %{}
+    codes = %{}
     refs  = %{}
-    {:ok, {names, refs}}
+    {:ok, {names, codes, refs}}
   end
 
-  def handle_call({:lookup, name}, _from, {names, _} = state) do
+  def handle_call({:lookup_name, name}, _from, {names, _, _} = state) do
     {:reply, Map.fetch(names, name), state}
   end
 
-  def handle_call({:msg_received_at_NC, itinerary}, _from, {_, _}) do
+  def handle_call({:lookup_code, code}, _from, {_, codes, _} = state) do
+    {:reply, Map.fetch(codes, code), state}
+  end
+
+  def handle_call({:msg_received_at_NC, itinerary}, _from, {_, _, _}) do
     {:reply, itinerary}
   end
 
-  def handle_cast({:create, name, code}, {names, refs}) do
+  def handle_cast({:create, name, code}, {names, codes, refs}) do
     if Map.has_key?(names, name) do
-      {:noreply, {names, refs}}
+      {:noreply, {names, codes, refs}}
     else
       {:ok, pid} = Station.start_link
       ref = Process.monitor(pid)
-      refs = Map.put(refs, ref, name)
+      refs = Map.put(refs, ref, {name, code})
       names = Map.put(names, name, {code, pid})
-      {:noreply, {names, refs}}
+      codes = Map.put(codes, code, {name, pid})
+      {:noreply, {names, codes, refs}}
     end
   end
 
-  def handle_info({:DOWN, ref, :process, _pid, _reason}, {names, refs}) do
-    {name, refs} = Map.pop(refs, ref)
+  def handle_info({:DOWN, ref, :process, _pid, _reason}, {names, codes, refs}) do
+    {name, code, refs} = Map.pop(refs, ref)
     names = Map.delete(names, name)
-    {:noreply, {names, refs}}
+    codes = Map.delete(codes, code)
+    {:noreply, {names, codes, refs}}
   end
 
   def handle_info(_msg, state) do

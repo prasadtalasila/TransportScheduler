@@ -22,7 +22,7 @@ defmodule API do
         stn_code = Map.get(stn_map, stn_key)
         stn_struct = InputParser.get_station_struct(pid, stn_key)
         StationConstructor.create(registry, stn_key, stn_code)
-        {:ok, {code, station}} = StationConstructor.lookup(registry, stn_key) |> IO.inspect
+        {:ok, {code, station}} = StationConstructor.lookup_name(registry, stn_key) |> IO.inspect
         #IO.puts Station.get_state(station)
         Station.update(station, %StationStruct{})
         #IO.puts Station.get_state(station)
@@ -61,7 +61,7 @@ defmodule API do
           city=Map.fetch!(st_map, params[:source])
           #text(conn, "yel")
           #{:ok, registry}=StationConstructor.start_link
-          #{:ok, {code, station}}=StationConstructor.lookup(city)|>IO.inspect
+          #{:ok, {code, station}}=StationConstructor.lookup_name(city)|>IO.inspect
           #st_str=Station.get_vars(station) |> IO.inspect
           #res=Map.fetch!(st_str, :schedule)
           conn|>put_status(200)|>text(city)
@@ -79,7 +79,7 @@ defmodule API do
           st_map=obtain_stations(10)
           city=Map.fetch!(st_map, :source)
           {:ok, :sc}=StationConstructor.start_link
-          {:ok, {code, station}}=StationConstructor.lookup(:sc, city)
+          {:ok, {code, station}}=StationConstructor.lookup_name(:sc, city)
           conn|>put_status(200)|>json(Station.get_vars(station))
         end
 
