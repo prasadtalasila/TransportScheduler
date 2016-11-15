@@ -27,9 +27,9 @@ defmodule StationConstructorTest do
       assert StationConstructor.create(registry, stn_key, stn_code) == :ok
       {:ok, {code, station}} = StationConstructor.lookup_name(registry, stn_key)
       #IO.puts Station.get_state(station)
-      Station.update(station, %StationStruct{})
+      Station.Update.update(%Station{pid: station}, %StationStruct{})
       #IO.puts Station.get_state(station)
-      Station.update(station, stn_struct)
+      Station.Update.update(%Station{pid: station}, stn_struct)
      
     end
 
@@ -42,9 +42,9 @@ defmodule StationConstructorTest do
 
   test "messages" do
     {_, p1}=Station.start_link
-    Station.update(p1, ss = %StationStruct{locVars: %{"delay": 0.38, "congestion": "low", "disturbance": "no", "congestion_low": 4, "choose_fn": 1}, schedule: [%{vehicleID: 1111, src_station: 1, dst_station: 2, dept_time: "07:12:00", arrival_time: "16:32:00", mode_of_transport: "train"}, %{vehicleID: 2222, src_station: 1, dst_station: 2, dept_time: "13:12:00", arrival_time: "14:32:00", mode_of_transport: "train"}, %{vehicleID: 3333, src_station: 1, dst_station: 2, dept_time: "03:12:00", arrival_time: "10:32:00", mode_of_transport: "train"}, %{vehicleID: 4444, src_station: 1, dst_station: 2, dept_time: "19:12:00", arrival_time: "20:32:00", mode_of_transport: "train"}]})
+    Station.Update.update(%Station{pid: p1}, ss = %StationStruct{locVars: %{"delay": 0.38, "congestion": "low", "disturbance": "no", "congestion_low": 4, "choose_fn": 1}, schedule: [%{vehicleID: 1111, src_station: 1, dst_station: 2, dept_time: "07:12:00", arrival_time: "16:32:00", mode_of_transport: "train"}, %{vehicleID: 2222, src_station: 1, dst_station: 2, dept_time: "13:12:00", arrival_time: "14:32:00", mode_of_transport: "train"}, %{vehicleID: 3333, src_station: 1, dst_station: 2, dept_time: "03:12:00", arrival_time: "10:32:00", mode_of_transport: "train"}, %{vehicleID: 4444, src_station: 1, dst_station: 2, dept_time: "19:12:00", arrival_time: "20:32:00", mode_of_transport: "train"}]})
     {_, p2}=Station.start_link
-    Station.update(p2, ss = %StationStruct{locVars: %{"delay": 0.38, "congestion": "low", "disturbance": "no", "congestion_low": 4, "choose_fn": 1}, schedule: [%{vehicleID: 5555, src_station: 2, dst_station: 3, dept_time: "17:12:00", arrival_time: "19:32:00", mode_of_transport: "train"}]})
+    Station.Update.update(%Station{pid: p2}, ss = %StationStruct{locVars: %{"delay": 0.38, "congestion": "low", "disturbance": "no", "congestion_low": 4, "choose_fn": 1}, schedule: [%{vehicleID: 5555, src_station: 2, dst_station: 3, dept_time: "17:12:00", arrival_time: "19:32:00", mode_of_transport: "train"}]})
     {_, nc}=StationConstructor.start_link
     itinerary  = [%{src_station: 1, dst_station: 3, arrival_time: "04:42:00"}]
     {:msg_received_at_src, it1} = StationConstructor.send_to_src(nc, p1, itinerary)
