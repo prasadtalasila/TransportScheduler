@@ -3,22 +3,14 @@
 defmodule Station do
   use GenStateMachine
 
-  defstruct pid: nil
-
-  defprotocol Update do
-    def update(station, newVars)
-  end
-
-  defimpl Update, for: Station do
-    def update(station, %StationStruct{}=newVars) do
-      GenStateMachine.cast(station.pid, newVars)
-    end
-  end
-
   # Client
 
   def start_link() do
     GenStateMachine.start_link(Station, {:nodata, nil})
+  end
+
+  def update(station, newVars) do
+    GenStateMachine.cast(station, newVars)
   end
 
   def get_vars(station) do
@@ -94,7 +86,7 @@ defmodule Station do
   end
 
   def handle_event({:call, from}, {:receive_at_stn, src, itinerary}, state, vars) do
-    # newNode = Station.check_neighbours() with time passed from itinerary head
+   # newNode = Station.check_neighbours() with time passed from itinerary head
     newNode =  %{vehicleID: 2222, src_station: 1, dst_station: 2, dept_time: "13:12:00", arrival_time: "14:32:00", mode_of_transport: "train"}
     newItinerary = [itinerary | newNode]
     {:next_state, state, vars, [{:reply, from, {:msg_received_at_stn, newItinerary}}]}
@@ -110,5 +102,3 @@ defmodule Station do
     super(event_type, event_content, state, vars)
   end
 end
-
-

@@ -24,9 +24,9 @@ defmodule API do
         StationConstructor.create(registry, stn_key, stn_code)
         {:ok, {code, station}} = StationConstructor.lookup_name(registry, stn_key) |> IO.inspect
         #IO.puts Station.get_state(station)
-        Station.Update.update(%Station{pid: station}, %StationStruct{})
+        Station.update(station, %StationStruct{})
         #IO.puts Station.get_state(station)
-        Station.Update.update(%Station{pid: station}, stn_struct)
+        Station.update(station, stn_struct)
       end
       conn|>put_status(200)|>text("Welcome to TransportScheduler API")
     end
@@ -127,8 +127,8 @@ defmodule API do
           StationConstructor.create(:sc, params[:station_name], params[:station_number])
           {:ok, {code, station}} = StationConstructor.lookup(:sc, params[:station_name])
           stn_str=%StationStruct{locVars: %{delay: params[:delay], congestion: params[:congestion], disturbance: params[:disturbance]}, schedule: params[:schedule], station_number: params[:station_number], station_name: params[:station_name]}
-          Station.Update.update(%Station{pid: station}, %StationStruct{})
-          Station.Update.update(%Station{pid: station}, stn_str)
+          Station.update(station, %StationStruct{})
+          Station.update(station, stn_str)
         end
       end
     end
