@@ -9,8 +9,8 @@ defmodule Station do
     GenStateMachine.start_link(Station, {:nodata, nil})
   end
 
-  def update(station, newVars) do
-    GenStateMachine.cast(station, newVars)
+  def update(station,  %StationStruct{} = newVars) do
+    GenStateMachine.cast(station, {:update, newVars})
   end
 
   def get_vars(station) do
@@ -39,7 +39,7 @@ defmodule Station do
 
   # Server (callbacks)
 
-  def handle_event(:cast, oldVars, state, vars) do
+  def handle_event(:cast, {:update, oldVars}, state, vars) do
     schedule = Enum.sort(oldVars.schedule)
     newVars =  %StationStruct{locVars: oldVars.locVars, schedule: schedule, station_number: oldVars.station_number, station_name: oldVars.station_name, pid: oldVars.pid, congestion_low: oldVars.congestion_low, congestion_high: oldVars.congestion_high, choose_fn: oldVars.choose_fn}
     case(newVars.locVars.disturbance) do
@@ -86,7 +86,10 @@ defmodule Station do
   end
 
   def handle_event({:call, from}, {:receive_at_stn, src, itinerary}, state, vars) do
-   # newNode = Station.check_neighbours() with time passed from itinerary head
+    # newNode = Station.check_neighbours() with time passed from itinerary head
+    #[query | tail] = itinerary
+    #time = query.time
+    #neighbours = Station.check_neighbours(src, time)
     newNode =  %{vehicleID: 2222, src_station: 1, dst_station: 2, dept_time: "13:12:00", arrival_time: "14:32:00", mode_of_transport: "train"}
     newItinerary = [itinerary | newNode]
     {:next_state, state, vars, [{:reply, from, {:msg_received_at_stn, newItinerary}}]}
