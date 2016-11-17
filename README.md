@@ -14,7 +14,7 @@ If [available in Hex](https://hex.pm/docs/publish), the package can be installed
 
 ```elixir
 def deps do
-[{:ts, "~> 0.1.0"}]
+	[{:ts, "~> 0.1.0"}]
 end
 ```
 
@@ -22,38 +22,49 @@ end
 
 ```elixir
 def application do
-[applications: [:ts]]
+	[applications: [:ts]]
 end
 ```
 
 
 ## Usage
 
-Run the following commands to compile:  
-`cd TransportScheduler`  
-`mix deps.get`  
-`mix compile`  
-`mix test`  
+Run the following commands to compile:
+```
+cd TransportScheduler
+mix deps.get
+mix compile
+mix test
+```
 
 Run the following commands to deploy (currently server and user are localhost):   
-`mix edeliver build release`   
-`mix edeliver deploy release`   
+```
+mix edeliver build release
+mix edeliver deploy release
+```
 
-Run the following commands to start application:   
-`mix edeliver start`   
+Run the following command to start application:   
+```
+mix edeliver start`  
+```
 
-Visit `http://localhost:8880/api` for homepage. This does the initialisation work for the network.
+Issue the following cURL command for initialisation of the network:
+```
+curl http://localhost:8880/api
+```
 
-For testing the API, following Curl commands are issued to:
+For testing the API, following cURL commands are issued to:
 
 1. Obtain Schedule of a Station:
 
 ```
-curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{"source": 5, "date": "11-09-2016"}' 'http://localhost:8880/api/station/schedule'
+curl -X GET 'http://localhost:8880/api/station/schedule?source=%SOURCE_STATION_CODE%&date=%DATE%'
 ```
+where %SOURCE_STATION_CODE% is a positive integer indicating the station code of the source and %DATE% is the date of travel in the format 'dd-mm-yyyy'.
 
 2. Obtain State of a Station:
 
 ```
-curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{"source": 5}' 'http://localhost:8880/api/station/state'
+curl -X GET 'http://localhost:8880/api/station/state?source=%REQUIRED_STATION_CODE%'
 ```
+where %REQUIRED_STATION_CODE% is a positive integer indicating the required station code.

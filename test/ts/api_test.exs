@@ -13,7 +13,7 @@ defmodule APITest do
   end
 
   test "returns schedule", %{conn: conn} do
-    assert %Plug.Conn{}=conn|>put_body_or_params(~s({"source": 5, "date": "1/11/2016"}))|>post("/api/station/schedule")
+    assert %Plug.Conn{}=conn|>put_body_or_params(~s({"source": 5, "date": "1/11/2016"}))|>get("/api/station/schedule")
 
     # Assert the response and status
     #assert conn.state == :sent
