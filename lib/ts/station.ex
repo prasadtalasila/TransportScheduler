@@ -21,25 +21,26 @@ defmodule Station do
     GenStateMachine.call(station, :get_state)
   end
 
-  def receive_at_src(src, dst, itinerary) do
-    GenStateMachine.call(dst, {:receive_at_src, itinerary})
+  def sendmsg(station) do
+    GenStateMachine.cast(station, {:sendmsg})
   end
 
-  def send_to_stn(src, dst, itinerary) do
-    GenStateMachine.call(dst, {:receive_at_stn, src, itinerary})
+  def receive_at_src(nc, src, itinerary) do
+    GenStateMachine.cast(src, {:receive_at_src, nc, src, itinerary})
+  end
+
+  def send_to_stn(nc, src, dst, itinerary) do
+    GenStateMachine.cast(dst, {:receive_at_stn, nc, src, itinerary})
   end
 
   def send_to_NC(server, itinerary) do
     StationConstructor.receive_from_dest(server, itinerary)
   end
 
-  def check_neighbours(station, time) do
-    GenStateMachine.call(station, {:check_neighbours, time})
-  end
-
   # Server (callbacks)
 
   def handle_event(:cast, {:update, oldVars}, state, vars) do
+    #IO.puts "update"
     schedule = Enum.sort(oldVars.schedule)
     newVars =  %StationStruct{locVars: oldVars.locVars, schedule: schedule, station_number: oldVars.station_number, station_name: oldVars.station_name, pid: oldVars.pid, congestion_low: oldVars.congestion_low, congestion_high: oldVars.congestion_high, choose_fn: oldVars.choose_fn}
     case(newVars.locVars.disturbance) do
@@ -81,23 +82,43 @@ defmodule Station do
     {:next_state, state, vars, [{:reply, from, state}]}
   end
 
-  def handle_event({:call, from}, {:receive_at_src, itinerary}, state, vars) do
-    {:next_state, state, vars, [{:reply, from, {:msg_received_at_src, itinerary}}]}
+  def check_neighbours(src, time) do
+    schedule = Station.get_vars(src).schedule
+    nextList = Enum.filter(schedule, fn(x) -> x.dept_time > time end)
   end
 
-  def handle_event({:call, from}, {:receive_at_stn, src, itinerary}, state, vars) do
+  def function(nc, src, itinerary, dstSched) do
+    newItinerary = [itinerary|dstSched]
+    IO.puts "in fn"
+    dst = StationConstructor.lookup_code(nc, dstSched.dst_station)
+    Station.send_to_stn(src, dst, newItinerary)
+  end
+
+  def handle_event(:cast, {:sendmsg}, state, vars) do
+    IO.puts "in sendmsg"
+    {:next_state, state, vars}
+  end
+
+  def handle_event(:cast, {:receive_at_src, nc, src, itinerary}, state, vars) do
+    [query|tail] = itinerary
+    IO.puts "in src"
+    #IO.puts query
+    nextList = Station.check_neighbours(src, query.arrival_time)
+    Enum.each(nextList, fn(x) -> function(nc, src, itinerary, x) end)
+    {:next_state, state, vars}
+  end
+
+  def handle_event(:cast, {:receive_at_stn, nc, src, itinerary}, state, vars) do
     # newNode = Station.check_neighbours() with time passed from itinerary head
     #[query | tail] = itinerary
     #time = query.time
     #neighbours = Station.check_neighbours(src, time)
-    newNode =  %{vehicleID: 2222, src_station: 1, dst_station: 2, dept_time: "13:12:00", arrival_time: "14:32:00", mode_of_transport: "train"}
-    newItinerary = [itinerary | newNode]
-    {:next_state, state, vars, [{:reply, from, {:msg_received_at_stn, newItinerary}}]}
-  end
-
-  def handle_event({:call, from}, {:check_neighbours,time}, state, vars) do
-    chosenDestination = Enum.filter(vars.schedule, fn(x) -> x.dept_time > time end)
-    {:next_state, state, vars, [{:reply, from, chosenDestination}]}
+    IO.puts "in stn"
+    dstSched =  %{vehicleID: 2222, src_station: 1, dst_station: 2, dept_time: "13:12:00", arrival_time: "14:32:00", mode_of_transport: "train"}
+    function(nc, src, itinerary, dstSched)
+    #newItinerary = [itinerary | newNode]
+    #IO.puts newItinerary
+    {:next_state, state, vars}
   end
 
   def handle_event(event_type, event_content, state, vars) do
