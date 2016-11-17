@@ -73,7 +73,7 @@ defmodule API do
         params do
           requires :source, type: Integer
         end
-        post do
+        get do
           text(conn, "api/station/state")
           # Get state vars of that station
           st_map=obtain_stations(10)
