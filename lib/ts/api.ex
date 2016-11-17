@@ -22,7 +22,7 @@ defmodule API do
         stn_code = Map.get(stn_map, stn_key)
         stn_struct = InputParser.get_station_struct(pid, stn_key)
         StationConstructor.create(registry, stn_key, stn_code)
-        {:ok, {code, station}} = StationConstructor.lookup_name(registry, stn_key) |> IO.inspect
+        {:ok, {code, station}} = StationConstructor.lookup_name(registry, stn_key)
         #IO.puts Station.get_state(station)
         Station.update(station, %StationStruct{})
         #IO.puts Station.get_state(station)
@@ -39,7 +39,7 @@ defmodule API do
         requires :start_time, type: String
         requires :date, type: String
       end
-      post do
+      get do
         conn|>put_status(200)|>text("api/search")
         # Obtain itinerary
       end
@@ -66,6 +66,51 @@ defmodule API do
           #res=Map.fetch!(st_str, :schedule)
           conn|>put_status(200)|>text(city)
         end
+
+        @desc "add an entry to a station\'s schedule"
+        params do
+          requires :sched, type: Json do
+            requires :vehicleID, type: Integer
+            requires :src_station, type: Integer
+            requires :dst_station, type: Integer
+            requires :dept_time, type: Integer
+            requires :arrival_time, type: Integer
+            requires :mode_of_transport, type: String
+          end
+        end
+        post do
+          # Add New Schedule
+        end
+
+        @desc "update an existing entry in the station\'s schedule"
+        params do
+          requires :sched, type: Json do
+            requires :vehicleID, type: Integer
+            requires :src_station, type: Integer
+            requires :dst_station, type: Integer
+            requires :dept_time, type: Integer
+            requires :arrival_time, type: Integer
+            requires :mode_of_transport, type: String
+          end
+        end
+        put do
+          # Update Schedule
+        end
+
+        @desc "delete an entry from a station\'s schedule"
+        params do
+          requires :sched, type: Json do
+            requires :vehicleID, type: Integer
+            requires :src_station, type: Integer
+            requires :dst_station, type: Integer
+            requires :dept_time, type: Integer
+            requires :arrival_time, type: Integer
+            requires :mode_of_transport, type: String
+          end
+        end
+        delete do
+          #Delete Schedule
+        end
       end
       
       namespace :state do
@@ -74,7 +119,7 @@ defmodule API do
           requires :source, type: Integer
         end
         get do
-          text(conn, "api/station/state")
+          #text(conn, "api/station/state")
           # Get state vars of that station
           st_map=obtain_stations(10)
           city=Map.fetch!(st_map, :source)
