@@ -49,7 +49,7 @@ defmodule API do
       namespace :schedule do
         @desc "get a station\'s schedule"
         params do
-          requires :source, type: Integer
+          requires :station_code, type: Integer
           requires :date, type: String
         end
         get do
@@ -80,6 +80,7 @@ defmodule API do
         end
         post do
           # Add New Schedule
+          
         end
 
         @desc "update an existing entry in the station\'s schedule"
@@ -95,28 +96,14 @@ defmodule API do
         end
         put do
           # Update Schedule
-        end
 
-        @desc "delete an entry from a station\'s schedule"
-        params do
-          requires :sched, type: Json do
-            requires :vehicleID, type: Integer
-            requires :src_station, type: Integer
-            requires :dst_station, type: Integer
-            requires :dept_time, type: Integer
-            requires :arrival_time, type: Integer
-            requires :mode_of_transport, type: String
-          end
-        end
-        delete do
-          #Delete Schedule
         end
       end
       
       namespace :state do
         @desc "get state of a station"
         params do
-          requires :source, type: Integer
+          requires :station_code, type: Integer
         end
         get do
           #text(conn, "api/station/state")
@@ -130,7 +117,7 @@ defmodule API do
 
         @desc "update state of a station"
         params do
-          requires :source, type: Integer
+          requires :station_code, type: Integer
           requires :congestion, type: Atom, values: [:none, :low, :high], default: :none
           requires :delay, type: Float
           requires :disturbance, type: Atom, values: [:yes, :no], default: :no
@@ -158,7 +145,7 @@ defmodule API do
               requires :arrival_time, type: Integer
               requires :mode_of_transport, type: String
             end
-            requires :station_number, type: Integer
+            requires :station_code, type: Integer
             requires :station_name, type: String
             #requires :congestion_low
             #requires :congestion_high

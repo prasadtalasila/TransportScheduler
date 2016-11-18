@@ -26,7 +26,6 @@ def application do
 end
 ```
 
-
 ## Usage
 
 Run the following commands to compile:
@@ -55,16 +54,14 @@ curl http://localhost:8880/api
 
 For testing the API, following cURL commands are issued to:
 
-1. Obtain Schedule of a Station:
+1. Obtain Schedule of a Station:  
+```
+curl -X GET 'http://localhost:8880/api/station/schedule?station_code=%STATION_CODE%&date=%DATE%'
+```  
+where %STATION_CODE% is a positive integer indicating the station code of the source and %DATE% is the date of travel in the format 'dd-mm-yyyy'.
 
+2. Obtain State of a Station:  
 ```
-curl -X GET 'http://localhost:8880/api/station/schedule?source=%SOURCE_STATION_CODE%&date=%DATE%'
-```
-where %SOURCE_STATION_CODE% is a positive integer indicating the station code of the source and %DATE% is the date of travel in the format 'dd-mm-yyyy'.
-
-2. Obtain State of a Station:
-
-```
-curl -X GET 'http://localhost:8880/api/station/state?source=%REQUIRED_STATION_CODE%'
-```
-where %REQUIRED_STATION_CODE% is a positive integer indicating the required station code.
+curl -X GET 'http://localhost:8880/api/station/state?station_code=%STATION_CODE%'
+```  
+where %STATION_CODE% is a positive integer indicating the required station code.
