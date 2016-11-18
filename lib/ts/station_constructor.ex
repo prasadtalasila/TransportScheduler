@@ -69,6 +69,7 @@ defmodule StationConstructor do
   end
 
   def handle_call({:msg_received_at_NC, itinerary}, _from, {_, _, _}) do
+    IO.puts "in NC"
     {:reply, itinerary}
   end
 

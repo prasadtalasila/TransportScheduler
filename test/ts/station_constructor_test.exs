@@ -49,14 +49,12 @@ defmodule StationConstructorTest do
     itinerary  = [%{src_station: 1, dst_station: 3, arrival_time: "04:42:00"}]
     StationConstructor.send_to_src(nc, p1, itinerary)
     #IO.puts it1
-    itinerary2  = [%{src_station: 1, dst_station: 3, arrival_time: "04:42:00"}|%{vehicleID: 5555, src_station: 2, dst_station: 3, dept_time: "17:12:00", arrival_time: "19:32:00", mode_of_transport: "train"}]
+    itinerary2  = [%{src_station: 1, dst_station: 3, arrival_time: "04:42:00"}|%{vehicleID: 6666, src_station: 1, dst_station: 2, dept_time: "12:12:00", arrival_time: "19:32:00", mode_of_transport: "train"}]
     Station.send_to_stn(nc, p1, p2, itinerary2)
     #IO.puts it2
     #Get StationConstructor to receive messages
     #assert Station.send_message_NC(p2, nc)==:msg_sent_to_NC
-
-    Station.sendmsg(p1)
-
+    Station.function(nc, p1, itinerary, %{vehicleID: 1111, src_station: 1, dst_station: 2, dept_time: "07:12:00", arrival_time: "16:32:00", mode_of_transport: "train"} )
   end
 
 end

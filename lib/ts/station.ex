@@ -21,10 +21,6 @@ defmodule Station do
     GenStateMachine.call(station, :get_state)
   end
 
-  def sendmsg(station) do
-    GenStateMachine.cast(station, {:sendmsg})
-  end
-
   def receive_at_src(nc, src, itinerary) do
     GenStateMachine.cast(src, {:receive_at_src, nc, src, itinerary})
   end
@@ -89,19 +85,21 @@ defmodule Station do
 
   def function(nc, src, itinerary, dstSched) do
     newItinerary = [itinerary|dstSched]
+    [query|tail] = itinerary
     IO.puts "in fn"
+    IO.inspect newItinerary
     dst = StationConstructor.lookup_code(nc, dstSched.dst_station)
-    Station.send_to_stn(src, dst, newItinerary)
-  end
-
-  def handle_event(:cast, {:sendmsg}, state, vars) do
-    IO.puts "in sendmsg"
-    {:next_state, state, vars}
+    if (dst == query.dst_station) do
+      Station.send_to_nc(nc, itinerary)
+    else
+      Station.send_to_stn(nc, src, dst, newItinerary)
+    end
   end
 
   def handle_event(:cast, {:receive_at_src, nc, src, itinerary}, state, vars) do
     [query|tail] = itinerary
     IO.puts "in src"
+    IO.inspect query
     #IO.puts query
     nextList = Station.check_neighbours(src, query.arrival_time)
     Enum.each(nextList, fn(x) -> function(nc, src, itinerary, x) end)
