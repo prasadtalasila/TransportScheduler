@@ -68,9 +68,10 @@ defmodule StationConstructor do
     {:reply, Map.fetch(codes, code), state}
   end
 
-  def handle_call({:msg_received_at_NC, itinerary}, _from, {_, _, _}) do
+  def handle_call({:msg_received_at_NC, itinerary}, _from, {_, _, _} = state) do
     IO.puts "in NC"
-    {:reply, itinerary}
+    IO.inspect itinerary
+    {:reply, itinerary, state}
   end
 
   def handle_cast({:create, name, code}, {names, codes, refs}) do
