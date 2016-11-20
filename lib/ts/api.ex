@@ -32,12 +32,17 @@ defmodule API do
       params do
         requires :source, type: Integer
         requires :destination, type: Integer
-        requires :start_time, type: String
+        requires :start_time, type: Integer
         requires :date, type: String
       end
       get do
-        conn|>put_status(200)|>text("api/search\n")
         # Obtain itinerary
+        itinerary=[%{src_station: params[:source], dst_station: params[:destination], arrival_time: params[:start_time]}]
+        registry=API.get(:NC)
+        {:ok, {_, stn}} = StationConstructor.lookup_code(registry, params[:source])
+        StationConstructor.send_to_src(registry, stn, itinerary)
+        :timer.sleep(500)
+        conn|>put_status(200)|>json(API.get("itinerary"))
       end
     end
 

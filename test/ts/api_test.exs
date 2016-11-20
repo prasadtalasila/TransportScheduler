@@ -3,7 +3,7 @@ defmodule APITest do
   use Maru.Test, for: API
 
   test "returns welcome message" do
-    assert "Welcome to TransportScheduler API" == get("/api")|>text_response
+    assert "Welcome to TransportScheduler API\n" == get("/api")|>text_response
   end
 
   setup do

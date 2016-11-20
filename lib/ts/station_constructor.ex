@@ -69,8 +69,10 @@ defmodule StationConstructor do
   end
 
   def handle_call({:msg_received_at_NC, itinerary}, _from, {_, _, _} = state) do
-    IO.puts "in NC"
-    IO.inspect itinerary
+    #IO.puts "in NC"
+    #IO.inspect itinerary
+    API.start_link
+    API.put("itinerary", itinerary)
     {:reply, itinerary, state}
   end
 

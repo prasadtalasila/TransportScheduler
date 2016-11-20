@@ -79,7 +79,7 @@ defmodule Station do
   end
 
   def check_neighbours(schedule, time) do
-    IO.puts "in checknb"
+    #IO.puts "in checknb"
     nextList = Enum.filter(schedule, fn(x) -> x.dept_time > time end)
     #IO.inspect nextList
   end
