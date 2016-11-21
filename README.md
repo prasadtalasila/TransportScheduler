@@ -44,7 +44,7 @@ mix edeliver deploy release
 
 Run the following command to start application:   
 ```
-mix edeliver start`  
+mix edeliver start
 ```
 
 Issue the following cURL command for initialisation of the network:
