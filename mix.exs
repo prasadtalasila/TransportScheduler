@@ -8,8 +8,7 @@ defmodule TS.Mixfile do
       elixir: "~> 1.3",
       build_embedded: Mix.env == :prod,
       start_permanent: Mix.env == :prod,
-      deps: deps,
-      escript: escript
+      deps: deps
     ]
   end
 
@@ -30,18 +29,11 @@ defmodule TS.Mixfile do
   #
   # Type "mix help deps" for more examples and options
   defp deps do
-    [{:fsm, "~> 0.2.0"},
-     {:exactor, "~> 2.1.0"},
+    [{:exactor, "~> 2.1.0"},
      {:gen_state_machine, "~> 1.0"},
      {:maru, "~> 0.10"},
-     # {:exrm, "~> 1.0"},
-     # {:poison, "~> 2.0"},
      {:distillery, ">= 0.9.0", warn_missing: false},
      {:edeliver, "~> 1.4.0"}]
-  end
-  
-   def escript do
-    [main_module: Main]
   end
 
 end
