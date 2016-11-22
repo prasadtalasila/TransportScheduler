@@ -85,10 +85,10 @@ defmodule Station do
   end
 
   def function(nc, src, itinerary, dstSched) do
-    #IO.puts "in fn"
+    IO.puts "in fn"
     newItinerary = List.flatten([itinerary|[dstSched]])
     [query] = Enum.take(newItinerary, 1)
-    #IO.inspect newItinerary
+    IO.inspect newItinerary
     {:ok, {_, dst}} = StationConstructor.lookup_code(nc, dstSched.dst_station)
     #IO.inspect dst
     if (dstSched.dst_station == query.dst_station) do
@@ -101,25 +101,25 @@ defmodule Station do
   end
 
   def handle_event(:cast, {:receive_at_src, nc, src, itinerary}, state, vars) do
-    #IO.puts "in src"
+    IO.puts "in src"
     [query] = Enum.take(itinerary, 1)
     #IO.inspect query
     #IO.inspect vars.schedule
     nextList = Station.check_neighbours(vars.schedule, query.arrival_time)
-    #IO.inspect nextList
+    IO.inspect nextList
     Enum.each(nextList, fn(x) -> function(nc, src, itinerary, x) end)
     {:next_state, state, vars}
   end
 
   def handle_event(:cast, {:receive_at_stn, nc, src, itinerary}, state, vars) do
-    #IO.puts "in stn"
+    IO.puts "in stn"
     [query] = Enum.take(itinerary, 1)
     #IO.inspect query
     [prevStn] = Enum.take(itinerary, -1)
     #IO.inspect prevStn
     #check neighbours against arrival time of last element of itinerary list!!
     nextList = Station.check_neighbours(vars.schedule, prevStn.arrival_time)
-    #IO.inspect nextList
+    IO.inspect nextList
     Enum.each(nextList, fn(x) -> function(nc, src, itinerary, x) end)
     #dstSched =  %{vehicleID: 2222, src_station: 1, dst_station: 2, dept_time: "13:12:00", arrival_time: "14:32:00", mode_of_transport: "train"}
     #function(nc, src, itinerary, dstSched)

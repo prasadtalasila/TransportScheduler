@@ -64,7 +64,7 @@ defmodule StationConstructorTest do
 
 
   test "complete tests", %{registry: registry} do
-    assert {:ok, pid} = InputParser.start_link(10)
+    assert {:ok, pid} = InputParser.start_link(1000)
 
     stn_map = InputParser.get_station_map(pid)
     stn_sched = InputParser.get_schedules(pid)
@@ -81,12 +81,13 @@ defmodule StationConstructorTest do
       
     end
 
-    {:ok, {code, stn}} = StationConstructor.lookup_code(registry, 1)
+    {:ok, {code1, stn1}} = StationConstructor.lookup_name(registry, "Jalgaon Junction")
+    {:ok, {code2, stn2}} = StationConstructor.lookup_name(registry, "Chalisgaon Junction")
+
+    itinerary  = [%{src_station: code1, dst_station: code2, arrival_time: 0}]
+    StationConstructor.send_to_src(registry, stn1, itinerary)
     
-    itinerary  = [%{src_station: 1, dst_station: 9, arrival_time: 200}]
-    StationConstructor.send_to_src(registry, stn, itinerary)
-    
-    :timer.sleep(1000)
+    :timer.sleep(5000)
 
   end
 
