@@ -127,7 +127,6 @@ defmodule InputParser do
   # The variables as entries in a data structure called Keyword.
   defp obtain_schedule(file, n, schedule) when n > 0 do
     [vehicle_id | tail]=IO.read(file, :line) |> String.trim() |> String.split(" ", parts: 6)
-    vehicle_id=String.to_integer(vehicle_id)
     [srcStation | tail]=tail
     srcStation=String.to_integer(srcStation)
     [dstStation | tail]=tail

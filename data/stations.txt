@@ -8,3 +8,2257 @@
 8 Haveri
 9 Ranibennur
 10 Harihar
+11 Davangere
+12 Birur Junction
+13 Arsikere Junction
+14 Tiptur
+15 Ammasandra
+16 Tumkur
+17 Yesvantpur Junction
+18 Bangalore City Junct
+19 Talguppa
+20 Sagar Jambagaru
+21 Shimoga Town
+22 Shimoga
+23 Bhadravati
+24 Hassan
+25 Mandagere
+26 Mysore City Junction
+27 Balaghat
+28 Nainpur Junction
+29 Howbadh Jabalpur
+30 Jabalpur
+31 Dadar (Central Railw
+32 Thane
+33 Panvel
+34 Mangaon
+35 Khed
+36 Chiplun
+37 Sangameshwar
+38 Ratnagiri
+39 Rajapur Road
+40 Vaibhavwadi Rd
+41 Sindhudurg
+42 Kudal
+43 Sawantwadi Road
+44 Pernem
+45 Thivim
+46 Vilavade
+47 Karwar
+48 Udupi
+49 Mangalore Junction
+50 Kasaragod
+51 Cannanore
+52 Calicut
+53 Kozhikode
+54 Tirur
+55 Shoranur Junction
+56 Thrissur
+57 Trichur
+58 Aluva
+59 Ernakulam Junction
+60 Roha
+61 Veer
+62 Savarda
+63 Aravalli Road
+64 Nandgaon Road
+65 Kalyan
+66 Lonavala
+67 Pune Junction
+68 Satara
+69 Karad
+70 Takari
+71 Sangli
+72 Miraj Junction
+73 Ghatprabha
+74 Belgaum
+75 Krishnarajapuram
+76 Bangarapet
+77 Jolarpettai
+78 Vellore Cantonment
+79 Arni Road
+80 Polur
+81 Tiruvannamalai
+82 Tirukoilur
+83 Villupuram Junction
+84 Puducherry
+85 Neral
+86 Khandala
+87 Talegaon Dabhade
+88 Khadki
+89 Sivajinagar
+90 Chinchwad
+91 Pimpri
+92 Lokmanya Tilak Termi
+93 Kurduvadi
+94 Solapur Junction
+95 Dudhani
+96 Ganagapur Road
+97 Gulbarga
+98 Shahabad
+99 Wadi
+100 Yadgir
+101 Raichur
+102 Manthralayam Road
+103 Adoni
+104 Guntakal Junction
+105 Gooty
+106 Anantapur
+107 Dharmavaram Junction
+108 Sri Sathya Sai Prasa
+109 Hindupur
+110 Bangalore East
+111 Bangalore Cantonment
+112 Hosur
+113 Dharmapuri
+114 Salem Junction
+115 Erode Junction
+116 Tiruppur
+117 Coimbatore Junction
+118 Daund Junction
+119 Igatpuri
+120 Devlali
+121 Nasik Road
+122 Manmad Junction
+123 Nandgaon
+124 Chalisgaon Junction
+125 Pachora Junction
+126 Jalgaon Junction
+127 Bhusaval Junction
+128 Bhusaval
+129 Raver
+130 Burhanpur
+131 Nepanagar
+132 Khandwa
+133 Harda
+134 Timarni
+135 Itarsi Junction
+136 Hoshangabad
+137 Mandi Dip
+138 Bhopal Habibganj
+139 Habibganj
+140 Bhopal Junction
+141 Vidisha
+142 Ganj Basoda
+143 Bina Junction
+144 Lalitpur
+145 Babina
+146 Jhansi Junction
+147 Chirgaon
+148 Ait
+149 Orai
+150 Pokhrayan
+151 Bhimsen
+152 Kanpur City
+153 Kanpur Central
+154 Unnao Junction
+155 Charbagh Railway Sta
+156 Lucknow
+157 Barabanki Junction
+158 Gonda Junction
+159 Mankapur Junction
+160 Babhnan
+161 Basti
+162 Gorakhpur Junction
+163 Tandur
+164 Begampet
+165 Secunderabad Junctio
+166 Kazipet Junction
+167 Warangal
+168 Mahbubabad
+169 Khammam
+170 Madanpur
+171 Madhira
+172 Vijayawada Junction
+173 Eluru
+174 Tadepalligudem
+175 Nidadavolu Junction
+176 Rajamundry
+177 Samalkot Junction
+178 Tuni
+179 Visakhapatnam Juncti
+180 Vizianagaram
+181 Srikakulam Road
+182 Palasa
+183 Sompeta
+184 Brahmapur
+185 Chhatrapur
+186 Balugan
+187 Khurda Road
+188 Bhubaneshwar
+189 Karur Junction
+190 Dindigul Junction
+191 Madurai Junction
+192 Virudunagar Junction
+193 Satur
+194 Kovilpatti
+195 Maniyachchi Junction
+196 Tirunelveli Junction
+197 Dehu Road
+198 Jejuri
+199 Nira
+200 Lonand
+201 Wathar
+202 Kirloskarvadi
+203 Bhilavdi
+204 Jayasingpur
+205 Hatkanagale
+206 Rukadi
+207 Valivade
+208 C Shahumaharaj T
+209 Kolhapur
+210 Ghorpuri
+211 Bhigwan
+212 Jeur
+213 Madha
+214 Mohol
+215 Hotgi
+216 Akalkot Road
+217 Nalwar
+218 Narayanpet Road
+219 Matmari
+220 Nagarur
+221 Rayalcheruvu
+222 Tadipatri
+223 Muddanuru
+224 Yerraguntla
+225 Cuddapah
+226 Nandalur
+227 Razampeta
+228 Koduru
+229 Renigunta Junction
+230 Puttur
+231 Tiruttani
+232 Arakkonam Junction
+233 Tarlupadu
+234 Tiruvallur
+235 Perambur
+236 Chennai Central
+237 Rahimatpur
+238 Targaon
+239 Masur
+240 Shirravde
+241 Ahmednagar
+242 Belapur
+243 Kopargaon
+244 Pipariya
+245 Narsinghpur
+246 Nerul
+247 Katni
+248 Satna
+249 Allahabad Junction
+250 Allahabad City
+251 Gyanpur Road
+252 Manduadih
+253 Varanasi Junction
+254 Varanasi City
+255 Aunrihar Junction
+256 Ghazipur City
+257 Ballia
+258 Chhapra
+259 Sonpur Junction
+260 Hajipur Junction
+261 Muzaffarpur Junction
+262 Samastipur Junction
+263 Laheria Sarai
+264 Darbhanga Junction
+265 Manikpur Junction
+266 Mau Junction
+267 Deoria Sadar
+268 Bhavani Nagar
+269 Jarandeshwar
+270 Ambale
+271 Uruli Kanchan
+272 Puntamba
+273 Yeola
+274 Bodwad
+275 Malkapur
+276 Nandura
+277 Jalamb Junction
+278 Shegaon
+279 Akola Junction
+280 Murtajapur
+281 Badnera Junction
+282 Chandur
+283 Dhamangaon
+284 Pulgaon Junction
+285 Wardha Junction
+286 Sevagram
+287 Sindi
+288 Ajni
+289 Nagpur
+290 Itwari
+291 Khopoli
+292 Bhandara Road
+293 Tumsar Road
+294 Tirora
+295 Ghatkopar
+296 Gondia Junction
+297 Banapura
+298 Sohagpur
+299 Gadarwara
+300 Shridham
+301 Madan Mahal
+302 Sihora Road
+303 Maihar
+304 Jaitwar
+305 Dabhaura
+306 Shankargarh
+307 Jasra
+308 Naini
+309 Prayag
+310 Phaphamau Junction
+311 Sarai Chandi
+312 Phulpur
+313 Ugrasenpur
+314 Janghai Junction
+315 Sarai Kansrai
+316 Suriawan
+317 Mondh
+318 Bhadohi
+319 Parsipur
+320 Sewapuri
+321 Jakhania
+322 Dullahapur
+323 Indara Junction
+324 Belthara Road
+325 Lar Road
+326 Salempur Junction
+327 Bhatni Junction
+328 Varangaon
+329 Kanchipuram
+330 Chengalpattu
+331 Vridhachalam Junctio
+332 Tiruchirapalli
+333 Aurangabad
+334 Jalna
+335 Parbhani Junction
+336 Nanded
+337 Adilabad
+338 Narkher
+339 Pandhurna
+340 Amla Junction
+341 Betul
+342 Ghoradongri
+343 Mughal Sarai Junctio
+344 Bhabua Road
+345 Sasaram
+346 Dehri On Sone
+347 Gaya Junction
+348 Koderma
+349 Parasnath Station
+350 Dhanbad Junction
+351 Shedbal
+352 Ugar Khurd
+353 Chinchli
+354 Raybag
+355 Ahmedabad Junction
+356 Nadiad Junction
+357 Anand Junction
+358 Vadodara Junction
+359 Bharuch Junction
+360 Surat
+361 Navsari
+362 Vapi
+363 Bhiwandi Road
+364 Modnimb
+365 Pandharpur
+366 Sangola
+367 Dhalgaon
+368 Mariahu
+369 Zafarabad Junction
+370 Jaunpur Junction
+371 Shahganj Junction
+372 Sarai Mir
+373 Azamgarh
+374 Muhammadabad
+375 Savda
+376 Nimbhora
+377 Budni
+378 Sanchi
+379 Gulabhganj
+380 Mandi Bamora
+381 Dhaura
+382 Talbahat
+383 Basai
+384 Datia
+385 Sonagir
+386 Dabra
+387 Gwalior
+388 Morena
+389 Dhaulpur
+390 Agra Cantonment
+391 Raja Ki Mandi
+392 Mathura Junction
+393 Kosi Kalan
+394 Palwal
+395 Ballabgarh
+396 Faridabad
+397 Hazrat Nizamuddin
+398 New Delhi
+399 Subzi Mandi
+400 Badli
+401 Bhadra
+402 Narela
+403 Sonipat
+404 Ganaur
+405 Samalkha
+406 Panipat Junction
+407 Gharaunda
+408 Karnal
+409 Taraori
+410 Nilokheri
+411 Kurukshetra Junction
+412 Shahbad Markanda
+413 Ambala Cantonment
+414 Ambala City
+415 Rajpura Junction
+416 Patiala
+417 Nabha
+418 Dhuri Junction
+419 Malerkotla
+420 Ahmadgarh
+421 Ludhiana Junction
+422 Phillaur Junction
+423 Goraya
+424 Phagwara Junction
+425 Jalandhar Cantonment
+426 Jalandhar City
+427 Beas
+428 Jandiala
+429 Amritsar Junction
+430 Rajmane
+431 Borvihir
+432 Dhule
+433 Rathdhana
+434 Jakhalaun
+435 Mairwa
+436 Siwan Junction
+437 Yusufpur
+438 Suraimanpur
+439 Dighwara
+440 Chennai Egmore
+441 Tambaram
+442 Melmaruvattur
+443 Tindivanam
+444 Salem Town
+445 Mettur Dam
+446 Partapgarh Junction
+447 Sultanpur
+448 Faizabad Junction
+449 Amethi
+450 Rae Bareli Junction
+451 Mau Ranipur
+452 Harpalpur
+453 Mahoba
+454 Banda Junction
+455 Atarra
+456 Chitrakuta
+457 Khurai
+458 Saugor
+459 Patharia
+460 Damoh
+461 Bandakpur
+462 Sirhind Junction
+463 Khanna
+464 Tanda Urmar
+465 Dasuya
+466 Mukerian
+467 Chakki Bank
+468 Samba
+469 Vijiypur Jammu
+470 Jammu Tawi
+471 Hira Nagar
+472 Veraval
+473 Junagadh Junction
+474 Navagadh
+475 Gondal
+476 Rajkot Junction
+477 Wankaner Junction
+478 Surendranagar
+479 Viramgam Junction
+480 Valsad
+481 Dahanu Road
+482 Bhagat Ki Kothi
+483 Luni Junction
+484 Pali Marwar
+485 Marwar Junction
+486 Falna
+487 Abu Road
+488 Palanpur Junction
+489 Mahesana Junction
+490 Sabarmati Junction
+491 Maninagar
+492 Jodhpur Junction
+493 Bhuj
+494 Anjar
+495 Adipur
+496 Gandhidham BG
+497 Bhachau BG
+498 Samakhiali B G
+499 Dhrangadhra
+500 Vindhyachal
+501 Mirzapur
+502 Chunar
+503 Gokarna Road
+504 Kumta
+505 Honnavar
+506 Murdeshwar
+507 Kundapura
+508 Kanhangad
+509 Payyanur
+510 Tellicherry
+511 Ernakulam Town
+512 Shivpuri
+513 Guna
+514 Ruthiyai
+515 Chachaura Bngj
+516 Biyavra Rajgarh
+517 Shajapur
+518 Maksi
+519 Ujjain Junction
+520 Nagda Junction
+521 Ratlam Junction
+522 Dahod
+523 Godhra Junction
+524 Borivali
+525 Bandra Terminus
+526 Kolkata Terminal
+527 Barrackpore
+528 Barddhaman Junction
+529 Asansol Junction
+530 Chittaranjan
+531 Madhupur Junction
+532 Jasidih Junction
+533 Jhajha
+534 Kiul Junction
+535 Patna Junction
+536 Ara
+537 Buxar
+538 Moth
+539 Barwa Sagar
+540 Nivari
+541 Bela Tal
+542 Kulpahar
+543 Bharat Kup
+544 Bargarh
+545 Chaukhandi
+546 Govindpuri
+547 Barauni Junction
+548 Dalsingh Sarai
+549 Dholi
+550 Bhagwanpur
+551 Duraundha Junction
+552 Bankata
+553 Bhatpar Rani
+554 Gauri Bazar
+555 Chauri Chaura
+556 Sahjanwa
+557 Maskanwa
+558 Colonelganj
+559 Burhwal
+560 Indore Junction (BG)
+561 Mangliya Gaon
+562 Dewas
+563 Naranjipur
+564 Umaria
+565 Shahdol
+566 Burhar
+567 Anuppur Junction
+568 Kotma
+569 Bijuri
+570 Baikunthpur Rd
+571 Bishrampur
+572 Ambikapur
+573 Bagra Tawa
+574 Bikrampur
+575 Ganeshganj
+576 Makronia
+577 Nariaoli
+578 Bareth
+579 Salamatpur
+580 Penukonda
+581 Gauribidanur
+582 Dodballapur
+583 Yelahanka Junction
+584 Hyderabad DeccanNamp
+585 Sanathnagar
+586 Lingampalli
+587 Shankarpalli
+588 Vikarabad Junction
+589 Seram
+590 Malkhaid Road
+591 Chitapur
+592 Bellary Junction
+593 Toranagallu
+594 Hospet Junction
+595 Gadag Junction
+596 Rotegaon
+597 Lasur
+598 Partur
+599 Selu
+600 Manwath Road
+601 Purna Junction
+602 Mudkhed
+603 Himayatnagar
+604 Kinwat
+605 Warora
+606 Hinganghat
+607 Washim
+608 Hingoli Deccan
+609 Gangakher
+610 Parli Vaijnath
+611 Latur Road
+612 Latur
+613 Barsi Town
+614 Amravati
+615 Tadwal
+616 Indi Road
+617 Bijapur
+618 Bagevadi Rd
+619 Almatti
+620 Bagalkot
+621 Guledagudda Rd
+622 Badami
+623 Hole Alur
+624 Annigeri
+625 Beohari
+626 Sareigram
+627 Singrauli
+628 Chopan
+629 Renukut
+630 Duddhinagar
+631 Wyndhamganj
+632 Nagar Untari
+633 Garhwa
+634 Garwa Road
+635 Daltonganj
+636 Barwadih Junction
+637 Chhipadohar
+638 Latehar
+639 Tori
+640 McCluskieganj
+641 Patratu
+642 Barkakana
+643 Ranchi Road
+644 Gumia
+645 Bokaro Thermal
+646 Chandrapura
+647 Kulti
+648 Raniganj
+649 Durgapur
+650 Howrah Junction
+651 Barakar
+652 Tuglakabad
+653 Delhi Kishanganj
+654 Shakurbasti
+655 Bahadurgarh
+656 Rohtak Junction
+657 Jind Junction
+658 Narwana Junction
+659 Jakhal Junction
+660 Sangrur
+661 Unchhera
+662 Rewa
+663 Nandurbar
+664 Somnath
+665 Maliya Hatina
+666 Jetalsar Junction
+667 Virpur
+668 Bhakti Nagar
+669 Than Junction
+670 MHMDVD KHEDA RD
+671 Derol
+672 Meghnagar
+673 Tarana Road
+674 Berchha
+675 Akodia
+676 Shujalpur
+677 Parbati
+678 Sehore
+679 Bhopal Bairagarh
+680 Bijaysota
+681 Bargawan
+682 Mungaoli
+683 Ashok Nagar
+684 Jukehi
+685 Durg
+686 Raipur Junction
+687 Bilaspur
+688 Rourkela
+689 Chakradharpur
+690 Tatanagar Junction
+691 Kharagpur Junction
+692 Lucknow Junction
+693 Niphad
+694 Lasalgaon
+695 Raj Nandgaon
+696 Champa
+697 Raigarh
+698 Jharsuguda Junction
+699 Shirdi (Sainagar Shi
+700 Surathkal
+701 Tohana
+702 Bareta
+703 Budhlada
+704 Mansa
+705 Maur
+706 Bhatinda Junction
+707 Goneana
+708 Gangsar Jaitu
+709 Kot Kapura
+710 Faridkot
+711 Firozpur Cant
+712 Sonegaon
+713 Nagari
+714 Chikni Road
+715 Bhandak
+716 Tadali
+717 Chandrapur
+718 Babupeth
+719 Balharshah
+720 Rajendar Nagar Bihar
+721 Nihalgarh
+722 Mahasamund
+723 Titlagarh
+724 Balangir
+725 Bargarh Road
+726 Sambalpur
+727 Sambalpur Road
+728 Angul
+729 Talcher
+730 Dhenkanal
+731 Cuttack
+732 Puri
+733 Purulia Junction
+734 Adra Junction
+735 Bankura
+736 Midnapore
+737 Katol
+738 Meerut City
+739 Roorkee
+740 Haridwar Junction
+741 Gomoh Junction
+742 Rura
+743 Jhinjhak
+744 Phaphund
+745 Etawah
+746 Shikohabad Junction
+747 Firozabad
+748 Tundla Junction
+749 Chhabra Gugor
+750 Baran
+751 Antah
+752 Kota Junction
+753 Sawai Madhopur
+754 Chauth Ka Brwra
+755 Banasthali Niwai
+756 Durgapura
+757 Jaipur
+758 Phulera Junction
+759 Ajmer Junction
+760 Majhagawan
+761 Agra Fort
+762 Idgah Agra Junction
+763 Achhnera Junction
+764 Bharatpur Junction
+765 Bandikui Junction
+766 Dausa
+767 Gandhinagar JPR
+768 Saharsa Junction
+769 Begu Sarai
+770 Bareilly
+771 Moradabad
+772 Ghaziabad
+773 Muzaffarnagar
+774 Dehradun
+775 Kochuveli
+776 Kollam Junction
+777 Kayamkulam
+778 Alappuzha
+779 Chandigarh
+780 Malipur
+781 Akbarpur
+782 Ayodhya
+783 Rudauli
+784 Aligarh Junction
+785 Delhi
+786 Hardoi
+787 Shahjehanpur
+788 Rampur
+789 Hapur
+790 Dhampur
+791 Nagina
+792 Najibabad Junction
+793 Laksar Junction
+794 Saharanpur
+795 Jagadhri
+796 Jagadhri Wshop
+797 Kurnool Town
+798 Mahbubnagar
+799 Kacheguda
+800 Chanda Fort
+801 Nagbhir Junction
+802 Dongargarh
+803 Akaltara
+804 Naila
+805 Korba
+806 Gudur Junction
+807 Nellore
+808 Ongole
+809 Duvvada
+810 Bhadrakh
+811 Balasore
+812 Abhaipur
+813 Jamalpur Junction
+814 Bhagalpur
+815 Mavelikara
+816 Chengannur
+817 Kottayam
+818 Palakkad Junction
+819 Deoband
+820 Walajah Road Junctio
+821 Ramagundam
+822 Sirpur Kagaznagar
+823 Danapur
+824 Jamui
+825 Mokameh Junction
+826 Barh
+827 Bakhtiyarpur Junctio
+828 Anugraha N Road
+829 Fatehpur
+830 Kuchaman City
+831 Makrana Junction
+832 Degana Junction
+833 Merta Road Junction
+834 Nagaur
+835 Nokha
+836 Deshnok
+837 Bikaner Junction
+838 Hazaribagh Road
+839 Hathras Junction
+840 Chandi Mandir
+841 Kalka
+842 Sealdah
+843 Nasirabad
+844 Bijainagar
+845 Bhilwara
+846 Chittaurgarh
+847 Mavli Junction
+848 Ranapratapnagar
+849 Udaipur City
+850 Patna Saheb
+851 Farrukhabad
+852 Panagarh
+853 Anandpur Sahib
+854 Nangal Dam
+855 Rupnagar
+856 Jaunpur City
+857 Fatwa
+858 Bihta
+859 Bihiya
+860 Raghunathpur
+861 Dumraon
+862 Dildarnagar Junction
+863 Sultanganj
+864 Bariarpur
+865 Luckeesarai Junction
+866 Barhiya
+867 Bolpur 97 Santiniket
+868 Mankar
+869 Waria
+870 Andal Junction
+871 Sitarampur
+872 Malda Town
+873 Kishanganj
+874 New Jalpaiguri
+875 Ambari Falakata
+876 Raninagar Jalpaiguri
+877 Jalpaiguri
+878 Haldibari
+879 Rampur Hat
+880 New Cooch Behar
+881 New Alipurduar
+882 New Bongaigaon Junct
+883 Guwahati
+884 Prantik
+885 Ahmedpur Junction
+886 Sainthia
+887 Bansipur
+888 Hathidah Junction
+889 Mananpur
+890 Rudrapur City
+891 Lal Kuan
+892 Pakur
+893 Delhi Cantonment
+894 Gurgaon
+895 Rewari
+896 Mahendragarh
+897 Sadulpur Junction
+898 Churu
+899 Ratangarh Junction
+900 Rajaldesar
+901 Sri Dungargarh
+902 Napasar
+903 Ramdevra
+904 Jaisalmer
+905 Sullurupeta
+906 Tenali Junction
+907 Bobbili
+908 Parvatipuram
+909 Rayagada
+910 Muniguda
+911 Kesinga
+912 Rafiganj
+913 Naihati Junction
+914 Bandel Junction
+915 Rajgir
+916 Silao
+917 Nalanda
+918 Pawapuri Road
+919 Bihar Sharif
+920 Wena
+921 Harnaut
+922 Musafir Khana
+923 Guraru
+924 Chandauli Mjhwr
+925 Islampur
+926 Ekangarsarai
+927 Hilsa
+928 Daniyawan Bzr H
+929 Zamania
+930 Multai
+931 Tilda
+932 Rajgarh
+933 Alwar
+934 Khairthal
+935 Garhi Harsaru
+936 Mahidpur Road
+937 Vikramgarh Alot
+938 Chau Mahla
+939 Suwasra
+940 Shamgarh
+941 Garot
+942 Bhawani Mandi
+943 Ramganj Mandi
+944 Gangapur City
+945 Shri Mahabirji
+946 Bayana Junction
+947 Tamluk
+948 Panskura
+949 Khajuraho
+950 Delhi Sarai Rohilla
+951 Barnala
+952 Abohar
+953 Shri Ganganagar
+954 Loharu
+955 Sudsar
+956 Palam
+957 Pataudi Road
+958 Gotan
+959 Dakaniya Talav
+960 Lakheri
+961 Indargarh
+962 Isarda
+963 Nawa City
+964 Raika Bagh
+965 Ren
+966 Gachhipura
+967 Sambhar Lake
+968 Asalpur Jobner
+969 Balamu Junction
+970 Hapa
+971 Jamnagar
+972 Rani
+973 Jawai Bandh
+974 Sampla
+975 Giddarbaha
+976 Malout
+977 Tapa
+978 Jogbani
+979 Forbesganj
+980 Arariya Court
+981 Purnia Junction
+982 Katihar
+983 Naugachia
+984 Samdhari Junction
+985 Mokalsar
+986 Jalor
+987 Modran
+988 Marwar Bhinmal
+989 Raniwara
+990 Dhanera
+991 Bhildi
+992 Dadar (Western Railw
+993 Sitapur Cantonment
+994 Goalpara Town
+995 Kamakhya Junction
+996 Rangiya Junction
+997 Kokrajhar
+998 Jalpaiguri Road
+999 Barsoi Junction
+1000 Mansi Junction
+1001 Jajpur Kheonjhar Roa
+1002 Dhupguri
+1003 Barpeta Road
+1004 New Farakka Junction
+1005 Badshahnagar
+1006 Belampalli
+1007 Mancherial
+1008 Chirala
+1009 Ottapalam
+1010 Wadakanchery
+1011 Irinjalakuda
+1012 Chalakudi
+1013 Angamaly
+1014 Cherthala
+1015 Shertalai
+1016 Ambalappuzha
+1017 Haripad
+1018 Trivandrum Central
+1019 Tiruvalla
+1020 Thiruvananthapuram P
+1021 Rusera Ghat
+1022 Nabadwip Dham
+1023 Azimganj Junction
+1024 Fakiragram Junction
+1025 Jagiroad
+1026 Chaparmukh Junction
+1027 Hojai
+1028 Lumding Junction
+1029 Diphu
+1030 Dimapur
+1031 Bokajan
+1032 Mariani Junction
+1033 Simaluguri Junction
+1034 Dibrugarh
+1035 BAPUDHAM Motihari
+1036 Sagauli Junction
+1037 Bettiah
+1038 Chanpatia
+1039 Narkatiaganj Junctio
+1040 Harinagar
+1041 Bagaha
+1042 Beawar
+1043 Pendra Road
+1044 Delhi Safdarjung
+1045 Nangloi
+1046 Bhiwani
+1047 Hisar
+1048 Motipur
+1049 Mehsi
+1050 Chakia
+1051 Siswa Bazar
+1052 Mandya
+1053 Podanur Junction
+1054 Pattambi
+1055 Kuttippuram
+1056 Tanur
+1057 Parappanangadi
+1058 Ferok
+1059 Koyilandy
+1060 Badagara (Vatakara)
+1061 Mahe
+1062 Payangadi
+1063 Charvattur
+1064 Mangalore Central
+1065 Manjeshwar
+1066 Nayadupeta
+1067 Singarayakonda
+1068 Bapatla
+1069 Nidubrolu
+1070 Guntur Junction
+1071 Nadikudi
+1072 Miryalaguda
+1073 Nalgonda
+1074 Ariyalur
+1075 Lalgudi
+1076 Srirangam
+1077 Ponmalai Golden Rock
+1078 Pudukkottai
+1079 Karaikkudi Junction
+1080 West Mambalam
+1081 Ambur
+1082 Kuppam
+1083 Mukundarayapuram
+1084 Gudiyattam
+1085 Vaniyambadi
+1086 Malur
+1087 Whitefield
+1088 Nileshwar
+1089 Canacona
+1090 Ankola
+1091 Barkur
+1092 Mulki
+1093 Tripunittura
+1094 Changanacheri
+1095 Varkala Sivagiri Sta
+1096 Avadi
+1097 Chittoor
+1098 Tirupati
+1099 Sholavandan
+1100 Valliyur
+1101 Nagercoil Junction
+1102 Kanyakumari
+1103 Manaparai
+1104 Ambaturai
+1105 Kodai road
+1106 Ankleshwar Junction
+1107 Udhna Junction
+1108 Vyara
+1109 Dondaicha
+1110 Amalner
+1111 Asangaon
+1112 Tiruttangal
+1113 Sivakasi
+1114 Srivilliputtur
+1115 Rajapalayam
+1116 Sankarankovil
+1117 PMBAKVL SHANDY
+1118 Kadaynallur
+1119 Tenkasi Junction
+1120 Sengottai
+1121 Coimbatore North Jun
+1122 Metupalaiyam
+1123 Morappur
+1124 Bommidi
+1125 Tirupattur Junction
+1126 Madurantakam
+1127 Tirumangalam
+1128 Kadambur
+1129 Tuti Melur
+1130 Tuticorin
+1131 Kazhakoottam TechnoP
+1132 Mangalagiri
+1133 Dornakal Junction
+1134 Jangaon
+1135 Aler
+1136 Bhongir
+1137 Gadwal
+1138 Annavaram
+1139 Nimach
+1140 Mandasor
+1141 Nizamabad
+1142 Kamareddi
+1143 Jammikunta
+1144 Peddapalli
+1145 Nekonda
+1146 Chikjajur Junction
+1147 Elamanchili
+1148 Pithapuram
+1149 Anaparti
+1150 Pakala Junction
+1151 Madanapalle Rd
+1152 Kadiri
+1153 Sri Kalahasti
+1154 Bibinagar
+1155 Kakinada Port
+1156 Kakinada Town
+1157 Manuguru
+1158 Bhadrachalam Road
+1159 Sriramnagar
+1160 Tanuku
+1161 Bhimavaram Town
+1162 Akividu
+1163 Gudivada Junction
+1164 Jadcherla
+1165 Wanparti Road
+1166 Bokaro Steel City
+1167 Paharpur
+1168 Simhachalam
+1169 Parvatipuram Town
+1170 Singapuram Road
+1171 Therubali
+1172 Ambodala
+1173 Norla Road
+1174 Rupra Road
+1175 Harishanker Rd
+1176 Bagbahra
+1177 Sakti
+1178 Brajarajnagar
+1179 Hatia
+1180 Jhargram
+1181 Chakulia
+1182 Ghatsila
+1183 Rakha Mines
+1184 Jaleswar
+1185 Bishnupur
+1186 Bhojudih Junction
+1187 Bhaga Junction
+1188 Mahuda
+1189 Ranchi
+1190 Muri
+1191 Jhalida
+1192 Soro
+1193 Basta
+1194 Anara
+1195 Bardoli
+1196 Madhi
+1197 Navapur
+1198 Sindkheda
+1199 Dharangaon
+1200 Amgaon
+1201 Bhilai Power House
+1202 Baradwar
+1203 Belpahar
+1204 Bamra
+1205 Raj Gangpur
+1206 Mecheda
+1207 Nergundi
+1208 Mancheswar
+1209 Sakhi Gopal
+1210 Naupada Junction
+1211 Chipurupalle
+1212 Belgahna
+1213 Amlai
+1214 Birsinghpur
+1215 Belha
+1216 Chandil Junction
+1217 Barabhum
+1218 Sini Junction
+1219 Rajkharsawan Junctio
+1220 Manoharpur
+1221 Moula-Ali
+1222 Hirakud
+1223 Barpali
+1224 Ramgarh Cantonment
+1225 Roberts Ganj
+1226 Gauriganj
+1227 Mandrak
+1228 Santaldih
+1229 Rupsa Junction
+1230 Boinda
+1231 Rairakhol
+1232 Palghar
+1233 Hindaun City
+1234 Meerut Cantonment
+1235 Porbandar
+1236 Lalpur Jam
+1237 Khambhaliya
+1238 Dwarka
+1239 Unjha
+1240 Andheri
+1241 Bilimora Junction
+1242 Amalsad
+1243 Maroli
+1244 Sachin
+1245 Vishvamitri
+1246 Virar
+1247 Boisar
+1248 Bhavnagar Terminus
+1249 Songadh
+1250 Dhola Junction
+1251 Botad Junction
+1252 Wansjaliya
+1253 Upleta
+1254 Disa
+1255 Diyodar
+1256 Radhanpur
+1257 Santalpur
+1258 Thandla Rd
+1259 Bamnia
+1260 Bundi
+1261 Mandalgarh
+1262 Chanderiya
+1263 Limbdi
+1264 Ranpur
+1265 Sihor Gujarat
+1266 Bhavanagar Para
+1267 Narnaul
+1268 Nim Ka Thana
+1269 Shri Madhopur
+1270 Ringas Junction
+1271 Chhapi
+1272 Sirohi Road
+1273 Sojat Road
+1274 Fatehnagar
+1275 Mandal
+1276 Gulabpura
+1277 Jaora
+1278 Gahmar
+1279 Badshahpur
+1280 Jais
+1281 Bachhrawan
+1282 Jamtara
+1283 Vidyasagar
+1284 Simultala
+1285 Gidhaur
+1286 Punarakh
+1287 Gulzarbagh
+1288 Sadisopur
+1289 Banahi
+1290 Bharwari
+1291 Sirathu
+1292 Panki
+1293 Achhalda
+1294 Bharthana
+1295 Chata
+1296 Asaoti
+1297 Tilak Bridge
+1298 Julana
+1299 Uchana
+1300 Bhadan
+1301 Jaswantnagar
+1302 Bindki Road
+1303 Mankatha
+1304 Rampura Phul
+1305 Dappar
+1306 Serampore
+1307 Chandan Nagar
+1308 Parsabad
+1309 Tankuppa
+1310 Jakhim
+1311 Son Nagar
+1312 Durgauti
+1313 Saidraja
+1314 Babatpur
+1315 Jalalganj
+1316 Goshainganj
+1317 Sohwal
+1318 Daryabad
+1319 Safdarganj
+1320 Sandila
+1321 Anjhi Shahabad
+1322 Tilhar
+1323 Pitambarpur
+1324 Seohara
+1325 Jwalapur
+1326 Raiwala
+1327 Doiwala
+1328 Saneh Road
+1329 Kotdwar
+1330 Bilwai
+1331 Phesar
+1332 Nalhati
+1333 Seoraphuli
+1334 Sagardighi
+1335 Simaria
+1336 Bachwara Junction
+1337 Nazirganj
+1338 Ujiarpur
+1339 Goraul
+1340 Nayagaon
+1341 Daudpur
+1342 Ekma
+1343 Chainwa
+1344 Jarwal Road
+1345 Haldi Road
+1346 Haldwani
+1347 Rupnarayanpur
+1348 Teghra
+1349 Dubaha
+1350 Siho
+1351 Silaut
+1352 Narayanpur Anant
+1353 Ramgarhwa
+1354 Raxaul Junction
+1355 Sathajagat
+1356 Barharwa Junction
+1357 Sahibganj Junction
+1358 Pirpainti
+1359 Sheikpura
+1360 Waris Aleganj
+1361 Nawadah
+1362 Tilaya
+1363 Rampur Dumra
+1364 Chuchura
+1365 Khana Junction
+1366 Twining Ganj
+1367 Chausa
+1368 Bhadaura
+1369 Dheena
+1370 Sakaldiha
+1371 Vyasnagar
+1372 Birapatti
+1373 Pindra Road
+1374 Sarkoni
+1375 Srikrishna Nagar
+1376 Harpalganj
+1377 Lambhua
+1378 Shivnagar
+1379 Akbarganj
+1380 Haidergarh
+1381 Alamnagar
+1382 Aonla
+1383 Chandausi Junction
+1384 Govindgarh
+1385 Dhandari Kalan
+1386 Raja Ka Sahaspr
+1387 Shiupur
+1388 Tinpahar Junction
+1389 Ekchari
+1390 Ranaghat Junction
+1391 Plassey
+1392 Berhampore CRT
+1393 Murshidabad
+1394 Mohiuddinnagar
+1395 Shahpur Patoree
+1396 Mehnar Road
+1397 Desari
+1398 Sahatwar
+1399 Dakhineswar
+1400 Manda Road
+1401 Meja Road
+1402 Rasulabad
+1403 Malwan
+1404 Jagadishpur
+1405 Maheshmunda
+1406 Giridih
+1407 Faizullapur
+1408 Bidhan Nagar
+1409 Sabaur
+1410 Sakri Junction
+1411 Madhubani
+1412 Jaynagar
+1413 Rasra
+1414 Ambika Kalna
+1415 Salar
+1416 Jangipur Road
+1417 Nimtita
+1418 Samsi
+1419 Harischandrpur
+1420 Azamnagar Road
+1421 Dalkolha
+1422 Aluabari Road
+1423 New Maynaguri
+1424 Falakata
+1425 Raiganj
+1426 Radhikapur
+1427 Siliguri Junction
+1428 New Mal Junction
+1429 Dalgaon
+1430 Hasimara
+1431 Alipurduar Junction
+1432 Gujhandi
+1433 Gurpa
+1434 Malihabad
+1435 Milak
+1436 Chandok
+1437 Raisi
+1438 Sujanpur
+1439 Chakdayala
+1440 Muzzampur NRYN
+1441 Janakpur Road
+1442 Sitamarhi
+1443 Labha
+1444 Thana Bihpur Junctio
+1445 Mahes Khunt
+1446 Narayanpur
+1447 Haiaghat
+1448 Ahraura Road
+1449 Narayanpur Tatwar
+1450 Lakhminia
+1451 Binnaguri
+1452 Adityapur
+1453 Burnpur
+1454 Pathardih Junction
+1455 Tetulmari
+1456 Mihrawan
+1457 Bilhar Ghat
+1458 Patranga
+1459 Barara
+1460 Nurmahal
+1461 Nakodar Junction
+1462 Malsian Shahkht
+1463 Lohian Khas Junction
+1464 Makhu
+1465 Jehanabad
+1466 Taregna
+1467 Shakti Nagar
+1468 Churk
+1469 Lusa
+1470 Japla
+1471 Punpun
+1472 Pundhag
+1473 Attabira
+1474 Kottavalasa
+1475 Chinna Ganjam
+1476 Sahibabad
+1477 Delhi Shahdara
+1478 Atari
+1479 Chhapra Kacheri
+1480 Madhosingh
+1481 Dadri
+1482 Amroha
+1483 Pilkhua
+1484 Chhindwara Junction
+1485 Parasia
+1486 Junnor Deo
+1487 Nawagaon
+1488 Pathankot Junction
+1489 Madhopur Punjab
+1490 Bari Brahman
+1491 Sunam
+1492 Batala Junction
+1493 Gurdaspur
+1494 Gajraula Junction
+1495 Mandi Dhanaura
+1496 Chand Siau
+1497 Haldaur
+1498 Bijnor
+1499 Bhojo
+1500 Furkating Junction
+1501 Lanka
+1502 Jamunamukh
+1503 Kampur
+1504 Digaru
+1505 Nalbari
+1506 Bijni
+1507 Bongaigaon
+1508 Gossaigaon Hat
+1509 Dhulkot
+1510 Bahjoi
+1511 Babrala
+1512 Rajghat Narora
+1513 Shujaatpur
+1514 Manoharganj
+1515 Subedarganj
+1516 Manauri
+1517 Saiyid Sarawan
+1518 Bulandshahr
+1519 Baral
+1520 Dandupur
+1521 Harchandpur
+1522 Unchahar Junction
+1523 Nigohan
+1524 Farah Town
+1525 Hodal
+1526 Faridabad New Town
+1527 Lachhmanpur
+1528 Ram Chaura Road
+1529 Lalgopalganj
+1530 Garhi Manikpur
+1531 Jalalpur Dhai
+1532 Dalmau Junction
+1533 Lalganj
+1534 Takia
+1535 Bighapur
+1536 Safedabad
+1537 Malhour
+1538 Dilawarnagar
+1539 Umar Tali
+1540 Dalelnagar
+1541 Baghauli
+1542 Masit
+1543 Behtagokul
+1544 Todarpur
+1545 Algawan
+1546 Banthra
+1547 Miranpur Katra
+1548 Bilpur
+1549 Tisua
+1550 Rasuriya
+1551 Antu
+1552 Garhmuktesar
+1553 Rameswaram
+1554 Ramanathapuram
+1555 Paramakkudi
+1556 Manamadurai Junction
+1557 Sivaganga
+1558 Devakottai Road
+1559 Thanjavur
+1560 Kumbakonam
+1561 Mayiladuturai Juncti
+1562 Sirkazhi
+1563 Chidambaram
+1564 Cuddalore Port
+1565 Gaura
+1566 Chilbila Junction
+1567 Misrauli
+1568 Fursatganj
+1569 Balawali
+1570 Aithal
+1571 Pipalsana
+1572 Roshanpur
+1573 Kashipur
+1574 Gaushala
+1575 Ramnagar
+1576 Harrawala
+1577 Siwaith
+1578 Mau Aimma
+1579 Bishnathganj
+1580 Bhupia Mau
+1581 Jagesharganj
+1582 Talakhajuri
+1583 Bani
+1584 Rupamau
+1585 Gangaganj
+1586 Shrirajnagar
+1587 Mohanlalganj
+1588 Utrahtia
+1589 Naraina
+1590 Halvad
+1591 Dabtara
+1592 Nagaria Sadat
+1593 Anand Vihar
+1594 Shivaji Bridge
+1595 Mirchadhori
+1596 Agori Khas
+1597 Saktesgarh
+1598 Meralgram
+1599 Khatauli
+1600 Hafizpur
+1601 Gulaothi
+1602 Maman
+1603 Kalanaur kalan
+1604 Hansi
+1605 Mandi Adampur
+1606 Bhattu
+1607 Sirsa
+1608 Raman
+1609 Fatehgarh Sahib
+1610 Bassi Pathanam
+1611 Morinda
+1612 Ghanauli
+1613 Naya Nangal
+1614 Raimehatpur
+1615 Una Himachal
+1616 Amb Andaura
+1617 Basharatganj
+1618 Reoti B Khera
+1619 Asafpur
+1620 Simbhooli
+1621 Nisui
+1622 Rishikesh
+1623 Virbhadra
+1624 Ghagwal
+1625 Pathri
+1626 Ikkar
+1627 Motichur
+1628 Naya Ghaziabad
+1629 Muradnagar
+1630 Modinagar
+1631 Sathiaon
+1632 Doraha
+1633 Khalilpur
+1634 Bawal
+1635 Harsauli
+1636 Baswa
+1637 Marwar Mathanya
+1638 Marwar Lohwat
+1639 Pokran
+1640 Basni
+1641 Baytu
+1642 Utarlai
+1643 Barmer
+1644 Sujangarh
+1645 Somesar
+1646 Kalol Junction
+1647 Kanpur Anwarganj
+1648 Kalianpur(Kanpur)
+1649 Bilhaur
+1650 Kannauj
+1651 Gursahaiganj
+1652 Fatehgarh
+1653 Bhongaon
+1654 Mainpuri
+1655 Lahli
+1656 Bamla
+1657 Bhiwani City
+1658 Muktsar
+1659 Fazilka
+1660 Sangat
+1661 Mandi Dabwali
+1662 Dhaban
+1663 Sangaria
+1664 Manaksar
+1665 Hanumangarh Junction
+1666 Pili Bangan
+1667 Suratgarh Junction
+1668 Mahajan
+1669 Lunkaransar
+1670 Dhirera
+1671 Lalgarh Junction
+1672 Munabao
+1673 Handia Khas
+1674 Sardarnagar
+1675 Gorakhpur Cantonment
+1676 Sarnath
+1677 Sadat
+1678 Domingarh
+1679 Jagatbela
+1680 Maghar
+1681 Gomati Nagar
+1682 Lucknow City
+1683 Sihapar
+1684 Patara
+1685 Ghatampur
+1686 Hamirpur Road
+1687 Bharwa Sumerpur
+1688 Ragaul
+1689 Ichauli
+1690 Shivrampur
+1691 Kotshila Junction
+1692 Phephna Junction
+1693 Pipraich
+1694 Hathras City
+1695 Ratanpura
+1696 Chit Baragaon
+1697 Nandganj
+1698 Chandia Road
+1699 Paniahwa
+1700 Ghughuli
+1701 Tahsil Fatehpur
+1702 Mahmudabad Avdh
+1703 Biswan
+1704 Sitapur City
+1705 Viveka Vihar
+1706 Sahibpur KML Junctio
+1707 Izzatnagar
+1708 Bhojipura Junction
+1709 Pilibhit Junction
+1710 Puranpur
+1711 Mailani
+1712 Gola Gokaranath
+1713 Lakhimpur
+1714 Sitapur
+1715 Daliganj
+1716 Aishbagh
+1717 Majhola Pakarya
+1718 Banbasa
+1719 Tanakpur
+1720 Payagpur
+1721 Bahraich
+1722 Risia
+1723 Nanpara Junction
+1724 Mihinpurwa
+1725 Bichia
+1726 Tikunia
+1727 Belrayan
+1728 Palia Kalan
+1729 Barelly
+1730 Budaun
+1731 Ujhani
+1732 Basugaon
+1733 Sorbhog Junction
+1734 Pathsala
+1735 Tihu
+1736 Kaithalkuchi
+1737 Chautara
+1738 Jalesar Road
+1739 Chola
+1740 Narangi
+1741 Sarupathar
+1742 Titabar
+1743 Amguri
+1744 Namrup
+1745 Naharkatiya
+1746 Duliajan
+1747 Tinsukia Junction
+1748 Digboi
+1749 Jorhat Town
+1750 Maliya Miyana
+1751 Morbi
+1752 Langting
+1753 Maibang
+1754 Mahur
+1755 Lower Haflong
+1756 Haflong Hill
+1757 Jatinga
+1758 Harangajao
+1759 Bihara
+1760 Badarpur Junction
+1761 Panchgram
+1762 Katakhal Junction
+1763 Arunachal
+1764 Silchar
+1765 Manderdisa
+1766 Hatikhali
+1767 Dihakho
+1768 Mupa
+1769 Kalachand
+1770 Wadrengdisa
+1771 Daotuhaja
+1772 Migrendisa
+1773 Bagetar
+1774 Mailongdisa
+1775 Ditokcherra
+1776 Bandarkhal
+1777 Damchara
+1778 Chandranathpur
+1779 Hilara
+1780 Sukritipur
+1781 Karimganj Junction
+1782 Baraigram Junction
+1783 Patharkandi
+1784 Dharmanagar
+1785 Ambasa
+1786 Agartala
+1787 Tangla
+1788 Udalguri
+1789 Rowta Bagan
+1790 Majbat
+1791 New Misamari
+1792 Rangapara North
+1793 Viswanath Chrli
+1794 Helem
+1795 Gohpur
+1796 Tatibahar
+1797 Harmuti
+1798 North Lakhimpur
+1799 Gogamukh
+1800 Dhemaji
+1801 Silapathar
+1802 Telam
+1803 Murkeongselek
+1804 Dhubri
+1805 Golakganj Junction
+1806 Basbari
+1807 Tipkai
+1808 Sapatgram
+1809 Jogighopa
+1810 Senchoa Junction
+1811 Nagaon
+1812 Amoni
+1813 Jakhalabandha
+1814 Silghat Town
+1815 Sibsagar Town
+1816 Bidadi
+1817 Ramanagaram
+1818 Channapatna
+1819 Maddur
+1820 Pandavapura
+1821 New Guntur
+1822 Lehra Gaga
+1823 Barsola
+1824 Punkunnam
+1825 Divine Nagar
+1826 Chettinad
+1827 Mandapam
+1828 Pamban Junction
+1829 Tirupadripuliyur
+1830 Papanasam
+1831 Nazareth
+1832 Tiruchendur
+1833 Nanguneri
+1834 Aralvaymozhi
+1835 Eraniel
+1836 Neyyattinkara
+1837 Chirayinkil
+1838 Paravur
+1839 Gauravpur
+1840 Thiruvarur Junction
+1841 Nagappattinam
+1842 Nagore
+1843 Tiruchirapalli Fort
+1844 Kulitalai
+1845 Pugalur
+1846 Kodumudi
+1847 Uttukuli
+1848 Malleswaram
+1849 Karjat
+1850 Shrirangapatna
+1851 Budalur
+1852 Tiruverumbur
+1853 Pettaivayatalai
+1854 Pudukad
+1855 Vallikkunnu
+1856 Padubidri
+1857 Munroturuttu
+1858 Palakkad Town
+1859 Trikarpur
+1860 Angadippuram
+1861 Nilambur Road
+1862 Siddhpur
+1863 Sakleshpur
+1864 Subrahmanya Road
+1865 Bantawala
+1866 Pachhapur
+1867 Gokak Road
+1868 Chikodi Road
+1869 Sisvinhalli
+1870 Bhanapur
+1871 Munirabad
+1872 Udgir
+1873 Bhalki
+1874 Bidar
+1875 Zahirabad
+1876 Payyoli
+1877 Ullal
+1878 Panruti
+1879 Vaitheeswarankoil
+1880 Marthipalayam
+1881 Unjalur
+1882 Pilamedu(Coimbatore)
+1883 Kadalundi
+1884 Mahadanapuram
+1885 Aruppukottai
+1886 Tilaru
+1887 Basar
+1888 Medchal
+1889 Timmapur
+1890 Machelipatnam
+1891 Umri
+1892 Dharmabad
+1893 Akanapet
+1894 Mirzapali
+1895 Bolarum
+1896 Namburu
+1897 Krishna Canal
+1898 Narasaraopet
+1899 Donakonda
+1900 Markapur Road
+1901 Cumbum
+1902 Giddalur
+1903 Nandyal
+1904 Narasapur
+1905 Kurichedu
+1906 Uppal
+1907 Kottapalli
+1908 Rechni Road
+1909 Sirpur Town
+1910 Bhimavaram Junction
+1911 Vetapalemu
+1912 Duggirala
+1913 Tsunduru
+1914 Nirakarpur
+1915 Chilka
+1916 Mandasa Road
+1917 Wadiaram
+1918 Basmat
+1919 Gummidipundi
+1920 Badnapur
+1921 Jagdalpur
+1922 Paras
+1923 Salekasa
+1924 Bhilainagar
+1925 Devbaloda Charoda
+1926 Dhariwal
+1927 Dina Nagar
+1928 Namkon
+1929 Tatisilwai
+1930 Anand Nagar
+1931 Nautanwa
+1932 Katra
+1933 Dalli-Rajhara
+1934 Gundardehi
+1935 Risama
+1936 Marauda
+1937 Barlai
+1938 Undasa Madhawpu
+1939 Vikramnagar
+1940 Nowrozabad
+1941 Jaithari
+1942 Lakshmibai Nagar
+1943 Hathbandh
+1944 Banmor
+1945 Sanahwal
+1946 Chawapall
+1947 Daurala
+1948 Guldhar
+1949 Jambara
+1950 Barchi Road
+1951 Bordhal
+1952 Hirdagarh
+1953 Iklehra
+1954 Gevra Road
+1955 Loisingha
+1956 Chaibasa
+1957 Dangoaposi
+1958 Bara Jamda
+1959 Barabil
+1960 Noamundi
+1961 Bhawanipatna
+1962 Tapri
+1963 Nadauj
+1964 Silli
+1965 Dhanmandal
+1966 Sanand
+1967 Lakhtar
+1968 Padadhari
+1969 Jam Wanthali
+1970 Alia Bada
+1971 Bhatiya
+1972 Mithapur
+1973 Chorvad Road
+1974 Umbargam Road
+1975 Bhilad
+1976 Udvada
+1977 Palej
+1978 Miyagam Karjan
+1979 Barejadi
+1980 Muli Road
+1981 Daladi
+1982 Samlaya Junction
+1983 Champaner Rd Junctio
+1984 Sant Road
+1985 Piplod Junction
+1986 Limkheda
+1987 Bordi
+1988 Anas
+1989 Panch Pipila
+1990 Bhairongarh
+1991 Bildi
+1992 Bangrod
+1993 Runkhera
+1994 Luni Richha
+1995 Jhalawar Road
+1996 Morak
+1997 Dara
+1998 Gurla
+1999 Malarna
+2000 Fateh Singhpura
+2001 Vangaon
+2002 Sanjan
+2003 Pardi
+2004 Kotli Kalan
+2005 Ismaila Haryana
+2006 Mangolpuri
+2007 Wadhwan City
+2008 Dhasa Junction
+2009 Liliya Mota
+2010 Savarkundla
+2011 Rajula Junction
+2012 Mahuva Junction
+2013 Ningala Junction
+2014 Sanosra
+2015 Vartej
+2016 Choti Khatu
+2017 Didwana
+2018 Ladnun
+2019 Rupbas
+2020 Fatehpur Sikri
+2021 S Narayan CHPLA
+2022 Gandhinagar Capital
+2023 Haripur
+2024 Sendra
+2025 Biradhwal
+2026 Vasad Junction
+2027 Bajva
+2028 Ranoli
+2029 Saphale
+2030 Sarangpur
+2031 Pachor Road
+2032 Pipraigaon
+2033 Gholvad
+2034 Itola
+2035 Chandlodiya
+2036 Ambli Road
+2037 Chharodi
+2038 Jakhvada
+2039 Gop Jam
+2040 Bhaunra
+2041 Sakhpur
+2042 Ranavav
+2043 Pipar Road Junction
+2044 Mallanwala Khas
+2045 Sultanpur Lodi
+2046 Kapurthala
+2047 Budhi
+2048 Mirthal
+2049 Verka Junction
+2050 Dhodhar
+2051 Dalauda
+2052 Piplia
+2053 Malhargarh
+2054 Jawad Road
+2055 Nimbahera
+2056 Sikandra Rao
+2057 Ganj Dundwara
+2058 Charkhi Dadri
+2059 Talwandi
+2060 Moga
+2061 Jagraon
+2062 Namli
+2063 Gangrar
+2064 Hamirgarh
+2065 Sareri
+2066 Swarupganj
+2067 Nana
+2068 Mori Bera
+2069 Jawali
+2070 Hirnoda
+2071 Titwala
+2072 Bandanwara
+2073 Himmatnagar
+2074 Dungarpur
+2075 Zawar
+2076 Sanichara
+2077 Gohad Road
+2078 Soni
+2079 Bhind
+2080 Harangul
+2081 Barbatpur
+2082 Khatu
+2083 Anpara
+2084 Ramna
+2085 Hoshiarpur
+2086 Dharmpur Hmchl
+2087 Barog
+2088 Solan
+2089 Salogra
+2090 Shoghi
+2091 Taradevi
+2092 Jutogh
+2093 Summer Hill
+2094 Simla
+2095 Irugur(Coimbatore)
+2096 Bijoor
+2097 Dibrugarh Town
+2098 Ankai
+2099 Parsoda
+2100 Potul
+2101 Daulatabad
+2102 Dewanganj
+2103 Baghora
+2104 Sumreri
+2105 Lidhora Khurd
+2106 Girwar
+2107 Aslana
+2108 Sagoni
+2109 Boridand
+2110 Manendragarh
+2111 Chirmiri
+2112 Udalkachar
+2113 Darritola
+2114 Nagar
+2115 Surajpur Road
+2116 Darjeeling
+2117 Coonoor
+2118 Wellington
+2119 Aravankadu
+2120 Tyada
+2121 Borra Guhalu
+2122 Arakku
+2123 Ambagaon
+2124 Bacheli
+2125 Bhayandar
+2126 Kelve Road
+2127 Adas Road
+2128 Vadod
+2129 Utarsanda
+2130 Gothaj
+2131 Nenpur
+2132 Geratpur
+2133 Vatva
+2134 Chalthan
+2135 Ukai Songadh
+2136 Chinchpada
+2137 ahmedabad
+2138 allahabad
+2139 amritsar
+2140 bagdogra
+2141 bangalore
+2142 bhopal
+2143 chennai
+2144 cochin
+2145 coimbatore
+2146 dharamshala
+2147 gaya
+2148 goa
+2149 hyderabad
+2150 indore
+2151 jammu
+2152 kolkata
+2153 madurai
+2154 mangalore
+2155 mumbai
+2156 mysore
+2157 pondicherry
+2158 portblair
+2159 pune
+2160 rajahmundry
+2161 salem
+2162 srinagar
+2163 tirupathi
+2164 trichy
+2165 trivandrum
+2166 udaipur
+2167 varanasi
+2168 vijayawada
+2169 vizag
+2170 mkolkata
+2171 raipur
+2172 rajkot
+2173 aizawal
+2174 bhavnagar
+2175 diu
+2176 gorakhpur
+2177 imphal
+2178 jodhpur
+2179 jorhat
+2180 leh
+2181 patna
+2182 porbander
+2183 thoise
+2184 vadodara
+2185 sdelhi
+2186 agra
+2187 agatti
+2188 kanpur
+2189 ludhiana
+2190 umbai
+2191 rinagar
+2192 shirdi
+2193 nashik
+2194 gandhinagar
+2195 ujjain
+2196 kochi
+2197 thiruvananthapuram
+2198 ooty
+2199 visakhapatnam
+2200 shimla
+2201 kota
+2202 meerut
+2203 shornur
+2204 haridwar
+2205 dhanbad
+2206 jamshedpur
+2207 manipal
+2208 hour
+2209 guntur
+2210 bokaro
+2211 calcutta
+2212 bhubaneswar
+2213 aanjar
+2214 abiramam
+2215 aatoor
+2216 addanki
+2217 adoor
+2218 allepy
+2219 anand
+2220 ambala
+2221 baroda
+2222 ajanta
+2223 ajmer
+2224 aligarh
+2225 bikaner
+2226 bellary
+2227 bhilai
+2228 reliance
+2229 muradabad
+2230 mountabu
+2231 new mumbai
+2232 nainital
+2233 dharapuram
+2234 nagercoil
+2235 erode
+2236 munnar
+2237 dindigul
+2238 periyakulam
+2239 karaikal
+2240 pudukottai
+2241 rameshwaram
+2242 karaikudi
+2243 chitradurga
+2244 pollachi
+2245 kovvuru
+2246 palakkad
+2247 mayiladuthurai
+2248 cuddalore
+2249 thoothukudi
+2250 tirunelveli
+2251 vellore
+2252 chittoor
+2253 bhusawal
+2254 ahmedpur
+2255 abu
+2256 delhi 1 day tour
+2257 alleppy
+2258 adirampattinam
+2259 aaspur
+2260 noida
+2261 aduthurai
+2262 chittoor
+2263 achanta
+2264 jharsuguda
