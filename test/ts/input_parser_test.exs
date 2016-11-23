@@ -4,12 +4,12 @@ defmodule InputParserTest do
   use ExUnit.Case
   
   test "populate data structures" do
-    assert {:ok, pid} = InputParser.start_link(10)
+    assert {:ok, pid} = InputParser.start_link
 
-    stn_map = InputParser.get_station_map(pid)
-    for stn_key <- Map.keys(stn_map) do
-      IO.puts Map.get(stn_map, stn_key)
-    end
+    #stn_map = InputParser.get_station_map(pid)
+    #for stn_key <- Map.keys(stn_map) do
+    #  IO.puts Map.get(stn_map, stn_key)
+    #end
 
 
     code=InputParser.get_city_code(pid, "Alnavar Junction")

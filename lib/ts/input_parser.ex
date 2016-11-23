@@ -3,8 +3,8 @@ defmodule InputParser do
 
   ## Client
 
-  def start_link(n) do
-    GenServer.start_link(__MODULE__, n)
+  def start_link do
+    GenServer.start_link(__MODULE__, :ok)
   end
 
   def get_station_map(pid) do
@@ -41,10 +41,10 @@ defmodule InputParser do
 
   ## Server (callbacks)
 
-  def init(n) do
-    station_map=obtain_stations(n)
-    schedule=obtain_schedules(n)
-    locvarmap=obtain_loc_var_map(n)
+  def init(:ok) do
+    station_map=obtain_stations
+    schedule=obtain_schedules
+    locvarmap=obtain_loc_var_map
     {:ok, {station_map, schedule, locvarmap}}
   end
 
@@ -78,27 +78,33 @@ defmodule InputParser do
   @doc """
   Returns a map of the stations.
   """
-  def obtain_stations(n) do
+  def obtain_stations do
     station_map=Map.new
     {_, file}=open_file("data/stations.txt")
+    #n = IO.read file, [:line] |> String.trim |> String.to_integer
+    n = 2264
     obtain_station(file, n, station_map)
   end
 
   @doc """
   Returns a map of the schedule.
   """
-  def obtain_schedules(n) do
+  def obtain_schedules do
     schedule=Keyword.new
     {_, file}=open_file("data/schedule.txt")
+    #n = IO.read file, [:line] |> String.trim |> String.to_integer
+    n = 56555
     obtain_schedule(file, n, schedule)
   end
 
   @doc """
   Returns a map of the local variables.
   """
-  def obtain_loc_var_map(n) do
+  def obtain_loc_var_map do
     locvarmap=Map.new
     {_, file}=open_file("data/local_variables.txt")
+    #n = IO.read file, [:line] |> String.trim |> String.to_integer
+    n = 2264
     obtain_loc_vars(file, n, locvarmap)
   end
 

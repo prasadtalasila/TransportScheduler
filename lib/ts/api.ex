@@ -13,7 +13,7 @@ defmodule API do
     get do
       {:ok, registry} = StationConstructor.start_link
       {_, _}=API.start_link
-      {:ok, pid} = InputParser.start_link(10)
+      {:ok, pid} = InputParser.start_link
       stn_map = InputParser.get_station_map(pid)
       #stn_sched = InputParser.get_schedules(pid)
       for stn_key <- Map.keys(stn_map) do
@@ -67,7 +67,7 @@ defmodule API do
           @desc "add an entry to a station\'s schedule"
           params do
             requires :entry, type: Map do
-              requires :vehicleID, type: Integer
+              requires :vehicleID, type: String
               requires :src_station, type: Integer
               requires :dst_station, type: Integer
               requires :dept_time, type: Integer
@@ -93,7 +93,7 @@ defmodule API do
           @desc "update an existing entry in the station\'s schedule"
           params do
             requires :entry, type: Map do
-              requires :vehicleID, type: Integer
+              requires :vehicleID, type: String
               requires :src_station, type: Integer
               requires :dst_station, type: Integer
               requires :dept_time, type: Integer
@@ -161,7 +161,7 @@ defmodule API do
             requires :disturbance, type: String, values: ["yes", "no"], default: "no"
           end
           requires :schedule, type: Map do
-              requires :vehicleID, type: Integer
+              requires :vehicleID, type: String
               requires :src_station, type: Integer
               requires :dst_station, type: Integer
               requires :dept_time, type: Integer
