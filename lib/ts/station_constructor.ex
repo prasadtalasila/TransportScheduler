@@ -1,22 +1,23 @@
-# Module to create registry process for monitoring all station processes
+# Module to create registry process for monitoring all station processes, ie, Network Constructor NC
 
 defmodule StationConstructor do
   use GenServer
 
-  ## Client API
-
-  @doc """
-  Starts the registry of transport stations.
-  """
+  # Client-side NC management functions
   def start_link do
     GenServer.start_link(__MODULE__, :ok, [])
   end
 
-  @doc """
-  Looks up the bucket pid for `name` stored in `server`.
+  def create(server, name, code) do
+    GenServer.cast(server, {:create, name, code})
+  end
+  
+  def stop(server) do
+    GenServer.stop(server)
+  end
 
-  Returns `{:ok, pid}` if the station exists, `:error` otherwise.
-  """
+  # Client-side lookup functions
+
   def lookup_name(server, name) do
     GenServer.call(server, {:lookup_name, name})
   end
@@ -25,24 +26,8 @@ defmodule StationConstructor do
     GenServer.call(server, {:lookup_code, code})
   end
 
-  @doc """
-  Ensures there is a station associated to the given `name` in `server`.
-  """
-  def create(server, name, code) do
-    GenServer.cast(server, {:create, name, code})
-  end
-  
+  # Client-side message-passing functions
 
-  @doc """
-  Stops the registry.
-  """
-  def stop(server) do
-    GenServer.stop(server)
-  end
-
-  @doc """
-  Messages.
-  """
   def send_to_src(src, dest, itinerary) do
     Station.receive_at_src(src, dest, itinerary)
   end
@@ -51,9 +36,10 @@ defmodule StationConstructor do
     GenServer.call(server, {:msg_received_at_NC, itinerary})
   end
 
-  ## Server callbacks
+  # Server-side callback functions
 
   def init(:ok) do
+    # new registry process for NC started
     names = %{}
     codes = %{}
     refs  = %{}
@@ -61,15 +47,17 @@ defmodule StationConstructor do
   end
 
   def handle_call({:lookup_name, name}, _from, {names, _, _} = state) do
+    # station name lookup from Map in registry
     {:reply, Map.fetch(names, name), state}
   end
 
   def handle_call({:lookup_code, code}, _from, {_, codes, _} = state) do
+    # station code lookup from Map in registry
     {:reply, Map.fetch(codes, code), state}
   end
 
   def handle_call({:msg_received_at_NC, itinerary}, _from, {_, _, _} = state) do
-    #IO.puts "in NC"
+    # feasible itineraries returned to NC are displayed
     IO.inspect itinerary
     API.start_link
     API.put("itinerary", itinerary)
@@ -77,6 +65,7 @@ defmodule StationConstructor do
   end
 
   def handle_cast({:create, name, code}, {names, codes, refs}) do
+    # new station process created if not in NC registry
     if Map.has_key?(names, name) do
       {:noreply, {names, codes, refs}}
     else

@@ -1,3 +1,5 @@
+# Module listing possible functions to use to compute congestionDelay value based on delay and factor
+
 defmodule StationFunctions do
 
   def compute_congestion_delay1(delay, factor) do
@@ -11,6 +13,7 @@ defmodule StationFunctions do
   end
 
   def func(choose_fn) do
+    # appropriate function is called using choose_fn value as Map key
     Map.get(
       %{
 	1 => fn (delay, factor) -> compute_congestion_delay1(delay, factor) end,

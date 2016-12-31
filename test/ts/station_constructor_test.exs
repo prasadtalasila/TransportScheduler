@@ -86,7 +86,7 @@ defmodule StationConstructorTest do
     IO.inspect code1
     IO.inspect code2
     itinerary  = [%{src_station: code1, dst_station: code2, arrival_time: 0}]
-    #StationConstructor.send_to_src(registry, stn1, itinerary)
+    StationConstructor.send_to_src(registry, stn1, itinerary)
     
     :timer.sleep(5000)
 

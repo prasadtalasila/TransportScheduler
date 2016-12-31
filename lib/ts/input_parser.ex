@@ -1,7 +1,7 @@
 defmodule InputParser do
   use GenServer
 
-  ## Client
+  # Client-side functions
 
   def start_link do
     GenServer.start_link(__MODULE__, :ok)
@@ -31,53 +31,56 @@ defmodule InputParser do
     s=%StationStruct{}
     code=get_city_code(pid, city)
     %{s | locVars: Map.merge(s.locVars, get_local_variables(pid, code)), 
-    schedule: get_schedule(pid, code), station_number: code, 
-    station_name: city}
+      schedule: get_schedule(pid, code),
+      station_number: code, station_name: city}
   end
 
   def stop(pid) do
     GenServer.stop(pid, :normal, 100)
   end
 
-  ## Server (callbacks)
+  # Server-side callback functions
 
   def init(:ok) do
-    station_map=obtain_stations
-    schedule=obtain_schedules
-    locvarmap=obtain_loc_var_map
+    # values are read from input data files
+    station_map=obtain_stations()
+    schedule=obtain_schedules()
+    locvarmap=obtain_loc_var_map()
     {:ok, {station_map, schedule, locvarmap}}
   end
 
   def handle_call(:get_station_map, _from, {station_map, _, _}=state) do
+    # Map of station name and station code returned
     {:reply, station_map, state}
   end
 
   def handle_call(:get_schedules, _from, {_, schedule, _}=state) do
+    # schedules for a station are returned
     {:reply, schedule, state}
   end
 
   def handle_call({:get_loc_vars, code}, _from, {_, _, locvarmap}=state) do
+    # local variables for a station are returned
     {:reply, Map.fetch!(locvarmap, code), state}
   end
 
   def handle_call({:get_city_code, city}, _from, {station_map, _, _}=state) do
-    {:reply, Map.fetch!(station_map, city), state}
+     # station code given station name is returned
+   {:reply, Map.fetch!(station_map, city), state}
   end
 
   def handle_call({:get_schedule, code}, _from, {_, schedule, _}=state) do
+    # schedules for a station and destination are returned
     {:reply, Keyword.get_values(schedule, String.to_atom(Integer.to_string(code))), state}
   end
 
   def terminate(reason, state) do
-    # Call the default implementation from GenServer
     super(reason, state)
   end
 
-  ## Implemented functions.
+  # Helper functions
 
-  @doc """
-  Returns a map of the stations.
-  """
+  # Obtains Map of stations
   def obtain_stations do
     station_map=Map.new
     {_, file}=open_file("data/stations.txt")
@@ -86,9 +89,7 @@ defmodule InputParser do
     obtain_station(file, n, station_map)
   end
 
-  @doc """
-  Returns a map of the schedule.
-  """
+  # Obtains Map of schedules
   def obtain_schedules do
     schedule=Keyword.new
     {_, file}=open_file("data/schedule.txt")
@@ -97,9 +98,7 @@ defmodule InputParser do
     obtain_schedule(file, n, schedule)
   end
 
-  @doc """
-  Returns a map of the local variables.
-  """
+  # Obtains Map of local variables
   def obtain_loc_var_map do
     locvarmap=Map.new
     {_, file}=open_file("data/local_variables.txt")
