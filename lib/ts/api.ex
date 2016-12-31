@@ -1,3 +1,5 @@
+# Module to define API to obtain and update station variables and find best itinerary
+
 defmodule API do
   use Maru.Router, make_plug: true
   use Maru.Type

@@ -1,4 +1,7 @@
-# Module to test Registry
+# Module to test StationConstructor
+# Create new NC process and add stations to its registry
+# Use InputParser to create new stations
+# Use message passing to find best itinerary
 
 defmodule StationConstructorTest do
   use ExUnit.Case, async: true
@@ -8,14 +11,14 @@ defmodule StationConstructorTest do
     {:ok, registry: registry}
   end
 
-  test "spawns stations", %{registry: registry} do
+  test "Start new NC and add new Station process", %{registry: registry} do
     assert StationConstructor.lookup_name(registry, "VascoStation") == :error
 
     assert StationConstructor.create(registry, "VascoStation", 12) == :ok
     {:ok, pid} = StationConstructor.lookup_name(registry, "VascoStation")
   end
 
-  test "spawns from InputParser", %{registry: registry} do
+  test "Add new Stations using InputParser", %{registry: registry} do
     assert {:ok, pid} = InputParser.start_link
 
     stn_map = InputParser.get_station_map(pid)
@@ -40,7 +43,7 @@ defmodule StationConstructorTest do
   end
 
 
-  test "messages" do
+  test "Find best itinerary" do
     {_, nc}=StationConstructor.start_link
     StationConstructor.create(nc, "p1", 1) 
     StationConstructor.create(nc, "p2", 2) 
@@ -63,7 +66,7 @@ defmodule StationConstructorTest do
   end
 
 
-  test "complete tests", %{registry: registry} do
+  test "Complete test", %{registry: registry} do
     assert {:ok, pid} = InputParser.start_link
 
     stn_map = InputParser.get_station_map(pid)

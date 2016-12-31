@@ -1,8 +1,10 @@
+# Module to test API
+
 defmodule APITest do
   use ExUnit.Case, async: true
   use Maru.Test, for: API
 
-  test "returns welcome message" do
+  test "Return welcome message" do
     assert "Welcome to TransportScheduler API\n" == get("/api")|>text_response
   end
 
@@ -12,7 +14,7 @@ defmodule APITest do
     {:ok, %{conn: conn}}
   end
 
-  test "returns schedule", %{conn: conn} do
+  test "Return schedule", %{conn: conn} do
     assert %Plug.Conn{}=conn|>put_body_or_params(~s({"source": 5, "date": "1/11/2016"}))|>get("/api/station/schedule")
 
     # Assert the response and status

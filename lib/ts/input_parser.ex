@@ -1,3 +1,5 @@
+# Module to store data from input files in the defined station structure
+
 defmodule InputParser do
   use GenServer
 

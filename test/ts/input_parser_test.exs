@@ -3,7 +3,7 @@
 defmodule InputParserTest do
   use ExUnit.Case
   
-  test "populate data structures" do
+  test "Populate data structures" do
     assert {:ok, pid} = InputParser.start_link
 
     #stn_map = InputParser.get_station_map(pid)
