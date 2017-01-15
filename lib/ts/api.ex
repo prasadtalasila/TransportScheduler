@@ -26,6 +26,7 @@ defmodule API do
         Station.update(station, stn_struct)
       end
       API.put(:NC, registry)
+      API.put("itinerary", [])
       conn|>put_status(200)|>text("Welcome to TransportScheduler API\n")
     end
 
@@ -44,6 +45,7 @@ defmodule API do
         {:ok, {_, stn}} = StationConstructor.lookup_code(registry, params[:source])
         StationConstructor.send_to_src(registry, stn, itinerary)
         :timer.sleep(500)
+        #StationConstructor.stop(registry)
         conn|>put_status(200)|>json(API.get("itinerary"))
       end
     end
@@ -87,7 +89,7 @@ defmodule API do
             stn_sched=List.insert_at(st_str.schedule, 0, entry_map)
             st_str=%{st_str|schedule: stn_sched}
             Station.update(station, st_str)
-            conn|>put_status(200)|>text("New Schedule added!\n")
+            conn|>put_status(201)|>text("New Schedule added!\n")
           end
         end
 
@@ -113,7 +115,7 @@ defmodule API do
             stn_sched=update_list(st_str.schedule, [], entry_map.vehicleID, entry_map, length(st_str.schedule))
             st_str=%{st_str|schedule: stn_sched}
             Station.update(station, st_str)
-            conn|>put_status(200)|>text("Schedule Updated!\n")
+            conn|>put_status(202)|>text("Schedule Updated!\n")
           end
         end
       end
@@ -149,7 +151,7 @@ defmodule API do
             locVarMap=Map.put(params[:local_vars], :congestionDelay, nil)
             st_str=%{st_str|locVars: locVarMap}
             Station.update(station, st_str)
-            conn|>put_status(200)|>text("State Updated!\n")
+            conn|>put_status(202)|>text("State Updated!\n")
           end
         end
       end
@@ -183,14 +185,30 @@ defmodule API do
           locVarMap=Map.put(params[:local_vars], :congestionDelay, nil)
           stn_str=%StationStruct{locVars: locVarMap, schedule: [params[:schedule]], station_number: params[:station_code], station_name: params[:station_name]}
           Station.update(station, stn_str)
-          conn|>put_status(200)|>text("New Station created!\n")
+          conn|>put_status(201)|>text("New Station created!\n")
         end
       end
     end
   end
 
+  rescue_from Maru.Exceptions.NotFound do
+    conn|>put_status(404)|>json(%{error: "Entry not found"})
+  end
+
+  rescue_from Maru.Exceptions.Validation do
+    conn|>put_status(405)|>json(%{error: "Validation Exception"})
+  end
+
+  rescue_from [MatchError] do
+    conn|>put_status(400)|>json(%{error: "Invalid data"})
+  end
+
+  rescue_from [RuntimeError] do
+    conn|>put_status(500)|>json(%{error: "Runtime Error"})
+  end
+
   rescue_from :all do
-    conn |> put_status(500) |> text("Server Error\n")
+    conn|>put_status(500)|>json(%{error: "Server Error"})
   end
 
   @doc """

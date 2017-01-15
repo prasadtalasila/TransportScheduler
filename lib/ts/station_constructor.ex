@@ -13,7 +13,7 @@ defmodule StationConstructor do
   end
   
   def stop(server) do
-    GenServer.stop(server)
+    GenServer.stop(server, :normal)
   end
 
   # Client-side lookup functions
@@ -58,9 +58,11 @@ defmodule StationConstructor do
 
   def handle_call({:msg_received_at_NC, itinerary}, _from, {_, _, _} = state) do
     # feasible itineraries returned to NC are displayed
-    IO.inspect itinerary
+    #IO.inspect itinerary
     API.start_link
-    API.put("itinerary", itinerary)
+    list=API.get("itinerary")
+    list=[itinerary | list]
+    API.put("itinerary", list)
     {:reply, itinerary, state}
   end
 
