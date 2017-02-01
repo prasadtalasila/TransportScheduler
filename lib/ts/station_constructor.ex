@@ -58,7 +58,7 @@ defmodule StationConstructor do
 
   def handle_call({:msg_received_at_NC, itinerary}, _from, {_, _, _} = state) do
     # feasible itineraries returned to NC are displayed
-    #IO.inspect itinerary
+    IO.inspect itinerary
     API.start_link
     list=API.get("itinerary")
     list=[itinerary | list]

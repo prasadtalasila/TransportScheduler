@@ -80,10 +80,20 @@ defmodule Station do
     {:next_state, state, vars, [{:reply, from, state}]}
   end
 
+  def dst_not_in_it(dst, it) do
+    #dst_list = []
+    #for it_el <- it, do: dst_list = [dst_list | Map.fetch(it_el, it_el.dst_station)]
+    #Enum.flatten(dst_list)
+    [head|it2] = it
+    dst_list = Enum.map(it2, fn (x) -> x[:dst_station] end)
+    !Enum.member?(dst_list, dst)
+  end
+  
   def check_neighbours(schedule, time, itinerary) do
     # schedule is filtered to reject neighbours with departure time earlier than arrival time at the station for the current itinerary
-    #nextList = Enum.filter(schedule, fn(x) -> x.dept_time > time and dst_not_in_it(x.dst_station, itinerary) end)
-    nextList = Enum.filter(schedule, fn(x) -> x.dept_time > time and (for stn <-itinerary, do: stn.src_station != x.dst_station) end)
+    nextList = Enum.filter(schedule, fn(x) -> x.dept_time > time and dst_not_in_it(x.dst_station, itinerary) end)
+    #nextList = Enum.filter(schedule, fn(x) -> x.dept_time > time and (for stn <-itinerary, do: stn.src_station != x.dst_station) end)
+    #IO.inspect nextList
   end
 
   def function(nc, src, itinerary, dstSched) do
