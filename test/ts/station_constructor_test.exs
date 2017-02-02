@@ -61,7 +61,7 @@ defmodule StationConstructorTest do
 
     #Station.function(nc, p1, itinerary, %{vehicleID: 1111, src_station: 1, dst_station: 2, dept_time: "07:12:00", arrival_time: "16:32:00", mode_of_transport: "train"} )
 
-    :timer.sleep(1000)
+    :timer.sleep(10)
 
   end
 
@@ -89,9 +89,9 @@ defmodule StationConstructorTest do
     IO.inspect code1
     IO.inspect code2
     itinerary  = [%{src_station: code1, dst_station: code2, arrival_time: 0}]
-    #StationConstructor.send_to_src(registry, stn1, itinerary)
+    StationConstructor.send_to_src(registry, stn1, itinerary)
     
-    :timer.sleep(5000)
+    :timer.sleep(10)
 
   end
 
