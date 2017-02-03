@@ -17,7 +17,6 @@ defmodule API do
       {_, _}=API.start_link
       {:ok, pid} = InputParser.start_link
       stn_map = InputParser.get_station_map(pid)
-      #stn_sched = InputParser.get_schedules(pid)
       for stn_key <- Map.keys(stn_map) do
         stn_code = Map.get(stn_map, stn_key)
         stn_struct = InputParser.get_station_struct(pid, stn_key)
@@ -26,7 +25,6 @@ defmodule API do
         Station.update(station, stn_struct)
       end
       API.put(:NC, registry)
-      API.put("itinerary", [])
       conn|>put_status(200)|>text("Welcome to TransportScheduler API\n")
     end
 
@@ -41,12 +39,17 @@ defmodule API do
       get do
         # Obtain itinerary
         itinerary=[%{src_station: params[:source], dst_station: params[:destination], arrival_time: params[:start_time]}]
+        it1=List.first(itinerary)
         registry=API.get(:NC)
         {:ok, {_, stn}} = StationConstructor.lookup_code(registry, params[:source])
+        API.put(it1, [])
+        StationConstructor.add_query(registry, it1)
+        :timer.sleep(50)
         StationConstructor.send_to_src(registry, stn, itinerary)
-        :timer.sleep(500)
-        #StationConstructor.stop(registry)
-        conn|>put_status(200)|>json(API.get("itinerary"))
+        :timer.sleep(100) # need to check
+        StationConstructor.del_query(registry, it1)
+        conn|>put_status(200)|>json(API.get(it1))
+        API.remove(it1)
       end
     end
 
@@ -230,6 +233,10 @@ defmodule API do
   """
   def put(key, value) do
     Agent.update(__MODULE__, &Map.put(&1, key, value))
+  end
+
+  def remove(key) do
+    Agent.update(__MODULE__, &Map.delete(&1, key))
   end
 
   defp update_list(oldlist, newlist, val, repl, n) when n > 0 do

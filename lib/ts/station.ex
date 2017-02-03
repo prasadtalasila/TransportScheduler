@@ -35,6 +35,35 @@ defmodule Station do
     StationConstructor.receive_from_dest(server, itinerary)
   end
 
+  def dst_not_in_it(dst, it) do
+    #dst_list = []
+    #for it_el <- it, do: dst_list = [dst_list | Map.fetch(it_el, it_el.dst_station)]
+    #Enum.flatten(dst_list)
+    [head|it2] = it
+    dst_list = Enum.map(it2, fn (x) -> x[:dst_station] end)
+    !Enum.member?(dst_list, dst)
+  end
+  
+  def check_neighbours(schedule, time, itinerary) do
+    # schedule is filtered to reject neighbours with departure time earlier than arrival time at the station for the current itinerary
+    nextList = Enum.filter(schedule, fn(x) -> x.dept_time > time and dst_not_in_it(x.dst_station, itinerary) end)
+    #nextList = Enum.filter(schedule, fn(x) -> x.dept_time > time and (for stn <-itinerary, do: stn.src_station != x.dst_station) end)
+    #IO.inspect nextList
+  end
+
+  def function(nc, src, itinerary, dstSched) do
+    # schedule to reach this destination station is added to itinerary
+    newItinerary = List.flatten([itinerary|[dstSched]])
+    [query] = Enum.take(newItinerary, 1)
+    {:ok, {_, dst}} = StationConstructor.lookup_code(nc, dstSched.dst_station)
+    # newItinerary is either returned to NC or sent on to next station to continue additions
+    if (dstSched.dst_station == query.dst_station) do
+      Station.send_to_NC(nc, newItinerary)
+    else
+      Station.send_to_stn(nc, src, dst, newItinerary)
+    end
+  end
+
   # Server-side callback functions
   
   def handle_event(:cast, {:update, oldVars}, state, vars) do
@@ -80,35 +109,6 @@ defmodule Station do
     {:next_state, state, vars, [{:reply, from, state}]}
   end
 
-  def dst_not_in_it(dst, it) do
-    #dst_list = []
-    #for it_el <- it, do: dst_list = [dst_list | Map.fetch(it_el, it_el.dst_station)]
-    #Enum.flatten(dst_list)
-    [head|it2] = it
-    dst_list = Enum.map(it2, fn (x) -> x[:dst_station] end)
-    !Enum.member?(dst_list, dst)
-  end
-  
-  def check_neighbours(schedule, time, itinerary) do
-    # schedule is filtered to reject neighbours with departure time earlier than arrival time at the station for the current itinerary
-    nextList = Enum.filter(schedule, fn(x) -> x.dept_time > time and dst_not_in_it(x.dst_station, itinerary) end)
-    #nextList = Enum.filter(schedule, fn(x) -> x.dept_time > time and (for stn <-itinerary, do: stn.src_station != x.dst_station) end)
-    #IO.inspect nextList
-  end
-
-  def function(nc, src, itinerary, dstSched) do
-    # schedule to reach this destination station is added to itinerary
-    newItinerary = List.flatten([itinerary|[dstSched]])
-    [query] = Enum.take(newItinerary, 1)
-    {:ok, {_, dst}} = StationConstructor.lookup_code(nc, dstSched.dst_station)
-    # newItinerary is either returned to NC or sent on to next station to continue additions
-    if (dstSched.dst_station == query.dst_station) do
-      Station.send_to_NC(nc, newItinerary)
-    else
-      Station.send_to_stn(nc, src, dst, newItinerary)
-    end
-  end
-
   def handle_event(:cast, {:receive_at_src, nc, src, itinerary}, state, vars) do
     [query] = Enum.take(itinerary, 1)
     nextList = Station.check_neighbours(vars.schedule, query.arrival_time, itinerary)
@@ -120,9 +120,12 @@ defmodule Station do
   def handle_event(:cast, {:receive_at_stn, nc, src, itinerary}, state, vars) do
     [query] = Enum.take(itinerary, 1)
     [prevStn] = Enum.take(itinerary, -1)
-    nextList = Station.check_neighbours(vars.schedule, prevStn.arrival_time, itinerary)
-    # for each neighbouring station, function is called to determine new itinerary additions
-    Enum.each(nextList, fn(x) -> function(nc, src, itinerary, x) end)
+    # check if query active
+    if (StationConstructor.check_active(nc, query)==true) do
+      nextList = Station.check_neighbours(vars.schedule, prevStn.arrival_time, itinerary)
+      # for each neighbouring station, function is called to determine new itinerary additions
+      Enum.each(nextList, fn(x) -> function(nc, src, itinerary, x) end)
+    end
     {:next_state, state, vars}
   end
 
