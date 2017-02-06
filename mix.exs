@@ -8,7 +8,9 @@ defmodule TS.Mixfile do
       elixir: "~> 1.3",
       build_embedded: Mix.env == :prod,
       start_permanent: Mix.env == :prod,
-      deps: deps
+      deps: deps,
+      test_coverage: [tool: ExCoveralls],
+      preferred_cli_env: [coveralls: :test]
     ]
   end
 
@@ -33,7 +35,9 @@ defmodule TS.Mixfile do
      {:gen_state_machine, "~> 1.0"},
      {:maru, "~> 0.11"},
      {:distillery, ">= 0.9.0", warn_missing: false},
-     {:edeliver, "~> 1.4.0"}]
+     {:edeliver, "~> 1.4.0"},
+     {:excoveralls, "~> 0.5", only: :test}
+    ]
   end
 
 end

@@ -9,6 +9,7 @@ install:
 - mix deps.get
 script:
 - mix test
+- mix coveralls.travis
 after_success:
 - mix edeliver build release
 - mix edeliver deploy release
