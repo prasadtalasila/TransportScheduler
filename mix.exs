@@ -39,5 +39,4 @@ defmodule TS.Mixfile do
      {:excoveralls, "~> 0.5", only: :test}
     ]
   end
-
 end
