@@ -14,10 +14,6 @@ defmodule UQCFSM do
 	end
 
 	# Server
-	def init do
-		{:ok, state, data}
-	end
-
 	def handle_event(:cast, {:update, it}, state, _) do
 		case state do
 			:raw ->
