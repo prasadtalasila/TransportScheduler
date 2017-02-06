@@ -73,30 +73,30 @@ defmodule Station do
 			      congestion_low: oldVars.congestion_low, congestion_high: oldVars.congestion_high, choose_fn: oldVars.choose_fn}
     # depending on the state of the station, appropriate FSM state change is made and new values are stored for the station
     case(newVars.locVars.disturbance) do
-      "yes"->
-	{:next_state, :disturbance, newVars}
-      "no" -> 
-	case(newVars.locVars.congestion) do
-	  "none"->
-	    {:next_state, :delay, newVars}
-	  "low" ->
-	    # congestionDelay is computed using computation function selected based on the choose_fn value
-	    congestionDelay = StationFunctions.func(newVars.choose_fn).(newVars.locVars.delay, newVars.congestion_low)
-	    {x, updateLocVars} = Map.get_and_update(newVars.locVars, :congestionDelay, fn delay -> {delay, congestionDelay} end)
-	    updateVars = %StationStruct{locVars: updateLocVars, schedule: newVars.schedule }
-	    {:next_state, :delay, updateVars}
-	  "high"->
-	    # congestionDelay is computed using computation function selected based on the choose_fn value
-	    congestionDelay = StationFunctions.func(newVars.choose_fn).(newVars.locVars.delay, newVars.congestion_high)
-	    {x, updateLocVars} = Map.get_and_update(newVars.locVars, :congestionDelay, fn delay -> {delay, congestionDelay} end)
-	    updateVars = %StationStruct{locVars: updateLocVars, schedule: newVars.schedule }
-	    {:next_state, :delay, updateVars}
-	  _	->
-	    {:next_state, :delay, newVars}	
-	end
-      _	   ->
-	{:next_state, :delay, newVars}
-    end          
+      "yes" ->
+        {:next_state, :disturbance, newVars}
+      "no" ->
+        case(newVars.locVars.congestion) do
+          "none" ->
+            {:next_state, :delay, newVars}
+          "low" ->
+            # congestionDelay is computed using computation function selected based on the choose_fn value
+            congestionDelay = StationFunctions.func(newVars.choose_fn).(newVars.locVars.delay, newVars.congestion_low)
+            {x, updateLocVars} = Map.get_and_update(newVars.locVars, :congestionDelay, fn delay -> {delay, congestionDelay} end)
+            updateVars = %StationStruct{locVars: updateLocVars, schedule: newVars.schedule}
+            {:next_state, :delay, updateVars}
+          "high" ->
+            # congestionDelay is computed using computation function selected based on the choose_fn value
+            congestionDelay = StationFunctions.func(newVars.choose_fn).(newVars.locVars.delay, newVars.congestion_high)
+            {x, updateLocVars} = Map.get_and_update(newVars.locVars, :congestionDelay, fn delay -> {delay, congestionDelay} end)
+            updateVars = %StationStruct{locVars: updateLocVars, schedule: newVars.schedule}
+            {:next_state, :delay, updateVars}
+          _ ->
+            {:next_state, :delay, newVars}
+        end
+      _ ->
+        {:next_state, :delay, newVars}
+    end
   end
 
   def handle_event({:call, from}, :get_vars, state, vars) do
