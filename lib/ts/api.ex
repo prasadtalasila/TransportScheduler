@@ -46,9 +46,9 @@ defmodule API do
         StationConstructor.add_query(registry, it1)
         :timer.sleep(50)
         StationConstructor.send_to_src(registry, stn, itinerary)
-        :timer.sleep(100) # need to check
+        :timer.sleep(500) # need to check
         StationConstructor.del_query(registry, it1)
-        conn|>put_status(200)|>json(API.get(it1))
+        conn|>put_status(200)|>json(API.get(it1)|>sort_list)
         API.remove(it1)
       end
     end
@@ -237,6 +237,10 @@ defmodule API do
 
   def remove(key) do
     Agent.update(__MODULE__, &Map.delete(&1, key))
+  end
+
+  defp sort_list(list) do
+    Enum.sort(list, &( (List.last(&1)).arrival_time < (List.last(&2)).arrival_time))
   end
 
   defp update_list(oldlist, newlist, val, repl, n) when n > 0 do

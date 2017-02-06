@@ -69,14 +69,19 @@ defmodule StationConstructor do
     {:reply, Map.fetch(codes, code), state}
   end
 
-  def handle_call({:msg_received_at_NC, itinerary}, _from, state) do
+  def handle_call({:msg_received_at_NC, itinerary}, _from, {names, codes, refs, queries}) do
     # feasible itineraries returned to NC are displayed
     IO.inspect itinerary
     API.start_link
     list=API.get(List.first(itinerary))
-    list=[itinerary | list]
-    API.put(List.first(itinerary), list)
-    {:reply, itinerary, state}
+    #list=[itinerary | list]
+    if (length(list)<50) do
+      list=list++[itinerary]
+      API.put(List.first(itinerary), list)
+    else
+      queries=Map.delete(queries, List.first(itinerary))
+    end
+    {:reply, itinerary, {names, codes, refs, queries}}
   end
 
   def handle_call({:check_active, query}, _from, {_, _, _, queries}=state) do

@@ -31,7 +31,7 @@ defmodule TS.Mixfile do
   defp deps do
     [{:exactor, "~> 2.1.0"},
      {:gen_state_machine, "~> 1.0"},
-     {:maru, "~> 0.10"},
+     {:maru, "~> 0.11"},
      {:distillery, ">= 0.9.0", warn_missing: false},
      {:edeliver, "~> 1.4.0"}]
   end
