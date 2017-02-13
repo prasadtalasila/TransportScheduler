@@ -1,6 +1,6 @@
 # TS
 
-[![Coverage Status](https://coveralls.io/repos/github/prasadtalasila/TransportScheduler/badge.svg?branch=master)](https://coveralls.io/github/prasadtalasila/TransportScheduler?branch=master)    
+[![Coverage Status](https://coveralls.io/repos/github/prasadtalasila/TransportScheduler/badge.svg?branch=master)](https://coveralls.io/github/prasadtalasila/TransportScheduler?branch=master) [![Build Status](https://travis-ci.org/prasadtalasila/TransportScheduler.svg?branch=master)](https://travis-ci.org/prasadtalasila/TransportScheduler)   
 
 TransportScheduler application.
 GenStateMachine for station FSM and GenServer for IPC.
