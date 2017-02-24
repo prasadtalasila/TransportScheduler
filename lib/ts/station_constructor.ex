@@ -3,8 +3,8 @@
 defmodule StationConstructor do
   use GenServer
 
-  def add_query(server, query) do
-    GenServer.cast(server, {:add_query, query})
+  def add_query(server, query, conn) do
+    GenServer.cast(server, {:add_query, query, conn})
   end
 
   def del_query(server, query) do
@@ -73,19 +73,25 @@ defmodule StationConstructor do
     # feasible itineraries returned to NC are displayed
     #IO.inspect itinerary
     API.start_link
-    list=API.get(List.first(itinerary))
+    conn=Map.get(queries, List.first(itinerary))
+    list=API.get(conn)
     #list=[itinerary | list]
-    if (length(list)<50) do
+    queries=if (length(list)<50) do
       list=list++[itinerary]
-      API.put(List.first(itinerary), list)
+      API.put(conn, List.first(itinerary), list)
+      queries
     else
-      queries=Map.delete(queries, List.first(itinerary))
+      Map.delete(queries, List.first(itinerary))
     end
     {:reply, itinerary, {names, codes, refs, queries}}
   end
 
   def handle_call({:check_active, query}, _from, {_, _, _, queries}=state) do
-    {:reply, Map.get(queries, query), state}
+    if Map.get(queries, query)==nil do
+      {:reply, false, state}
+    else
+      {:reply, true, state}
+    end
   end
 
   def handle_cast({:create, name, code}, {names, codes, refs, queries}=state) do
@@ -102,8 +108,8 @@ defmodule StationConstructor do
     end
   end
 
-  def handle_cast({:add_query, query}, {names, codes, refs, queries}) do
-    queries=Map.put(queries, query, true)
+  def handle_cast({:add_query, query, conn}, {names, codes, refs, queries}) do
+    queries=Map.put(queries, query, conn)
     {:noreply, {names, codes, refs, queries}}
   end
 

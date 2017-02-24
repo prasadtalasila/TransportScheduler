@@ -68,13 +68,13 @@ defmodule StationConstructorTest do
     itinerary  = [%{src_station: code1, dst_station: code2, arrival_time: 0}]
     it1=List.first(itinerary)
     API.start_link
-    API.put(it1, [])
-    StationConstructor.add_query(registry, it1)
+    API.put("conn", it1, [])
+    StationConstructor.add_query(registry, it1, "conn")
     :timer.sleep(50)
     StationConstructor.send_to_src(registry, stn1, itinerary)
     :timer.sleep(10)
     StationConstructor.del_query(registry, it1)
-    API.remove(it1)
+    API.remove("conn")
   end
 
 end

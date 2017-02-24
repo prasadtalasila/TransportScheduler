@@ -3,6 +3,7 @@
 defmodule API do
   use Maru.Router, make_plug: true
   use Maru.Type
+  use GenServer
 
   before do
     plug Plug.Parsers,
@@ -42,14 +43,14 @@ defmodule API do
         it1=List.first(itinerary)
         registry=API.get(:NC)
         {:ok, {_, stn}} = StationConstructor.lookup_code(registry, params[:source])
-        API.put(it1, [])
-        StationConstructor.add_query(registry, it1)
+        API.put(conn, it1, [])
+        StationConstructor.add_query(registry, it1, conn)
         :timer.sleep(50)
         StationConstructor.send_to_src(registry, stn, itinerary)
         :timer.sleep(500) # need to check
         StationConstructor.del_query(registry, it1)
-        conn|>put_status(200)|>json(API.get(it1)|>sort_list)
-        API.remove(it1)
+        conn|>put_status(200)|>json(API.get(conn)|>sort_list)
+        API.remove(conn)
       end
     end
 
@@ -215,30 +216,76 @@ defmodule API do
   end
 
   @doc """
-  Starts a new agent.
+  Starts a new GenServer.
   """
   def start_link do
-    Agent.start_link(fn -> %{} end, name: __MODULE__)
+    GenServer.start_link(__MODULE__, :ok, name: UQC)
   end
 
   @doc """
-  Gets NC pid from map.
+  Gets an entry from table.
   """
   def get(key) do
-    Agent.get(__MODULE__, &Map.get(&1, key))
+    GenServer.call(UQC, {:get, key})
   end
 
   @doc """
-  Puts the pid in the map.
+  Puts a new entry/replaces entry into table.
   """
   def put(key, value) do
-    Agent.update(__MODULE__, &Map.put(&1, key, value))
+    GenServer.cast(UQC, {:put, key, value})
   end
 
+  @doc """
+  Enters triple into table.
+  """
+  def put(connection, query, itineraries) do
+    GenServer.cast(UQC, {:put_entry, connection, query, itineraries})
+  end
+
+  @doc """
+  Removes entries from map.
+  """
   def remove(key) do
-    Agent.update(__MODULE__, &Map.delete(&1, key))
+    GenServer.cast(UQC, {:remove, key})
   end
 
+  ## Server callbacks
+  def init(:ok) do
+    table=:ets.new(:table, [:named_table, read_concurrency: true, write_concurrency: true])
+    {:ok, {table}}
+  end
+
+  def handle_call({:get, key}, _from, {table}=state) do
+    [entry]=:ets.lookup(table, key)
+    {:reply, elem(entry, tuple_size(entry)-1), state}
+  end
+
+  def handle_cast({:put, key, value}, {table}) do
+    :ets.insert(table, {key, value})
+    {:noreply, {table}}
+  end
+
+  def handle_cast({:put_entry, connection, query, itineraries}, {table}) do
+    :ets.insert(table, {connection, query, itineraries})
+    {:noreply, {table}}
+  end
+
+  def handle_cast({:remove, key}, {table}) do
+    :ets.delete(table, key)
+    {:noreply, {table}}
+  end
+
+  def handle_info({:DOWN, :process, _pid, _reason}, {table}) do
+    :ets.delete(table)
+    {:noreply, {table}}
+  end
+
+  def handle_info(_msg, state) do
+    {:noreply, state}
+  end
+
+  ## Other functions
   defp sort_list(list) do
     Enum.sort(list, &( (List.last(&1)).arrival_time < (List.last(&2)).arrival_time))
   end
