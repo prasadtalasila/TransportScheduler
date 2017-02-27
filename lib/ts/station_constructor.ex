@@ -16,8 +16,8 @@ defmodule StationConstructor do
   end
 
   # Client-side NC management functions
-  def start_link do
-    GenServer.start_link(__MODULE__, :ok, [])
+  def start_link(name) do
+    GenServer.start_link(__MODULE__, :ok, name: name)
   end
 
   def create(server, name, code) do
@@ -103,7 +103,7 @@ defmodule StationConstructor do
     if Map.has_key?(names, name) do
       {:noreply, state}
     else
-      {:ok, pid} = Station.start_link
+      {:ok, pid} = TS.Station.Supervisor.start_station
       ref = Process.monitor(pid)
       refs = Map.put(refs, ref, {name, code})
       names = Map.put(names, name, {code, pid})
@@ -123,9 +123,10 @@ defmodule StationConstructor do
   end
 
   def handle_info({:DOWN, ref, :process, _pid, _reason}, {names, codes, refs, queries}) do
-    {name, code, refs} = Map.pop(refs, ref)
+    {{name, code}, refs} = Map.pop(refs, ref)
     names = Map.delete(names, name)
     codes = Map.delete(codes, code)
+    StationConstructor.create(StationConstructor, name, code)
     {:noreply, {names, codes, refs, queries}}
   end
 

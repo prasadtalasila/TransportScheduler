@@ -14,18 +14,18 @@ defmodule API do
   
   namespace :api do
     get do
-      {:ok, registry} = StationConstructor.start_link
+      # {:ok, registry} = StationConstructor.start_link
       {_, _}=API.start_link
       {:ok, pid} = InputParser.start_link
       stn_map = InputParser.get_station_map(pid)
       for stn_key <- Map.keys(stn_map) do
         stn_code = Map.get(stn_map, stn_key)
         stn_struct = InputParser.get_station_struct(pid, stn_key)
-        StationConstructor.create(registry, stn_key, stn_code)
-        {:ok, {_, station}} = StationConstructor.lookup_name(registry, stn_key)
+        StationConstructor.create(StationConstructor, stn_key, stn_code)
+        {:ok, {_, station}} = StationConstructor.lookup_name(StationConstructor, stn_key)
         Station.update(station, stn_struct)
       end
-      API.put(:NC, registry)
+      #API.put(:NC, registry)
       conn|>put_status(200)|>text("Welcome to TransportScheduler API\n")
     end
 
@@ -40,17 +40,17 @@ defmodule API do
       get do
         # Obtain itinerary
         query=%{src_station: params[:source], dst_station: params[:destination], arrival_time: params[:start_time]}
-        registry=API.get(:NC)
-        {:ok, {_, stn}} = StationConstructor.lookup_code(registry, params[:source])
+        #registry=API.get(:NC)
+        {:ok, {_, stn}} = StationConstructor.lookup_code(StationConstructor, params[:source])
         API.put(conn, query, [])
-        StationConstructor.add_query(registry, query, conn)
+        StationConstructor.add_query(StationConstructor, query, conn)
         #:timer.sleep(50)
         itinerary=[Map.put(query, :day, 0)]
-        StationConstructor.send_to_src(registry, stn, itinerary)
+        StationConstructor.send_to_src(StationConstructor, stn, itinerary)
         Process.send_after(self(), :release, 500)
         receive do
           :release ->
-            StationConstructor.del_query(registry, query)
+            StationConstructor.del_query(StationConstructor, query)
             conn|>put_status(200)|>json(API.get(conn)|>sort_list)
             API.remove(conn)
         end
@@ -67,8 +67,8 @@ defmodule API do
 
         get do
           # Get schedule
-          registry=API.get(:NC)
-          {:ok, {_, station}}=StationConstructor.lookup_code(registry, params[:station_code])
+          #registry=API.get(:NC)
+          {:ok, {_, station}}=StationConstructor.lookup_code(StationConstructor, params[:station_code])
           st_str=Station.get_vars(station)
           res=Map.fetch!(st_str, :schedule)
           conn|>put_status(200)|>json(res)
@@ -90,8 +90,8 @@ defmodule API do
           post do
             # Add New Schedule
             entry_map=params[:entry]
-            registry=API.get(:NC)
-            {:ok, {_, station}}=StationConstructor.lookup_code(registry, entry_map.src_station)
+            #registry=API.get(:NC)
+            {:ok, {_, station}}=StationConstructor.lookup_code(StationConstructor, entry_map.src_station)
             st_str=Station.get_vars(station)
             stn_sched=List.insert_at(st_str.schedule, 0, entry_map)
             st_str=%{st_str|schedule: stn_sched}
@@ -116,8 +116,8 @@ defmodule API do
           put do
             # Update Schedule
             entry_map=params[:entry]
-            registry=API.get(:NC)
-            {:ok, {_, station}}=StationConstructor.lookup_code(registry, entry_map.src_station)
+            #registry=API.get(:NC)
+            {:ok, {_, station}}=StationConstructor.lookup_code(StationConstructor, entry_map.src_station)
             st_str=Station.get_vars(station)
             stn_sched=update_list(st_str.schedule, [], entry_map.vehicleID, entry_map, length(st_str.schedule))
             st_str=%{st_str|schedule: stn_sched}
@@ -134,8 +134,8 @@ defmodule API do
         end
         get do
           # Get state vars of that station
-          registry=API.get(:NC)
-          {:ok, {_, station}}=StationConstructor.lookup_code(registry, params[:station_code])
+          #registry=API.get(:NC)
+          {:ok, {_, station}}=StationConstructor.lookup_code(StationConstructor, params[:station_code])
           st_str=Station.get_vars(station)
           conn|>put_status(200)|>json(st_str.locVars)
         end
@@ -152,8 +152,8 @@ defmodule API do
           end
           put do
             # Update state vars of that station
-            registry=API.get(:NC)
-            {:ok, {_, station}}=StationConstructor.lookup_code(registry, params[:station_code])
+            #registry=API.get(:NC)
+            {:ok, {_, station}}=StationConstructor.lookup_code(StationConstructor, params[:station_code])
             st_str=Station.get_vars(station)
             locVarMap=Map.put(params[:local_vars], :congestionDelay, nil)
             st_str=%{st_str|locVars: locVarMap}
@@ -186,9 +186,9 @@ defmodule API do
 
         post do
           # Add new station's details
-          registry=API.get(:NC)
-          StationConstructor.create(registry, params[:station_name], params[:station_code])
-          {:ok, {_, station}}=StationConstructor.lookup_code(registry, params[:station_code])
+          #registry=API.get(:NC)
+          StationConstructor.create(StationConstructor, params[:station_name], params[:station_code])
+          {:ok, {_, station}}=StationConstructor.lookup_code(StationConstructor, params[:station_code])
           locVarMap=Map.put(params[:local_vars], :congestionDelay, nil)
           stn_str=%StationStruct{locVars: locVarMap, schedule: [params[:schedule]], station_number: params[:station_code], station_name: params[:station_name]}
           Station.update(station, stn_str)
