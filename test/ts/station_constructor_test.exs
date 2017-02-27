@@ -70,7 +70,8 @@ defmodule StationConstructorTest do
     API.start_link
     API.put("conn", it1, [])
     StationConstructor.add_query(registry, it1, "conn")
-    :timer.sleep(50)
+    #:timer.sleep(50)
+    itinerary=[Map.put(it1, :day, 0)]
     StationConstructor.send_to_src(registry, stn1, itinerary)
     :timer.sleep(10)
     StationConstructor.del_query(registry, it1)

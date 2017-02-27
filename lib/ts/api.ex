@@ -39,18 +39,21 @@ defmodule API do
       end
       get do
         # Obtain itinerary
-        itinerary=[%{src_station: params[:source], dst_station: params[:destination], arrival_time: params[:start_time]}]
-        it1=List.first(itinerary)
+        query=%{src_station: params[:source], dst_station: params[:destination], arrival_time: params[:start_time]}
         registry=API.get(:NC)
         {:ok, {_, stn}} = StationConstructor.lookup_code(registry, params[:source])
-        API.put(conn, it1, [])
-        StationConstructor.add_query(registry, it1, conn)
-        :timer.sleep(50)
+        API.put(conn, query, [])
+        StationConstructor.add_query(registry, query, conn)
+        #:timer.sleep(50)
+        itinerary=[Map.put(query, :day, 0)]
         StationConstructor.send_to_src(registry, stn, itinerary)
-        :timer.sleep(500) # need to check
-        StationConstructor.del_query(registry, it1)
-        conn|>put_status(200)|>json(API.get(conn)|>sort_list)
-        API.remove(conn)
+        Process.send_after(self(), :release, 500)
+        receive do
+          :release ->
+            StationConstructor.del_query(registry, query)
+            conn|>put_status(200)|>json(API.get(conn)|>sort_list)
+            API.remove(conn)
+        end
       end
     end
 
@@ -287,7 +290,7 @@ defmodule API do
 
   ## Other functions
   defp sort_list(list) do
-    Enum.sort(list, &( (List.last(&1)).arrival_time < (List.last(&2)).arrival_time))
+    Enum.sort(list, &( (((List.first(&1)).day*86400)+(List.last(&1)).arrival_time-(List.first(&1)).arrival_time) < (((List.first(&2)).day*86400)+(List.last(&2)).arrival_time-(List.first(&2)).arrival_time) ) )
   end
 
   defp update_list(oldlist, newlist, val, repl, n) when n > 0 do

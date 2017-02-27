@@ -46,7 +46,12 @@ defmodule Station do
   
   def check_neighbours(schedule, time, itinerary) do
     # schedule is filtered to reject neighbours with departure time earlier than arrival time at the station for the current itinerary
-    nextList = Enum.filter(schedule, fn(x) -> x.dept_time > time and dst_not_in_it(x.dst_station, itinerary) end)
+    nextList = 
+      if (time>86400) do
+        Enum.filter(schedule, fn(x) -> (x.dept_time > (time-86400)) and dst_not_in_it(x.dst_station, itinerary) end)
+      else
+        Enum.filter(schedule, fn(x) -> x.dept_time > time and dst_not_in_it(x.dst_station, itinerary) end)
+      end
     #nextList = Enum.filter(schedule, fn(x) -> x.dept_time > time and (for stn <-itinerary, do: stn.src_station != x.dst_station) end)
     #IO.inspect nextList
   end
@@ -58,6 +63,11 @@ defmodule Station do
     {:ok, {_, dst}} = StationConstructor.lookup_code(nc, dstSched.dst_station)
     # newItinerary is either returned to NC or sent on to next station to continue additions
     if (dstSched.dst_station == query.dst_station) do
+      #if (dstSched.arrival_time>86400) do
+      #  newItinerary=List.delete(newItinerary, query)
+      #  query=Map.update!(query, :day, &(&1-1))
+      #  newItinerary=List.insert_at(newItinerary, 0, query)
+      #end
       Station.send_to_NC(nc, newItinerary)
     else
       Station.send_to_stn(nc, src, dst, newItinerary)
@@ -120,8 +130,14 @@ defmodule Station do
   def handle_event(:cast, {:receive_at_stn, nc, src, itinerary}, state, vars) do
     [query] = Enum.take(itinerary, 1)
     [prevStn] = Enum.take(itinerary, -1)
+    # check for overnight trip
+    if (prevStn.arrival_time>86400) do
+      itinerary=List.delete(itinerary, query)
+      query=Map.update!(query, :day, &(&1+1))
+      itinerary=List.insert_at(itinerary, 0, query)
+    end
     # check if query active
-    if (StationConstructor.check_active(nc, query)==true) do
+    if (StationConstructor.check_active(nc, Map.delete(query, :day))==true) do
       nextList = Station.check_neighbours(vars.schedule, prevStn.arrival_time, itinerary)
       # for each neighbouring station, function is called to determine new itinerary additions
       Enum.each(nextList, fn(x) -> function(nc, src, itinerary, x) end)
