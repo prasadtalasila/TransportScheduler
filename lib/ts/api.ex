@@ -3,7 +3,7 @@
 defmodule API do
   use Maru.Router, make_plug: true
   use Maru.Type
-  use GenServer
+  use GenServer, async: true
 
   before do
     plug Plug.Parsers,
@@ -14,7 +14,7 @@ defmodule API do
   
   namespace :api do
     get do
-      # {:ok, registry} = StationConstructor.start_link
+      # {:ok, registry} =StationConstructor.start_link("NC")
       {_, _}=API.start_link
       {:ok, pid} = InputParser.start_link
       stn_map = InputParser.get_station_map(pid)

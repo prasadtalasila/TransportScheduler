@@ -83,8 +83,8 @@ defmodule StationConstructor do
           API.put(conn, query, list)
           queries
         false ->
-          Map.delete(queries, query)
           send(API.get(query), :release)
+          Map.delete(queries, query)
       end
     else
       queries
@@ -93,7 +93,7 @@ defmodule StationConstructor do
   end
 
   def handle_call({:check_active, query}, _from, {_, _, _, queries}=state) do
-    if Map.get(queries, query)==nil do
+    if Map.get(queries, query)===nil do
       {:reply, false, state}
     else
       {:reply, true, state}

@@ -38,9 +38,6 @@ defmodule StationConstructorTest do
       stn_struct = InputParser.get_station_struct(pid, stn_key)
       assert StationConstructor.create(StationConstructor, stn_key, stn_code) == :ok
       {:ok, {code, station}} = StationConstructor.lookup_name(StationConstructor, stn_key)
-      #IO.puts Station.get_state(station)
-      Station.update(station, %StationStruct{})
-      #IO.puts Station.get_state(station)
       Station.update(station, stn_struct)
     end
     {:ok, {code1, stn1}} = StationConstructor.lookup_name(StationConstructor, "Madgaon")
@@ -53,9 +50,19 @@ defmodule StationConstructorTest do
     #:timer.sleep(50)
     itinerary=[Map.put(it1, :day, 0)]
     StationConstructor.send_to_src(StationConstructor, stn1, itinerary)
-    :timer.sleep(10)
-    StationConstructor.del_query(StationConstructor, it1)
-    API.remove("conn")
+    API.put(it1, self())
+    Process.send_after(self(), :timeout, 500)
+    receive do
+      :timeout ->
+        StationConstructor.del_query(StationConstructor, it1)
+        final=API.get("conn")
+        API.remove("conn")
+        API.remove(it1)
+      :release ->
+        final=API.get("conn")
+        API.remove("conn")
+        API.remove(it1)
+    end
   end
 
 end

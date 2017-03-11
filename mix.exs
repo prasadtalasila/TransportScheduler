@@ -38,7 +38,8 @@ defmodule TS.Mixfile do
      {:maru, "~> 0.11"},
      {:distillery, ">= 0.9.0", warn_missing: false},
      {:edeliver, "~> 1.4.0"},
-     {:excoveralls, "~> 0.5", only: :test}
+     {:excoveralls, "~> 0.5", only: :test},
+     {:exprof, "~> 0.2.0"}
     ]
   end
 end

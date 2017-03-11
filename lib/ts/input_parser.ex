@@ -98,7 +98,7 @@ defmodule InputParser do
   def obtain_stations do
     station_map=Map.new
     {_, file}=open_file("data/stations.txt")
-    #n = IO.read file, [:line] |> String.trim |> String.to_integer
+    #n = IO.binread file, [:line] |> String.trim |> String.to_integer
     n = 2264
     obtain_station(file, n, station_map)
   end
@@ -107,7 +107,7 @@ defmodule InputParser do
   def obtain_schedules do
     schedule=Keyword.new
     {_, file}=open_file("data/schedule.txt")
-    #n = IO.read file, [:line] |> String.trim |> String.to_integer
+    #n = IO.binread file, [:line] |> String.trim |> String.to_integer
     n = 56555
     obtain_schedule(file, n, schedule)
   end
@@ -124,20 +124,20 @@ defmodule InputParser do
   def obtain_loc_var_map do
     locvarmap=Map.new
     {_, file}=open_file("data/local_variables.txt")
-    #n = IO.read file, [:line] |> String.trim |> String.to_integer
+    #n = IO.binread file, [:line] |> String.trim |> String.to_integer
     n = 2264
     obtain_loc_vars(file, n, locvarmap)
   end
 
   # Opens the file specified by 'filename' parameter.
   defp open_file(filename) do
-    File.open(filename, [:read, :utf8])
+    File.open(filename, [:read, :binary])
   end
 
   # 'Loops' through the n entries of the 'stations.txt' file and saves 
   # The city name and city code as a (key, value) tuples in a map.
   defp obtain_station(file, n, station_map) when n > 0 do
-    [code | city]= IO.read(file, :line) |> String.trim() |> String.split(" ", parts: 2)
+    [code | city]= IO.binread(file, :line) |> String.trim() |> String.split(" ", parts: 2)
     city=List.to_string(city)
     code=String.to_integer(code)
     station_map=Map.put(station_map, city, code)
@@ -153,7 +153,7 @@ defmodule InputParser do
   # 'Loops' through the n entries of the 'schedule.txt' file and saves 
   # The variables as entries in a data structure called Keyword.
   defp obtain_schedule(file, n, schedule) when n > 0 do
-    [vehicle_id | tail]=IO.read(file, :line) |> String.trim() |> String.split(" ", parts: 6)
+    [vehicle_id | tail]=IO.binread(file, :line) |> String.trim() |> String.split(" ", parts: 6)
     [srcStation | tail]=tail
     srcStation=String.to_integer(srcStation)
     [dstStation | tail]=tail
@@ -179,7 +179,7 @@ defmodule InputParser do
   # 'Loops' through the n entries of the 'OMT.txt' file and saves 
   # The variables as entries in a data structure called Keyword.
   defp obtain_other_mean(file, n, other_means) when n > 0 do
-    [srcStation | tail]=IO.read(file, :line) |> String.trim() |> String.split(" ", parts: 3)
+    [srcStation | tail]=IO.binread(file, :line) |> String.trim() |> String.split(" ", parts: 3)
     srcStation=String.to_integer(srcStation)
     [dstStation | travelTime]=tail
     dstStation=String.to_integer(dstStation)
@@ -199,7 +199,7 @@ defmodule InputParser do
   # 'Loops' through the n entries of the 'local_variables.txt' file and saves 
   # The local variables as (key, value) tuples in a map.
   defp obtain_loc_vars(file, n, locvarmap) when n > 0 do
-    [stationCode | tail]=IO.read(file, :line) |> String.trim() |> String.split(" ", parts: 7)
+    [stationCode | tail]=IO.binread(file, :line) |> String.trim() |> String.split(" ", parts: 7)
     stationCode=String.to_integer(stationCode)
     [local_var1 | tail]=tail
     local_var1=String.to_atom(local_var1)

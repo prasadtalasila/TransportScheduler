@@ -36,10 +36,7 @@ defmodule Station do
   end
 
   def dst_not_in_it(dst, it) do
-    #dst_list = []
-    #for it_el <- it, do: dst_list = [dst_list | Map.fetch(it_el, it_el.dst_station)]
-    #Enum.flatten(dst_list)
-    [head|it2] = it
+    [_|it2] = it
     dst_list = Enum.map(it2, fn (x) -> x[:dst_station] end)
     !Enum.member?(dst_list, dst)
   end
@@ -52,17 +49,11 @@ defmodule Station do
       time
     end
     nextList = Enum.filter(schedule, fn(x) -> x.dept_time > time and dst_not_in_it(x.dst_station, itinerary) end)
-    list=for x <- other_means do
-      if dst_not_in_it(x.dst_station, itinerary) do
-        vehicle=%{vehicleID: "OM", src_station: x.src_station, dst_station: x.dst_station, dept_time: time, arrival_time: time+x.travel_time, mode_of_transport: "Other Means"}
-      else
-        []
-      end
+    possible_walks=Enum.filter(other_means, fn(x) -> dst_not_in_it(x.dst_station, itinerary) end)
+    list=for x <- possible_walks do
+      %{vehicleID: "OM", src_station: x.src_station, dst_station: x.dst_station, dept_time: time, arrival_time: time+x.travel_time, mode_of_transport: "Other Means"}
     end
-    IO.inspect list
     List.flatten(list, nextList)
-    #nextList = Enum.filter(schedule, fn(x) -> x.dept_time > time and (for stn <-itinerary, do: stn.src_station != x.dst_station) end)
-    #IO.inspect nextList
   end
 
   def function(nc, src, itinerary, dstSched) do
@@ -85,9 +76,9 @@ defmodule Station do
 
   # Server-side callback functions
   
-  def handle_event(:cast, {:update, oldVars}, state, vars) do
+  def handle_event(:cast, {:update, oldVars}, _, _) do
     # newVars is assigned values passed to argument oldVars, ie, new values to update local variables with
-    schedule = Enum.sort(oldVars.schedule)
+    schedule = Enum.sort(oldVars.schedule, &(&1.dept_time<=&2.dept_time))
     newVars =  %StationStruct{locVars: oldVars.locVars, schedule: schedule, other_means: oldVars.other_means, station_number: oldVars.station_number, station_name: oldVars.station_name, pid: oldVars.pid,
 			      congestion_low: oldVars.congestion_low, congestion_high: oldVars.congestion_high, choose_fn: oldVars.choose_fn}
     # depending on the state of the station, appropriate FSM state change is made and new values are stored for the station
@@ -101,13 +92,13 @@ defmodule Station do
           "low" ->
             # congestionDelay is computed using computation function selected based on the choose_fn value
             congestionDelay = StationFunctions.func(newVars.choose_fn).(newVars.locVars.delay, newVars.congestion_low)
-            {x, updateLocVars} = Map.get_and_update(newVars.locVars, :congestionDelay, fn delay -> {delay, congestionDelay} end)
+            {_, updateLocVars} = Map.get_and_update(newVars.locVars, :congestionDelay, fn delay -> {delay, congestionDelay} end)
             updateVars = %{newVars|locVars: updateLocVars}
             {:next_state, :delay, updateVars}
           "high" ->
             # congestionDelay is computed using computation function selected based on the choose_fn value
             congestionDelay = StationFunctions.func(newVars.choose_fn).(newVars.locVars.delay, newVars.congestion_high)
-            {x, updateLocVars} = Map.get_and_update(newVars.locVars, :congestionDelay, fn delay -> {delay, congestionDelay} end)
+            {_, updateLocVars} = Map.get_and_update(newVars.locVars, :congestionDelay, fn delay -> {delay, congestionDelay} end)
             updateVars = %{newVars|locVars: updateLocVars}
             {:next_state, :delay, updateVars}
           _ ->
@@ -140,16 +131,22 @@ defmodule Station do
     [query] = Enum.take(itinerary, 1)
     [prevStn] = Enum.take(itinerary, -1)
     # check for overnight trip
-    if (prevStn.arrival_time>86400) do
+    {itinerary, query}=if (prevStn.arrival_time>86400) do
       itinerary=List.delete(itinerary, query)
       query=Map.update!(query, :day, &(&1+1))
       itinerary=List.insert_at(itinerary, 0, query)
+      {itinerary, query}
+    else
+      {itinerary, query}
     end
     # check if query active
-    if (StationConstructor.check_active(nc, Map.delete(query, :day))==true) do
+    _=if (StationConstructor.check_active(nc, Map.delete(query, :day))) do
       nextList = Station.check_neighbours(vars.schedule, vars.other_means, prevStn.arrival_time, itinerary)
       # for each neighbouring station, function is called to determine new itinerary additions
       Enum.each(nextList, fn(x) -> function(nc, src, itinerary, x) end)
+      true
+    else
+      false
     end
     {:next_state, state, vars}
   end
