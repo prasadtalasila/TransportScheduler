@@ -21,6 +21,10 @@ defmodule InputParser do
     GenServer.call(pid, {:get_schedule, code})
   end
 
+  def get_other_means(pid, code) do
+    GenServer.call(pid, {:get_other_means, code})
+  end
+
   def get_local_variables(pid, code) do
     GenServer.call(pid, {:get_loc_vars, code})
   end
@@ -33,7 +37,7 @@ defmodule InputParser do
     s=%StationStruct{}
     code=get_city_code(pid, city)
     %{s | locVars: Map.merge(s.locVars, get_local_variables(pid, code)), 
-      schedule: get_schedule(pid, code),
+      schedule: get_schedule(pid, code), other_means: get_other_means(pid, code), 
       station_number: code, station_name: city}
   end
 
@@ -48,32 +52,40 @@ defmodule InputParser do
     station_map=obtain_stations()
     schedule=obtain_schedules()
     locvarmap=obtain_loc_var_map()
-    {:ok, {station_map, schedule, locvarmap}}
+    other_means=obtain_other_means()
+    {:ok, {station_map, schedule, locvarmap, other_means}}
   end
 
-  def handle_call(:get_station_map, _from, {station_map, _, _}=state) do
+  def handle_call(:get_station_map, _from, {station_map, _, _, _}=state) do
     # Map of station name and station code returned
     {:reply, station_map, state}
   end
 
-  def handle_call(:get_schedules, _from, {_, schedule, _}=state) do
+  def handle_call(:get_schedules, _from, {_, schedule, _, _}=state) do
     # schedules for a station are returned
     {:reply, schedule, state}
   end
 
-  def handle_call({:get_loc_vars, code}, _from, {_, _, locvarmap}=state) do
+  def handle_call({:get_loc_vars, code}, _from, {_, _, locvarmap, _}=state) do
     # local variables for a station are returned
     {:reply, Map.fetch!(locvarmap, code), state}
   end
 
-  def handle_call({:get_city_code, city}, _from, {station_map, _, _}=state) do
+  def handle_call({:get_city_code, city}, _from, {station_map, _, _, _}=state) do
      # station code given station name is returned
    {:reply, Map.fetch!(station_map, city), state}
   end
 
-  def handle_call({:get_schedule, code}, _from, {_, schedule, _}=state) do
+  def handle_call({:get_schedule, code}, _from, {_, schedule, _, _}=state) do
     # schedules for a station and destination are returned
     {:reply, Keyword.get_values(schedule, String.to_atom(Integer.to_string(code))), state}
+  end
+
+  def handle_call({:get_other_means, code}, _from, {_, _, _, other_means}=state) do
+    # other means table for a station is returned
+    x=Keyword.get_values(other_means, String.to_atom(Integer.to_string(code)))
+    #IO.inspect x
+    {:reply, x, state}
   end
 
   def terminate(reason, state) do
@@ -98,6 +110,14 @@ defmodule InputParser do
     #n = IO.read file, [:line] |> String.trim |> String.to_integer
     n = 56555
     obtain_schedule(file, n, schedule)
+  end
+
+  # Obtains list of other means transport
+  def obtain_other_means do
+    other_means=Keyword.new
+    {_, file}=open_file("data/OMT.txt")
+    n=151
+    obtain_other_mean(file, n, other_means)
   end
 
   # Obtains Map of local variables
@@ -154,6 +174,26 @@ defmodule InputParser do
   defp obtain_schedule(file, _, schedule) do
     close_file(file)
     schedule
+  end
+
+  # 'Loops' through the n entries of the 'OMT.txt' file and saves 
+  # The variables as entries in a data structure called Keyword.
+  defp obtain_other_mean(file, n, other_means) when n > 0 do
+    [srcStation | tail]=IO.read(file, :line) |> String.trim() |> String.split(" ", parts: 3)
+    srcStation=String.to_integer(srcStation)
+    [dstStation | travelTime]=tail
+    dstStation=String.to_integer(dstStation)
+    travelTime=List.to_string(travelTime)|>String.to_integer
+    sched=Map.new |> Map.put(:src_station, srcStation)
+      |> Map.put(:dst_station, dstStation) |> Map.put(:travel_time, travelTime)
+    other_means=Enum.into(other_means, [{Integer.to_string(srcStation) |> String.to_atom, sched}])
+    obtain_other_mean(file, n-1, other_means)
+  end
+
+  # Closes the file after reading other means of n stations.
+  defp obtain_other_mean(file, _, other_means) do
+    close_file(file)
+    other_means
   end
 
   # 'Loops' through the n entries of the 'local_variables.txt' file and saves 

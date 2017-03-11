@@ -21,6 +21,7 @@ defmodule API do
       for stn_key <- Map.keys(stn_map) do
         stn_code = Map.get(stn_map, stn_key)
         stn_struct = InputParser.get_station_struct(pid, stn_key)
+        #IO.inspect stn_struct
         StationConstructor.create(StationConstructor, stn_key, stn_code)
         {:ok, {_, station}} = StationConstructor.lookup_name(StationConstructor, stn_key)
         Station.update(station, stn_struct)
@@ -47,12 +48,20 @@ defmodule API do
         #:timer.sleep(50)
         itinerary=[Map.put(query, :day, 0)]
         StationConstructor.send_to_src(StationConstructor, stn, itinerary)
-        Process.send_after(self(), :release, 500)
+        API.put(query, self())
+        Process.send_after(self(), :timeout, 500)
         receive do
-          :release ->
+          :timeout ->
             StationConstructor.del_query(StationConstructor, query)
-            conn|>put_status(200)|>json(API.get(conn)|>sort_list)
+            final=API.get(conn)|>sort_list
+            conn|>put_status(200)|>json(final)
             API.remove(conn)
+            API.remove(query)
+          :release ->
+            final=API.get(conn)|>sort_list
+            conn|>put_status(200)|>json(final)
+            API.remove(conn)
+            API.remove(query)
         end
       end
     end
@@ -71,6 +80,7 @@ defmodule API do
           {:ok, {_, station}}=StationConstructor.lookup_code(StationConstructor, params[:station_code])
           st_str=Station.get_vars(station)
           res=Map.fetch!(st_str, :schedule)
+          #IO.inspect st_str
           conn|>put_status(200)|>json(res)
         end
 

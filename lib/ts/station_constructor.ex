@@ -72,20 +72,22 @@ defmodule StationConstructor do
   def handle_call({:msg_received_at_NC, itinerary}, _from, {names, codes, refs, queries}) do
     # feasible itineraries returned to NC are displayed
     API.start_link
-    if (length(Map.keys(queries))!=0) do
+    queries=if (length(Map.keys(queries))!=0) do
       query=List.first(itinerary)|>Map.delete(:day)
       conn=Map.get(queries, query)
       list=API.get(conn)
-      bool=(length(list)<50)
-      queries=
-        case bool do
-          true ->
-            list=list++[itinerary]
-            API.put(conn, query, list)
-            queries
-          false ->
-            Map.delete(queries, query)
-        end
+      bool=(length(list)<10)
+      case bool do
+        true ->
+          list=list++[itinerary]
+          API.put(conn, query, list)
+          queries
+        false ->
+          Map.delete(queries, query)
+          send(API.get(query), :release)
+      end
+    else
+      queries
     end
     {:reply, itinerary, {names, codes, refs, queries}}
   end
