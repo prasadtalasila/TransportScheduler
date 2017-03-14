@@ -76,14 +76,20 @@ defmodule StationConstructor do
       query=List.first(itinerary)|>Map.delete(:day)
       conn=Map.get(queries, query)
       list=API.get(conn)
-      bool=(length(list)<10)
+      bool=if list===nil do
+        false
+      else
+        (length(list)<10)
+      end
       case bool do
         true ->
           list=list++[itinerary]
           API.put(conn, query, list)
           queries
         false ->
-          send(API.get(query), :release)
+          if API.member(query) do
+            send(API.get(query), :release)
+          end
           Map.delete(queries, query)
       end
     else
@@ -135,6 +141,4 @@ defmodule StationConstructor do
   def handle_info(_msg, state) do
     {:noreply, state}
   end
-
-
 end

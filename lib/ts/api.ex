@@ -14,7 +14,7 @@ defmodule API do
   
   namespace :api do
     get do
-      # {:ok, registry} =StationConstructor.start_link("NC")
+      StationConstructor.start_link(:NC)
       {_, _}=API.start_link
       {:ok, pid} = InputParser.start_link
       stn_map = InputParser.get_station_map(pid)
@@ -263,6 +263,13 @@ defmodule API do
     GenServer.cast(UQC, {:remove, key})
   end
 
+  @doc """
+  Checks whether a key is present or not
+  """
+  def member(key) do
+    GenServer.call(UQC, {:member, key})
+  end
+
   ## Server callbacks
   def init(:ok) do
     table=:ets.new(:table, [:named_table, read_concurrency: true, write_concurrency: true])
@@ -270,8 +277,18 @@ defmodule API do
   end
 
   def handle_call({:get, key}, _from, {table}=state) do
-    [entry]=:ets.lookup(table, key)
-    {:reply, elem(entry, tuple_size(entry)-1), state}
+    entry=:ets.lookup(table, key)
+    if (length(entry)===0) do
+      {:reply, nil, state}
+    else
+      [tuple]=entry
+      {:reply, elem(tuple, tuple_size(tuple)-1), state}
+    end
+    
+  end
+
+  def handle_call({:member, key}, _from, {table}=state) do
+    {:reply, :ets.member(table, key), state}
   end
 
   def handle_cast({:put, key, value}, {table}) do
