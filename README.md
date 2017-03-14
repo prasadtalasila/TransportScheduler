@@ -16,7 +16,7 @@ If [available in Hex](https://hex.pm/docs/publish), the package can be installed
 
 ```elixir
 def deps do
-	[{:ts, "~> 0.1.0"}]
+  [{:ts, "~> 0.1.0"}]
 end
 ```
 
@@ -24,7 +24,7 @@ end
 
 ```elixir
 def application do
-	[applications: [:ts]]
+  [applications: [:ts]]
 end
 ```
 
