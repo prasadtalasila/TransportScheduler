@@ -39,7 +39,7 @@ defmodule TS.Mixfile do
      {:distillery, ">= 0.9.0", warn_missing: false},
      {:edeliver, "~> 1.4.0"},
      {:excoveralls, "~> 0.5", only: :test},
-     {:credo, "~> 0.3", only: [:dev, :test]}
+     {:credo, "~> 0.3", only: [:dev, :test]},
      {:exprof, "~> 0.2.0"}
     ]
   end
