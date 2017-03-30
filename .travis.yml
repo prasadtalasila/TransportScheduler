@@ -10,9 +10,11 @@ install:
 - mix deps.get
 
 script:
-- mix test
-- MIX_ENV=test mix coveralls.travis
+  - mix test
+  - MIX_ENV=test mix coveralls.travis
+  - MIX_ENV=test mix credo
+
 after_success:
-- mix edeliver build release
-- mix edeliver deploy release
-- mix edeliver start
+  - mix edeliver build release
+  - mix edeliver deploy release
+  - mix edeliver start
