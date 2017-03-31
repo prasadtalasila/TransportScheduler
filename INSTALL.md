@@ -22,12 +22,12 @@ ls -l erl     #probably ../lib/erlang/bin/erl
 cd ../lib/erlang/
 cat releases/19/OTP_VERSION
 ```
-Check for OTP 19.0   
+Check for OTP 19.0.   
 
-Once you have Elixir installed, you can check its version by running
+Once you have Elixir installed, you can check its version by running:
 ```bash
 elixir --version.
 ```
-Check for Elixir above 1.3   
+Check for Elixir above 1.3.   
 
 If you can’t install Erlang or Elixir as mentioned above or if your package manager is outdated, use `asdf` to install and manage different Elixir and Erlang versions or the Precompiled packages available.
