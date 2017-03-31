@@ -22,6 +22,12 @@ mix deps.get
 mix compile
 mix test
 ```
+```bash
+cd TransportScheduler
+mix deps.get
+mix compile
+mix test
+```
 
 Run the following commands to deploy (currently server and user are localhost):   
 ```bash
