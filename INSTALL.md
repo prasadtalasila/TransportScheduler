@@ -16,12 +16,11 @@ sudo apt-get install elixir
 
 In order to get the full version number it is necessary to check the contents of the OTP_RELEASE file under the releases folder.
 ```bash
-$ which erl
-$ cd /usr/bin
-$ ls -l erl
-../lib/erlang/bin/erl
-$ cd ../lib/erlang/
-$ cat releases/17/OTP_VERSION
+which erl     #probably /usr/bin/erl
+cd /usr/bin
+ls -l erl     #probably ../lib/erlang/bin/erl
+cd ../lib/erlang/
+cat releases/19/OTP_VERSION
 ```
 Check for OTP 19.0   
 
@@ -29,9 +28,6 @@ Once you have Elixir installed, you can check its version by running
 ```bash
 elixir --version.
 ```
-Check for Elixir > 1.3   
+Check for Elixir above 1.3   
 
 If you can’t install Erlang or Elixir as mentioned above or if your package manager is outdated, use `asdf` to install and manage different Elixir and Erlang versions or the Precompiled packages available.
-
-
-
