@@ -3,6 +3,6 @@ defmodule TSTest do
   doctest TS
 
   test "the truth" do
-    assert 1 + 1 == 2
+    assert 1+1==2
   end
 end
