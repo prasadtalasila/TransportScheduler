@@ -1,4 +1,7 @@
 defmodule TSProfile  do
+	@moduledoc """
+	Code profiling code
+	"""
 	import ExProf.Macro
 
 	@doc "analyze with profile macro"

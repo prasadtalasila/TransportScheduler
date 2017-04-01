@@ -1,6 +1,7 @@
-# Module to store data from input files in the defined station structure
-
 defmodule InputParser do
+	@moduledoc """
+	Module to store data from input files in the defined station structure
+	"""
 	use GenServer
 
 	# Client-side functions
@@ -163,16 +164,16 @@ defmodule InputParser do
 		src_station=String.to_integer(src_station)
 		[dst_station|tail]=tail
 		dst_station=String.to_integer(dst_station)
-		[deptTime|tail]=tail
-		deptTime=String.to_integer(deptTime)
+		[dept_time|tail]=tail
+		dept_time=String.to_integer(dept_time)
 		[arrival_time|mode_of_transport]=tail
 		mode_of_transport=List.to_string(mode_of_transport)
 		arrival_time=String.to_integer(arrival_time)
 		sched=Map.new|>Map.put(:vehicleID, vehicle_id)|>
 		Map.put(:src_station, src_station)|>Map.put(:dst_station, dst_station)|>
-		Map.put(:dept_time, deptTime)|>Map.put(:arrival_time, arrival_time)|>
+		Map.put(:dept_time, dept_time)|>Map.put(:arrival_time, arrival_time)|>
 		Map.put(:mode_of_transport, mode_of_transport)
-		schedule=schedule|>Enum.into([{Integer.to_string(src_station)|>
+		schedule=schedule|>Enum.into([{src_station|>Integer.to_string|>
 			String.to_atom, sched}])
 		obtain_schedule(file, n-1, schedule)
 	end

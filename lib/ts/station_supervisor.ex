@@ -1,4 +1,7 @@
 defmodule TS.Station.Supervisor do
+	@moduledoc """
+	.
+	"""
 	use Supervisor
 
 	@name TS.Station.Supervisor
@@ -15,7 +18,7 @@ defmodule TS.Station.Supervisor do
 		children=[
 			worker(Station, [], restart: :temporary)
 		]
-
 		supervise(children, strategy: :simple_one_for_one)
 	end
+
 end

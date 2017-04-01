@@ -1,7 +1,9 @@
-# Module to test Station
-# Create new station process with associated FSM and updates local variable values
-
 defmodule StationTest do
+	@moduledoc """
+	Module to test Station
+	Create new station process with associated FSM and updates local variable
+	values
+	"""
 	use ExUnit.Case
 
 	test "Start and update a new Station process" do

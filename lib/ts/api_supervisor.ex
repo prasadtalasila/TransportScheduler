@@ -1,4 +1,7 @@
 defmodule TS.API.Supervisor do
+	@moduledoc """
+	.
+	"""
 	use Supervisor
 	@name TS.API.Supervisor
 

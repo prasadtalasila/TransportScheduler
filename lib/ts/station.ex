@@ -1,6 +1,7 @@
-# Module to create a station process and FSM and handle local variable updates
-
 defmodule Station do
+	@moduledoc """
+	Module to create a station process and FSM and handle local variable updates
+	"""
 	use GenStateMachine, async: true
 
 	def start_link do
@@ -16,13 +17,13 @@ defmodule Station do
 	def get_vars(station) do
 		GenStateMachine.call(station, :get_vars)
 	end
-	
+
 	def get_state(station) do
 		GenStateMachine.call(station, :get_state)
 	end
 
 	# Client-side message-passing functions
-	
+
 	def receive_at_src(nc, src, itinerary) do
 		GenStateMachine.cast(src, {:receive_at_src, nc, src, itinerary})
 	end
@@ -40,7 +41,7 @@ defmodule Station do
 		dst_list=Enum.map(it2, fn (x)->x[:dst_station] end)
 		!Enum.member?(dst_list, dst)
 	end
-	
+
 	def check_neighbours(schedule, other_means, time, itinerary) do
 		# schedule is filtered to reject neighbours with departure time earlier
 		# than arrival time at the station for the current itinerary
@@ -49,9 +50,9 @@ defmodule Station do
 		else
 			time
 		end
-		next_list=Enum.filter(schedule, fn(x)->x.dept_time>time and
+		next_list=Enum.filter(schedule, fn(x)->x.dept_time>time&&
 			dst_not_in_it(x.dst_station, itinerary) end)
-		possible_walks=Enum.filter(other_means, 
+		possible_walks=Enum.filter(other_means,
 			fn(x)->dst_not_in_it(x.dst_station, itinerary) end)
 		list=for x<-possible_walks do
 			%{vehicleID: "OM", src_station: x.src_station, dst_station:
@@ -63,31 +64,31 @@ defmodule Station do
 
 	def function(nc, src, itinerary, dstSched) do
 		# schedule to reach this destination station is added to itinerary
-		newItinerary=List.flatten([itinerary|[dstSched]])
-		[query]=Enum.take(newItinerary, 1)
+		new_itinerary=List.flatten([itinerary|[dstSched]])
+		[query]=Enum.take(new_itinerary, 1)
 		{:ok, {_, dst}}=StationConstructor.lookup_code(nc, dstSched.dst_station)
-		# newItinerary is either returned to NC or sent on to next station to
+		# new_itinerary is either returned to NC or sent on to next station to
 		# continue additions
 		if dstSched.dst_station==query.dst_station do
 			#if (dstSched.arrival_time>86400) do
-			#  newItinerary=List.delete(newItinerary, query)
+			#  new_itinerary=List.delete(new_itinerary, query)
 			#  query=Map.update!(query, :day, &(&1-1))
-			#  newItinerary=List.insert_at(newItinerary, 0, query)
+			#  new_itinerary=List.insert_at(new_itinerary, 0, query)
 			#end
 			#IO.inspect query
-			#Station.send_to_NC(nc, newItinerary)
+			#Station.send_to_NC(nc, new_itinerary)
 			query=query|>Map.delete(:day)
 			if API.member(query) do
-				#query|>API.get|>elem(2)|>send({:add_itinerary, newItinerary})
-				query|>API.get|>elem(1)|>QC.collect(newItinerary)
+				#query|>API.get|>elem(2)|>send({:add_itinerary, new_itinerary})
+				query|>API.get|>elem(1)|>QC.collect(new_itinerary)
 			end
 		else
-			Station.send_to_stn(nc, src, dst, newItinerary)
+			Station.send_to_stn(nc, src, dst, new_itinerary)
 		end
 	end
 
 	# Server-side callback functions
-	
+
 	def handle_event(:cast, {:update, old_vars}, _, _) do
 		# new_vars is assigned values passed to argument old_vars, ie, new values to
 		# update local variables with
@@ -183,4 +184,5 @@ defmodule Station do
 	def handle_event(event_type, event_content, state, vars) do
 		super(event_type, event_content, state, vars)
 	end
+
 end

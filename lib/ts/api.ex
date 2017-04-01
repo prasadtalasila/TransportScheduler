@@ -1,6 +1,7 @@
 defmodule API do
 	@moduledoc """
-	Module to define API to obtain and update station variables and find best itinerary
+	Module to define API to obtain and update station variables and find best 
+	itinerary
 	"""
 	use Maru.Router, make_plug: true
 	use Maru.Type
@@ -56,7 +57,8 @@ defmodule API do
 					#receive do
 						#{:add_itinerary, complete_itinerary} ->
 							#IO.puts "msg"
-							#API.add_itinerary(StationConstructor.return_queries(StationConstructor), complete_itinerary)
+							#API.add_itinerary(StationConstructor.
+								#return_queries(StationConstructor), complete_itinerary)
 					#end
 				#end)
 				API.put(query, {self(), pid, System.system_time(:milliseconds)})
@@ -154,7 +156,7 @@ defmodule API do
 						{:ok, {_, station}}=StationConstructor.
 						lookup_code(StationConstructor, entry_map.src_station)
 						st_str=Station.get_vars(station)
-						stn_sched=update_list(st_str.schedule, [], entry_map.vehicleID, 
+						stn_sched=update_list(st_str.schedule, [], entry_map.vehicleID,
 							entry_map, length(st_str.schedule))
 						st_str=%{st_str|schedule: stn_sched}
 						Station.update(station, st_str)
@@ -210,7 +212,7 @@ defmodule API do
 						requires :congestion, type: String, values: ["none", "low", "high"],
 						 default: "none"
 						requires :delay, type: Float
-						requires :disturbance, type: String, values: ["yes", "no"], 
+						requires :disturbance, type: String, values: ["yes", "no"],
 						default: "no"
 					end
 					requires :schedule, type: Map do
@@ -229,13 +231,13 @@ defmodule API do
 				post do
 					# Add new station's details
 					#registry=API.get(:NC)
-					StationConstructor.create(StationConstructor, params[:station_name], 
+					StationConstructor.create(StationConstructor, params[:station_name],
 						params[:station_code])
 					{:ok, {_, station}}=StationConstructor.lookup_code(StationConstructor,
 					params[:station_code])
 					loc_var_map=Map.put(params[:local_vars], :congestion_delay, nil)
-					stn_str=%StationStruct{loc_vars: loc_var_map, schedule: 
-					[params[:schedule]], station_number: params[:station_code], 
+					stn_str=%StationStruct{loc_vars: loc_var_map, schedule:
+					[params[:schedule]], station_number: params[:station_code],
 					station_name: params[:station_name]}
 					Station.update(station, stn_str)
 					conn|>put_status(201)|>text("New Station created!\n")

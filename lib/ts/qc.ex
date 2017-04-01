@@ -56,4 +56,5 @@ defmodule QC do
 		itineraries=[]
 		:ok
 	end
+
 end

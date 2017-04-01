@@ -1,9 +1,10 @@
-# Module to test StationConstructor
-# Create new NC process and add stations to its registry
-# Use InputParser to create new stations
-# Use message passing to find best itinerary
-
 defmodule StationConstructorTest do
+	@moduledoc """
+	Module to test StationConstructor
+	Create new NC process and add stations to its registry
+	Use InputParser to create new stations
+	Use message passing to find best itinerary
+	"""
 	use ExUnit.Case, async: true
 
 	test "Start new NC and add new Station process" do

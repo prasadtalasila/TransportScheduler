@@ -1,6 +1,7 @@
-# Module to test InputParser
-
 defmodule InputParserTest do
+	@moduledoc """
+	Module to test InputParser
+	"""
 	use ExUnit.Case
 
 	test "Populate data structures" do

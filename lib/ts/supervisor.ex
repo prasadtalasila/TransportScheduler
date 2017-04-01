@@ -1,4 +1,7 @@
 defmodule TS.Supervisor do
+	@moduledoc """
+	.
+	"""
 	use Supervisor
 
 	def start_link do
@@ -11,8 +14,7 @@ defmodule TS.Supervisor do
 			supervisor(TS.API.Supervisor, []),
 			supervisor(TS.Station.Supervisor, [])
 		]
-
 		supervise(children, strategy: :rest_for_one)
 	end
-	
+
 end

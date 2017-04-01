@@ -1,7 +1,8 @@
-# Module listing possible functions to use to compute congestion_delay value
-# based on delay and factor
-
 defmodule StationFunctions do
+	@moduledoc """
+	Module listing possible functions to use to compute congestion_delay value
+	based on delay and factor
+	"""
 
 	def compute_congestion_delay1(delay, factor) do
 		congestion_delay=delay*factor

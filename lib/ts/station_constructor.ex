@@ -1,7 +1,8 @@
-# Module to create registry process for monitoring all station processes, i.e., 
-# Network Constructor NC
-
 defmodule StationConstructor do
+	@moduledoc """
+	Module to create registry process for monitoring all station processes, i.e., 
+	Network Constructor NC
+	"""
 	use GenServer, async: true
 
 	def add_query(server, query, conn) do
