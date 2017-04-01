@@ -44,7 +44,8 @@ defmodule QC do
 	"""
 	def handle_cast({:collect, itinerary}, {itineraries}) do
 		#itineraries=itineraries++[itinerary]
-		API.add_itinerary(StationConstructor.return_queries(StationConstructor), itinerary)
+		API.add_itinerary(StationConstructor.return_queries(StationConstructor),
+			itinerary)
 		{:noreply, {itineraries}}
 	end
 

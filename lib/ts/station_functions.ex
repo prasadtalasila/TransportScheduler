@@ -1,17 +1,18 @@
-# Module listing possible functions to use to compute congestionDelay value based on delay and factor
+# Module listing possible functions to use to compute congestion_delay value
+# based on delay and factor
 
 defmodule StationFunctions do
 
 	def compute_congestion_delay1(delay, factor) do
-		congestionDelay=delay*factor
+		congestion_delay=delay*factor
 	end
 
 	def compute_congestion_delay2(delay, factor) do
-		congestionDelay=delay*factor+0.2
+		congestion_delay=delay*factor+0.2
 	end
 
 	def compute_congestion_delay3(delay, factor) do
-		congestionDelay=delay*factor*factor
+		congestion_delay=delay*factor*factor
 	end
 
 	def func(choose_fn) do
@@ -22,5 +23,5 @@ defmodule StationFunctions do
 			3=>fn (delay, factor)->compute_congestion_delay3(delay, factor) end},
 			choose_fn)
 	end
-	
+
 end

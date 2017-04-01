@@ -1,4 +1,5 @@
-# Module to create registry process for monitoring all station processes, ie, Network Constructor NC
+# Module to create registry process for monitoring all station processes, i.e., 
+# Network Constructor NC
 
 defmodule StationConstructor do
 	use GenServer, async: true
@@ -31,7 +32,7 @@ defmodule StationConstructor do
 	def create(server, name, code) do
 		GenServer.cast(server, {:create, name, code})
 	end
-	
+
 	def stop(server) do
 		GenServer.stop(server, :normal)
 	end
@@ -72,12 +73,12 @@ defmodule StationConstructor do
 		{:reply, queries, state}
 	end
 
-	def handle_call({:lookup_name, name}, _from, {names, _, _, _} = state) do
+	def handle_call({:lookup_name, name}, _from, {names, _, _, _}=state) do
 		# station name lookup from Map in registry
 		{:reply, Map.fetch(names, name), state}
 	end
 
-	def handle_call({:lookup_code, code}, _from, {_, codes, _, _} = state) do
+	def handle_call({:lookup_code, code}, _from, {_, codes, _, _}=state) do
 		# station code lookup from Map in registry
 		{:reply, Map.fetch(codes, code), state}
 	end
@@ -90,7 +91,8 @@ defmodule StationConstructor do
 		end
 	end
 
-	#def handle_cast({:msg_received_at_NC, itinerary}, {names, codes, refs, queries}) do
+	#def handle_cast({:msg_received_at_NC, itinerary}, {names, codes, refs,
+	# queries}) do
 		# feasible itineraries returned to NC are displayed
 #API.start_link
 #queries=if (length(Map.keys(queries))!=0) do

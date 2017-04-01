@@ -12,7 +12,7 @@ defmodule TS.Station.Supervisor do
 	end
 
 	def init(:ok) do
-		children = [
+		children=[
 			worker(Station, [], restart: :temporary)
 		]
 

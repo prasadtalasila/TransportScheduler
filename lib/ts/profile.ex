@@ -11,10 +11,11 @@ defmodule TSProfile  do
 				stn_struct=InputParser.get_station_struct(pid, stn_key)
 				#IO.inspect stn_struct
 				StationConstructor.create(StationConstructor, stn_key, stn_code)
-				{:ok, {_, station}}=StationConstructor.lookup_name(StationConstructor, stn_key)
+				{:ok, {_, station}}=StationConstructor.lookup_name(StationConstructor,
+					stn_key)
 				Station.update(station, stn_struct)
 			end
-		 query=%{src_station: 1, dst_station: 324, arrival_time: 13200}
+		 query=%{src_station: 1, dst_station: 324, arrival_time: 13_200}
 				#registry=API.get(:NC)
 				{:ok, {_, stn}}=StationConstructor.lookup_code(StationConstructor, 1)
 				API.put("conn", query, [])
@@ -26,7 +27,7 @@ defmodule TSProfile  do
 				#IO.inspect self()
 				#IO.inspect query
 				API.put(query, self())
-				Process.send_after(self(), :timeout, 10000)
+				Process.send_after(self(), :timeout, 10_000)
 				receive do
 					:timeout->
 						StationConstructor.del_query(StationConstructor, query)
@@ -43,8 +44,8 @@ defmodule TSProfile  do
 
 	@doc "get analysis records and sum them up"
 	def run do
-		records = do_analyze
-		total_percent = Enum.reduce(records, 0.0, &(&1.percent + &2))
+		records=do_analyze
+		total_percent=Enum.reduce(records, 0.0, &(&1.percent+&2))
 		IO.inspect "total = #{total_percent}"
 	end
 end

@@ -10,7 +10,7 @@ defmodule StationConstructorTest do
 		assert StationConstructor.lookup_name(StationConstructor, "VascoStation")==
 		:error
 		assert StationConstructor.create(StationConstructor, "TestStation", 12)==:ok
-		{:ok, pid} = StationConstructor.lookup_name(StationConstructor, 
+		{:ok, pid}=StationConstructor.lookup_name(StationConstructor,
 			"TestStation")
 	end
 
@@ -23,14 +23,14 @@ defmodule StationConstructorTest do
 			stn_struct=InputParser.get_station_struct(pid, stn_key)
 			assert StationConstructor.create(StationConstructor, stn_key, stn_code)==
 			:ok
-			{:ok, {code, station}}=StationConstructor.lookup_name(StationConstructor, 
+			{:ok, {code, station}}=StationConstructor.lookup_name(StationConstructor,
 				stn_key)
 			#IO.puts Station.get_state(station)
 			Station.update(station, %StationStruct{})
 			#IO.puts Station.get_state(station)
 			Station.update(station, stn_struct)
 		end
-		{:ok, {code, stn}}=StationConstructor.lookup_name(StationConstructor, 
+		{:ok, {code, stn}}=StationConstructor.lookup_name(StationConstructor,
 			"Alnavar Junction")
 	end
 
@@ -43,13 +43,13 @@ defmodule StationConstructorTest do
 			stn_struct=InputParser.get_station_struct(pid, stn_key)
 			assert StationConstructor.create(StationConstructor, stn_key, stn_code)==
 			:ok
-			{:ok, {code, station}}=StationConstructor.lookup_name(StationConstructor, 
+			{:ok, {code, station}}=StationConstructor.lookup_name(StationConstructor,
 				stn_key)
 			Station.update(station, stn_struct)
 		end
-		{:ok, {code1, stn1}}=StationConstructor.lookup_name(StationConstructor, 
+		{:ok, {code1, stn1}}=StationConstructor.lookup_name(StationConstructor,
 			"Madgaon")
-		{:ok, {code2, stn2}}=StationConstructor.lookup_name(StationConstructor, 
+		{:ok, {code2, stn2}}=StationConstructor.lookup_name(StationConstructor,
 			"Ratnagiri")
 		itinerary=[%{src_station: code1, dst_station: code2, arrival_time: 0}]
 		it1=List.first(itinerary)

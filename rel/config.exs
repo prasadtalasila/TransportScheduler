@@ -1,8 +1,8 @@
 use Mix.Releases.Config,
-    # This sets the default release built by `mix release`
-    default_release: :default,
-    # This sets the default environment used by `mix release`
-    default_environment: :dev
+		# This sets the default release built by `mix release`
+		default_release: :default,
+		# This sets the default environment used by `mix release`
+		default_environment: :dev
 
 # For a full list of config options for both releases
 # and environments, visit https://hexdocs.pm/distillery/configuration.html
@@ -14,15 +14,15 @@ use Mix.Releases.Config,
 # and environment configuration is called a profile
 
 environment :dev do
-  set dev_mode: true
-  set include_erts: false
-  set cookie: :"({oYes7fl[5`{*[_HqO[oIIDswcnSgI_)8[jn|Q.VM/{rUcGQIEA3gIhMt1{cG=+"
+	set dev_mode: true
+	set include_erts: false
+	set cookie: :"({oYes7fl[5`{*[_HqO[oIIDswcnSgI_)8[jn|Q.VM/{rUcGQIEA3gIhMt1{cG=+"
 end
 
 environment :prod do
-  set include_erts: true
-  set include_src: false
-  set cookie: :"({oYes7fl[5`{*[_HqO[oIIDswcnSgI_)8[jn|Q.VM/{rUcGQIEA3gIhMt1{cG=+"
+	set include_erts: true
+	set include_src: false
+	set cookie: :"({oYes7fl[5`{*[_HqO[oIIDswcnSgI_)8[jn|Q.VM/{rUcGQIEA3gIhMt1{cG=+"
 end
 
 # You may define one or more releases in this file.
@@ -31,5 +31,5 @@ end
 # will be used by default
 
 release :ts do
-  set version: current_version(:ts)
+	set version: current_version(:ts)
 end

@@ -12,7 +12,7 @@ defmodule API do
 		json_decoder: Poison,
 		parsers: [:json]
 	end
-	
+
 	namespace :api do
 		get do
 			StationConstructor.start_link(:NC)
@@ -24,7 +24,8 @@ defmodule API do
 				stn_struct=InputParser.get_station_struct(pid, stn_key)
 				#IO.inspect stn_struct
 				StationConstructor.create(StationConstructor, stn_key, stn_code)
-				{:ok, {_, station}}=StationConstructor.lookup_name(StationConstructor, stn_key)
+				{:ok, {_, station}}=StationConstructor.lookup_name(StationConstructor,
+					stn_key)
 				Station.update(station, stn_struct)
 			end
 			#API.put(:NC, registry)
@@ -41,9 +42,11 @@ defmodule API do
 			end
 			get do
 				# Obtain itinerary
-				query=%{src_station: params[:source], dst_station: params[:destination], arrival_time: params[:start_time]}
+				query=%{src_station: params[:source], dst_station: params[:destination],
+				arrival_time: params[:start_time]}
 				#registry=API.get(:NC)
-				{:ok, {_, stn}}=StationConstructor.lookup_code(StationConstructor, params[:source])
+				{:ok, {_, stn}}=StationConstructor.lookup_code(StationConstructor,
+					params[:source])
 				API.put(conn, query, [])
 				StationConstructor.add_query(StationConstructor, query, conn)
 				#:timer.sleep(50)
@@ -58,11 +61,11 @@ defmodule API do
 				#end)
 				API.put(query, {self(), pid, System.system_time(:milliseconds)})
 				StationConstructor.send_to_src(StationConstructor, stn, itinerary)
-				Process.send_after(self(), :timeout, 10000)
+				Process.send_after(self(), :timeout, 10_000)
 				receive do
 					:timeout->
 						StationConstructor.del_query(StationConstructor, query)
-						final=API.get(conn)|>sort_list
+						final=conn|>API.get|>sort_list
 						conn|>put_status(200)|>json(final)
 						#if (API.member({query, "time"})) do
 							#IO.puts "#{API.get({query, "time"})}"
@@ -73,7 +76,7 @@ defmodule API do
 						#IO.puts "done"
 						QC.stop(pid)
 					:release->
-						final=API.get(conn)|>sort_list
+						final=conn|>API.get|>sort_list
 						conn|>put_status(200)|>json(final)
 						#IO.puts "#{API.get({query, "time"})}"
 						#API.remove({query, "time"})
@@ -96,7 +99,8 @@ defmodule API do
 				get do
 					# Get schedule
 					#registry=API.get(:NC)
-					{:ok, {_, station}}=StationConstructor.lookup_code(StationConstructor, params[:station_code])
+					{:ok, {_, station}}=StationConstructor.lookup_code(StationConstructor,
+					params[:station_code])
 					st_str=Station.get_vars(station)
 					res=Map.fetch!(st_str, :schedule)
 					#IO.inspect st_str
@@ -120,7 +124,8 @@ defmodule API do
 						# Add New Schedule
 						entry_map=params[:entry]
 						#registry=API.get(:NC)
-						{:ok, {_, station}}=StationConstructor.lookup_code(StationConstructor, entry_map.src_station)
+						{:ok, {_, station}}=StationConstructor.
+						lookup_code(StationConstructor, entry_map.src_station)
 						st_str=Station.get_vars(station)
 						stn_sched=List.insert_at(st_str.schedule, 0, entry_map)
 						st_str=%{st_str|schedule: stn_sched}
@@ -146,16 +151,18 @@ defmodule API do
 						# Update Schedule
 						entry_map=params[:entry]
 						#registry=API.get(:NC)
-						{:ok, {_, station}}=StationConstructor.lookup_code(StationConstructor, entry_map.src_station)
+						{:ok, {_, station}}=StationConstructor.
+						lookup_code(StationConstructor, entry_map.src_station)
 						st_str=Station.get_vars(station)
-						stn_sched=update_list(st_str.schedule, [], entry_map.vehicleID, entry_map, length(st_str.schedule))
+						stn_sched=update_list(st_str.schedule, [], entry_map.vehicleID, 
+							entry_map, length(st_str.schedule))
 						st_str=%{st_str|schedule: stn_sched}
 						Station.update(station, st_str)
 						conn|>put_status(202)|>text("Schedule Updated!\n")
 					end
 				end
 			end
-			
+
 			namespace :state do
 				@desc "get state of a station"
 				params do
@@ -164,7 +171,8 @@ defmodule API do
 				get do
 					# Get state vars of that station
 					#registry=API.get(:NC)
-					{:ok, {_, station}}=StationConstructor.lookup_code(StationConstructor, params[:station_code])
+					{:ok, {_, station}}=StationConstructor.lookup_code(StationConstructor,
+					params[:station_code])
 					st_str=Station.get_vars(station)
 					conn|>put_status(200)|>json(st_str.locVars)
 				end
@@ -174,18 +182,21 @@ defmodule API do
 					params do
 						requires :station_code, type: Integer
 						requires :local_vars, type: Map do
-							requires :congestion, type: String, values: ["none", "low", "high"], default: "none"
+							requires :congestion, type: String, values: ["none", "low",
+							"high"], default: "none"
 							requires :delay, type: Float
-							requires :disturbance, type: String, values: ["yes", "no"], default: "no"
+							requires :disturbance, type: String, values: ["yes", "no"],
+							default: "no"
 						end
 					end
 					put do
 						# Update state vars of that station
 						#registry=API.get(:NC)
-						{:ok, {_, station}}=StationConstructor.lookup_code(StationConstructor, params[:station_code])
+						{:ok, {_, station}}=StationConstructor.
+						lookup_code(StationConstructor, params[:station_code])
 						st_str=Station.get_vars(station)
-						locVarMap=Map.put(params[:local_vars], :congestionDelay, nil)
-						st_str=%{st_str|locVars: locVarMap}
+						loc_var_map=Map.put(params[:local_vars], :congestionDelay, nil)
+						st_str=%{st_str|locVars: loc_var_map}
 						Station.update(station, st_str)
 						conn|>put_status(202)|>text("State Updated!\n")
 					end
@@ -196,9 +207,11 @@ defmodule API do
 				desc "create a new station"
 				params do
 					requires :local_vars, type: Map do
-						requires :congestion, type: String, values: ["none", "low", "high"], default: "none"
+						requires :congestion, type: String, values: ["none", "low", "high"],
+						 default: "none"
 						requires :delay, type: Float
-						requires :disturbance, type: String, values: ["yes", "no"], default: "no"
+						requires :disturbance, type: String, values: ["yes", "no"], 
+						default: "no"
 					end
 					requires :schedule, type: Map do
 							requires :vehicleID, type: String
@@ -216,10 +229,14 @@ defmodule API do
 				post do
 					# Add new station's details
 					#registry=API.get(:NC)
-					StationConstructor.create(StationConstructor, params[:station_name], params[:station_code])
-					{:ok, {_, station}}=StationConstructor.lookup_code(StationConstructor, params[:station_code])
-					locVarMap=Map.put(params[:local_vars], :congestionDelay, nil)
-					stn_str=%StationStruct{locVars: locVarMap, schedule: [params[:schedule]], station_number: params[:station_code], station_name: params[:station_name]}
+					StationConstructor.create(StationConstructor, params[:station_name], 
+						params[:station_code])
+					{:ok, {_, station}}=StationConstructor.lookup_code(StationConstructor,
+					params[:station_code])
+					loc_var_map=Map.put(params[:local_vars], :congestionDelay, nil)
+					stn_str=%StationStruct{locVars: loc_var_map, schedule: 
+					[params[:schedule]], station_number: params[:station_code], 
+					station_name: params[:station_name]}
 					Station.update(station, stn_str)
 					conn|>put_status(201)|>text("New Station created!\n")
 				end
@@ -249,8 +266,8 @@ defmodule API do
 
 	def add_itinerary(queries, itinerary) do
 		API.start_link
-		queries=if (length(Map.keys(queries))!=0) do
-			query=List.first(itinerary)|>Map.delete(:day)
+		queries=if length(Map.keys(queries)!=0) do
+			query=itinerary|>List.first|>Map.delete(:day)
 			conn=Map.get(queries, query)
 			list=API.get(conn)
 			bool=if list===nil do
@@ -269,7 +286,7 @@ defmodule API do
 					queries
 				false->
 					if API.member(query) do
-						send(API.get(query)|>elem(0), :release)
+						send(query|>API.get|>elem(0), :release)
 					end
 					Map.delete(queries, query)
 			end
@@ -323,19 +340,20 @@ defmodule API do
 
 	## Server callbacks
 	def init(:ok) do
-		table=:ets.new(:table, [:named_table, read_concurrency: true, write_concurrency: true])
+		table=:ets.new(:table, [:named_table, read_concurrency: true,
+			write_concurrency: true])
 		{:ok, {table}}
 	end
 
 	def handle_call({:get, key}, _from, {table}=state) do
 		entry=:ets.lookup(table, key)
-		if (length(entry)===0) do
+		if length(entry)===0 do
 			{:reply, nil, state}
 		else
 			[tuple]=entry
 			{:reply, elem(tuple, tuple_size(tuple)-1), state}
 		end
-		
+
 	end
 
 	def handle_call({:member, key}, _from, {table}=state) do
@@ -368,10 +386,10 @@ defmodule API do
 
 	## Other functions
 	defp sort_list(list) do
-		Enum.sort(list, &( (((List.first(&1)).day*86400)+
+		Enum.sort(list, &((((List.first(&1)).day*86_400)+
 			(List.last(&1)).arrival_time-(List.first(&1)).arrival_time)<
-		(((List.first(&2)).day*86400)+(List.last(&2)).arrival_time-
-			(List.first(&2)).arrival_time) ) )
+		(((List.first(&2)).day*86_400)+(List.last(&2)).arrival_time-
+			(List.first(&2)).arrival_time)))
 	end
 
 	defp update_list(oldlist, newlist, val, repl, n) when n>0 do

@@ -1,8 +1,8 @@
 defmodule TSTest do
-  use ExUnit.Case
-  doctest TS
+	use ExUnit.Case
+	doctest TS
 
-  test "the truth" do
-    assert 1+1==2
-  end
+	test "the truth" do
+		assert 1+1==2
+	end
 end
