@@ -16,17 +16,17 @@ defmodule UQCFSM do
   # Server
   def handle_event(:cast, {:update, it}, state, _) do
     case state do
-      :raw ->
+      :raw->
 	{:next_state, :mode_transport, nil}
-      :mode_transport ->
+      :mode_transport->
 	# Filter based on mode of transport
 	{:next_state, :cost, nil}
-      :cost ->
+      :cost->
 	# Put only cheap modes of transport
 	{:next_state, :exit, nil}
-
-      _ ->
+      _->
 	{:next_state, :exit, nil}
     end
   end
+
 end

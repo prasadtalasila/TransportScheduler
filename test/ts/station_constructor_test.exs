@@ -49,8 +49,9 @@ defmodule StationConstructorTest do
     StationConstructor.add_query(StationConstructor, it1, "conn")
     #:timer.sleep(50)
     itinerary=[Map.put(it1, :day, 0)]
+    {:ok, pid}=QC.start_link
+    API.put(it1, {self(), pid})
     StationConstructor.send_to_src(StationConstructor, stn1, itinerary)
-    API.put(it1, self())
     Process.send_after(self(), :timeout, 500)
     receive do
       :timeout ->
@@ -58,10 +59,12 @@ defmodule StationConstructorTest do
         final=API.get("conn")
         API.remove("conn")
         API.remove(it1)
+        QC.stop(pid)
       :release ->
         final=API.get("conn")
         API.remove("conn")
         API.remove(it1)
+        QC.stop(pid)
     end
   end
 

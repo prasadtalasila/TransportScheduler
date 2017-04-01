@@ -6,7 +6,7 @@ defmodule TS.Supervisor do
   end
 
   def init(:ok) do
-    children = [
+    children=[
       worker(StationConstructor, [StationConstructor]),
       supervisor(TS.API.Supervisor, []),
       supervisor(TS.Station.Supervisor, [])
@@ -14,7 +14,5 @@ defmodule TS.Supervisor do
 
     supervise(children, strategy: :rest_for_one)
   end
-
-
+  
 end
-

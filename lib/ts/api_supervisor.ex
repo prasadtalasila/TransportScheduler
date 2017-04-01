@@ -1,6 +1,5 @@
 defmodule TS.API.Supervisor do
   use Supervisor
-
   @name TS.API.Supervisor
 
   def start_link do
@@ -12,10 +11,9 @@ defmodule TS.API.Supervisor do
   end
 
   def init(:ok) do
-    children = [
+    children=[
       worker(API, [], restart: :temporary)
     ]
-
     supervise(children, strategy: :simple_one_for_one)
   end
 end

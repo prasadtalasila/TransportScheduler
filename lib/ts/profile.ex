@@ -4,19 +4,19 @@ defmodule TSProfile  do
   @doc "analyze with profile macro"
   def do_analyze do
     {_, _}=API.start_link
-      {:ok, pid} = InputParser.start_link
-      stn_map = InputParser.get_station_map(pid)
-      for stn_key <- Map.keys(stn_map) do
-        stn_code = Map.get(stn_map, stn_key)
-        stn_struct = InputParser.get_station_struct(pid, stn_key)
+      {:ok, pid}=InputParser.start_link
+      stn_map=InputParser.get_station_map(pid)
+      for stn_key<-Map.keys(stn_map) do
+        stn_code=Map.get(stn_map, stn_key)
+        stn_struct=InputParser.get_station_struct(pid, stn_key)
         #IO.inspect stn_struct
         StationConstructor.create(StationConstructor, stn_key, stn_code)
-        {:ok, {_, station}} = StationConstructor.lookup_name(StationConstructor, stn_key)
+        {:ok, {_, station}}=StationConstructor.lookup_name(StationConstructor, stn_key)
         Station.update(station, stn_struct)
       end
      query=%{src_station: 1, dst_station: 324, arrival_time: 13200}
         #registry=API.get(:NC)
-        {:ok, {_, stn}} = StationConstructor.lookup_code(StationConstructor, 1)
+        {:ok, {_, stn}}=StationConstructor.lookup_code(StationConstructor, 1)
         API.put("conn", query, [])
         StationConstructor.add_query(StationConstructor, query, "conn")
         #:timer.sleep(50)
@@ -28,12 +28,12 @@ defmodule TSProfile  do
         API.put(query, self())
         Process.send_after(self(), :timeout, 10000)
         receive do
-          :timeout ->
+          :timeout->
             StationConstructor.del_query(StationConstructor, query)
             #conn|>put_status(200)|>json(API.get(conn)|>sort_list)
             API.remove("conn")
             API.remove(query)
-          :release ->
+          :release->
             #conn|>put_status(200)|>json(API.get(conn)|>sort_list)
             API.remove("conn")
             API.remove(query)
