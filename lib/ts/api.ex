@@ -174,7 +174,7 @@ defmodule API do
 					{:ok, {_, station}}=StationConstructor.lookup_code(StationConstructor,
 					params[:station_code])
 					st_str=Station.get_vars(station)
-					conn|>put_status(200)|>json(st_str.locVars)
+					conn|>put_status(200)|>json(st_str.loc_vars)
 				end
 
 				namespace :update do
@@ -195,8 +195,8 @@ defmodule API do
 						{:ok, {_, station}}=StationConstructor.
 						lookup_code(StationConstructor, params[:station_code])
 						st_str=Station.get_vars(station)
-						loc_var_map=Map.put(params[:local_vars], :congestionDelay, nil)
-						st_str=%{st_str|locVars: loc_var_map}
+						loc_var_map=Map.put(params[:local_vars], :congestion_delay, nil)
+						st_str=%{st_str|loc_vars: loc_var_map}
 						Station.update(station, st_str)
 						conn|>put_status(202)|>text("State Updated!\n")
 					end
@@ -233,8 +233,8 @@ defmodule API do
 						params[:station_code])
 					{:ok, {_, station}}=StationConstructor.lookup_code(StationConstructor,
 					params[:station_code])
-					loc_var_map=Map.put(params[:local_vars], :congestionDelay, nil)
-					stn_str=%StationStruct{locVars: loc_var_map, schedule: 
+					loc_var_map=Map.put(params[:local_vars], :congestion_delay, nil)
+					stn_str=%StationStruct{loc_vars: loc_var_map, schedule: 
 					[params[:schedule]], station_number: params[:station_code], 
 					station_name: params[:station_name]}
 					Station.update(station, stn_str)
@@ -266,7 +266,7 @@ defmodule API do
 
 	def add_itinerary(queries, itinerary) do
 		API.start_link
-		queries=if length(Map.keys(queries)!=0) do
+		queries=if length(Map.keys(queries))!=0 do
 			query=itinerary|>List.first|>Map.delete(:day)
 			conn=Map.get(queries, query)
 			list=API.get(conn)

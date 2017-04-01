@@ -9,19 +9,19 @@ defmodule StationTest do
 		# Start the server
 		{:ok, station}=Station.start_link
 
-		Station.update(station, ss=%StationStruct{locVars: %{"delay": 0.38,
+		Station.update(station, ss=%StationStruct{loc_vars: %{"delay": 0.38,
 			"congestion": "low", "disturbance": "no"},
 						schedule: [], congestion_low: 4, choose_fn: 1})
 
-		assert Station.get_vars(station).locVars.delay==0.38
-		assert Station.get_vars(station).locVars.congestionDelay==0.38*4
+		assert Station.get_vars(station).loc_vars.delay==0.38
+		assert Station.get_vars(station).loc_vars.congestion_delay==0.38*4
 
 	end
 
 	test "List feasible neighbouring stations" do
 		{:ok, station}=Station.start_link
 
-		Station.update(station, ss=%StationStruct{locVars: %{"delay": 0.38,
+		Station.update(station, ss=%StationStruct{loc_vars: %{"delay": 0.38,
 			"congestion": "low", "disturbance": "no", "congestion_low": 4,
 			"choose_fn": 1}, schedule: [%{vehicleID: 1111, src_station: 1,
 			dst_station: 2, dept_time: "07:12:00", arrival_time: "16:32:00",
@@ -48,7 +48,7 @@ defmodule StationTest do
 end
 
 # Use demo station values:
-# ss = %StationStruct{locVars: %{"delay": 0.38, "congestion": "low",
+# ss = %StationStruct{loc_vars: %{"delay": 0.38, "congestion": "low",
 # "disturbance": "no"}, schedule: [%{vehicleID: 12959, src_station: 1,
 # dst_station: 2, dept_time: nil, arrival_time: nil, mode_of_transport:
 # "train"}], station_number: 1, station_name: "VascoStation", congestion_low: 2,

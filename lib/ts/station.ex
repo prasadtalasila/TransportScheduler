@@ -92,38 +92,38 @@ defmodule Station do
 		# new_vars is assigned values passed to argument old_vars, ie, new values to
 		# update local variables with
 		schedule=Enum.sort(old_vars.schedule, &(&1.dept_time<=&2.dept_time))
-		new_vars=%StationStruct{locVars: old_vars.locVars, schedule: schedule,
+		new_vars=%StationStruct{loc_vars: old_vars.loc_vars, schedule: schedule,
 		other_means: old_vars.other_means, station_number: old_vars.station_number,
 		station_name: old_vars.station_name, pid: old_vars.pid,
 						congestion_low: old_vars.congestion_low, congestion_high:
 						old_vars.congestion_high, choose_fn: old_vars.choose_fn}
 		# depending on the state of the station, appropriate FSM state change is
 		# made and new values are stored for the station
-		case(new_vars.locVars.disturbance) do
+		case(new_vars.loc_vars.disturbance) do
 			"yes"->
 				{:next_state, :disturbance, new_vars}
 			"no"->
-				case(new_vars.locVars.congestion) do
+				case(new_vars.loc_vars.congestion) do
 					"none"->
 						{:next_state, :delay, new_vars}
 					"low"->
 						# congestion_delay is computed using computation function
 						# selected based on the choose_fn value
 						congestion_delay=StationFunctions.func(new_vars.choose_fn).
-						(new_vars.locVars.delay, new_vars.congestion_low)
-						{_, update_loc_vars}=Map.get_and_update(new_vars.locVars,
+						(new_vars.loc_vars.delay, new_vars.congestion_low)
+						{_, update_loc_vars}=Map.get_and_update(new_vars.loc_vars,
 							:congestion_delay, fn delay->{delay, congestion_delay} end)
-						updateVars=%{new_vars|locVars: update_loc_vars}
-						{:next_state, :delay, updateVars}
+						update_vars=%{new_vars|loc_vars: update_loc_vars}
+						{:next_state, :delay, update_vars}
 					"high"->
 						# congestion_delay is computed using computation function
 						# selected based on the choose_fn value
 						congestion_delay=StationFunctions.func(new_vars.choose_fn).
-						(new_vars.locVars.delay, new_vars.congestion_high)
-						{_, update_loc_vars}=Map.get_and_update(new_vars.locVars,
+						(new_vars.loc_vars.delay, new_vars.congestion_high)
+						{_, update_loc_vars}=Map.get_and_update(new_vars.loc_vars,
 							:congestion_delay, fn delay->{delay, congestion_delay} end)
-						updateVars=%{new_vars|locVars: update_loc_vars}
-						{:next_state, :delay, updateVars}
+						update_vars=%{new_vars|loc_vars: update_loc_vars}
+						{:next_state, :delay, update_vars}
 					_->
 						{:next_state, :delay, new_vars}
 				end

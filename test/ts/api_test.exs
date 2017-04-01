@@ -31,33 +31,19 @@ defmodule APITest do
 	test "add new entry to schedule, update existing entry in schedule",
 	%{conn: conn} do
 		get("/api")
-		assert "New Schedule added!\n"==conn|>put_body_or_params(~s({"entry":
-			{"vehicleID": "I5-1234_A320", "src_station": 135, "dst_station": 453,
-			"dept_time": 12300, "arrival_time": 14000, "mode_of_transport": "flight"}}
-			))|>post("/api/station/schedule/add")|>text_response
-		assert "New Schedule added!\n"==conn|>put_body_or_params(~s({"entry":
-			{"vehicleID": "12367", "src_station": 523, "dst_station": 918,"dept_time":
-			23000, "arrival_time": 76720, "mode_of_transport": "train"}}))|>
+		assert "New Schedule added!\n"==conn|>put_body_or_params(~s({"entry":{"vehicleID": "I5-1234_A320", "src_station": 135, "dst_station": 453,"dept_time": 12300, "arrival_time": 14000, "mode_of_transport": "flight"}}))|>post("/api/station/schedule/add")|>text_response
+		assert "New Schedule added!\n"==conn|>put_body_or_params(~s({"entry":{"vehicleID": "12367", "src_station": 523, "dst_station": 918,"dept_time":23000, "arrival_time": 76720, "mode_of_transport": "train"}}))|>
 		post("/api/station/schedule/add")|>text_response
-		assert "New Schedule added!\n"==conn|>put_body_or_params(~s({"entry":
-			{"vehicleID": "1100234", "src_station": 1267, "dst_station": 412,
-			"dept_time": 12300, "arrival_time": 94000, "mode_of_transport": "bus"}}))
+		assert "New Schedule added!\n"==conn|>put_body_or_params(~s({"entry":{"vehicleID": "1100234", "src_station": 1267, "dst_station": 412,"dept_time": 12300, "arrival_time": 94000, "mode_of_transport": "bus"}}))
 		|>post("/api/station/schedule/add")|>text_response
 		assert %{"error"=>"Invalid data"}==conn|>put_body_or_params(~s({"entry":
-			{"vehicleID": "11034", "src_station": 4267, "dst_station": 4122,
-			"dept_time": 27620, "arrival_time":93700, "mode_of_transport": "train"}}))
+			{"vehicleID": "11034", "src_station": 4267, "dst_station": 4122,"dept_time": 27620, "arrival_time":93700, "mode_of_transport": "train"}}))
 		|>post("/api/station/schedule/add")|>json_response
-		assert "Schedule Updated!\n"==conn|>put_body_or_params(~s({"entry":
-			{"vehicleID":"11043", "src_station":115, "mode_of_transport":"train",
-			"dst_station":294, "dept_time":51200, "arrival_time":64000}}))|>
+		assert "Schedule Updated!\n"==conn|>put_body_or_params(~s({"entry":{"vehicleID":"11043", "src_station":115, "mode_of_transport":"train","dst_station":294, "dept_time":51200, "arrival_time":64000}}))|>
 		put("/api/station/schedule/update")|>text_response
-		assert "Schedule Updated!\n"==conn|>put_body_or_params(~s({"entry":
-			{"vehicleID":"G8-355_A320", "src_station":928, "mode_of_transport":
-			"flight", "dst_station":1634, "dept_time":34500, "arrival_time":46200}}))
+		assert "Schedule Updated!\n"==conn|>put_body_or_params(~s({"entry":{"vehicleID":"G8-355_A320", "src_station":928, "mode_of_transport":"flight", "dst_station":1634, "dept_time":34500, "arrival_time":46200}}))
 		|>put("/api/station/schedule/update")|>text_response
-		assert %{"error"=>"Invalid data"}==conn|>put_body_or_params(~s({"entry":
-			{"vehicleID": "3401101", "src_station": 2378, "dst_station": 0,
-			"dept_time": 87600, "arrival_time": 24000, "mode_of_transport": "bus"}}))
+		assert %{"error"=>"Invalid data"}==conn|>put_body_or_params(~s({"entry":{"vehicleID": "3401101", "src_station": 2378, "dst_station": 0,	"dept_time": 87600, "arrival_time": 24000, "mode_of_transport": "bus"}}))
 		|>put("/api/station/schedule/update")|>json_response
 		#assert "Vehicle not found\n"==conn|>put_body_or_params(~s({"entry":
 		# {"vehicleID": "11002", "src_station": 7, "dst_station": 4, "dept_time":
@@ -68,29 +54,23 @@ defmodule APITest do
 
 	test "returns state, updates state", %{conn: conn} do
 		get("/api")
-		loc_vars_1="{\"disturbance\":\"no\",\"delay\":1.84,\"congestionDelay\":5.5200000000000005,\"congestion\":\"high\"}"
+		loc_vars_1="{\"disturbance\":\"no\",\"delay\":1.84,\"congestion_delay\":5.5200000000000005,\"congestion\":\"high\"}"
 		assert loc_vars_1==conn|>get("/api/station/state?station_code=565")|>
 		text_response
-		loc_vars_2="{\"disturbance\":\"no\",\"delay\":0.38,\"congestionDelay\":0.76,\"congestion\":\"low\"}"
+		loc_vars_2="{\"disturbance\":\"no\",\"delay\":0.38,\"congestion_delay\":0.76,\"congestion\":\"low\"}"
 		assert loc_vars_2==conn|>get("/api/station/state?station_code=778")|>
 		text_response
 		assert %{"error"=>"Invalid data"}==conn|>
 		get("/api/station/state?station_code=2924")|>json_response
-		assert "State Updated!\n"==conn|>put_body_or_params(~s({"station_code": 4,
-			"local_vars": {"congestion": "low", "delay": 0.45, "disturbance": "yes"}})
-		)|>put("/api/station/state/update")|>text_response
-		assert "State Updated!\n"==conn|>put_body_or_params(~s({"station_code":1632,
-			"local_vars": {"congestion": "high", "delay": 0.27, "disturbance": "no"}})
-		)|>put("/api/station/state/update")|>text_response
+		assert "State Updated!\n"==conn|>put_body_or_params(~s({"station_code": 4,"local_vars": {"congestion": "low", "delay": 0.45, "disturbance": "yes"}}))
+		|>put("/api/station/state/update")|>text_response
+		assert "State Updated!\n"==conn|>put_body_or_params(~s({"station_code":1632,"local_vars": {"congestion": "high", "delay": 0.27, "disturbance": "no"}}))
+		|>put("/api/station/state/update")|>text_response
 		assert %{"error"=>"Invalid data"}==conn|>
-		put_body_or_params(~s({"station_code": 0, "local_vars": {"congestion":
-			"high", "delay": 0.194, "disturbance": "yes"}}))|>
+		put_body_or_params(~s({"station_code": 0, "local_vars": {"congestion":"high", "delay": 0.194, "disturbance": "yes"}}))|>
 		put("/api/station/state/update")|>json_response
-		assert "New Station created!\n"==conn|>put_body_or_params(~s({"local_vars":
-			{"congestion": "none", "delay": 3.14, "disturbance": "no"}, "schedule":
-			{"vehicleID": 69, "src_station": 2500, "dst_station": 18, "dept_time": 0,
-			"arrival_time": 32300, "mode_of_transport": "chariot"}, "station_code":
-			2500, "station_name": "Atlantis"}))|>post("/api/station/create")|>
+		assert "New Station created!\n"==conn|>put_body_or_params(~s({"local_vars":	{"congestion": "none", "delay": 3.14, "disturbance": "no"}, "schedule":{"vehicleID": 69, "src_station": 2500, "dst_station": 18, "dept_time": 0,"arrival_time": 32300, "mode_of_transport": "chariot"}, "station_code":	2500, "station_name": "Atlantis"}))
+		|>post("/api/station/create")|>
 		text_response
 		#API.remove(:NC)
 	end
