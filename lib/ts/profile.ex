@@ -1,9 +1,8 @@
-defmodule Mix.Tasks.TSProfile do
-	@moduledoc """
-	Code profiling code
-	"""
-	use Mix.Task
-  import ExProf.Macro
+defmodule TSProfile  do
+ 	@moduledoc """
+ 	Code profiling code
+ 	"""
+	import ExProf.Macro
 
 	@doc "analyze with profile macro"
 	def do_analyze do
