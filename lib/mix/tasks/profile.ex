@@ -15,8 +15,8 @@ defmodule Mix.Tasks.Profile do
 			stn_code=Map.get(stn_map, stn_key)
 			stn_struct=InputParser.get_station_struct(pid, stn_key)
 			StationConstructor.create(StationConstructor, stn_key, stn_code)
-			{:ok, {code, station}}=StationConstructor.lookup_name(StationConstructor, 
-			stn_key)
+			{:ok, {code, station}}=StationConstructor.lookup_name(StationConstructor,
+				stn_key)
 			Station.update(station, stn_struct)
 		end
 		{:ok, {code1, stn1}}=StationConstructor.lookup_name(StationConstructor,
@@ -55,6 +55,6 @@ defmodule Mix.Tasks.Profile do
 	def run(_mix_args) do
 		records=do_analyze
 		total_percent=Enum.reduce(records, 0.0, &(&1.percent+&2))
-		IO.inspect "total = #{total_percent}"
+		IO.puts "total = #{total_percent}"
 	end
 end
