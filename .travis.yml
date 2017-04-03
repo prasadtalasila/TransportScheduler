@@ -11,6 +11,7 @@ install:
 
 script:
   - mix test
+  - mix profile
   - MIX_ENV=test mix coveralls.travis
   - MIX_ENV=test mix credo --strict || echo -e "\n\n=====Bypassing the failure of credo for now=====\n\n"
 
