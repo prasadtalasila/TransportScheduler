@@ -1,6 +1,6 @@
 defmodule StationConstructor do
 	@moduledoc """
-	Module to create registry process for monitoring all station processes, i.e., 
+	Module to create registry process for monitoring all station processes, i.e.,
 	Network Constructor NC
 	"""
 	use GenServer, async: true

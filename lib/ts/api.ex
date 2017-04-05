@@ -1,6 +1,6 @@
 defmodule API do
 	@moduledoc """
-	Module to define API to obtain and update station variables and find best 
+	Module to define API to obtain and update station variables and find best
 	itinerary
 	"""
 	use Maru.Router, make_plug: true

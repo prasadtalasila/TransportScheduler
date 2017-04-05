@@ -195,7 +195,7 @@ defmodule InputParser do
 		travel_time=travel_time|>List.to_string|>String.to_integer
 		sched=Map.new|>Map.put(:src_station, src_station)|>
 		Map.put(:dst_station, dst_station)|>Map.put(:travel_time, travel_time)
-		other_means=other_means|>Enum.into([{Integer.to_string(src_station)|>
+		other_means=other_means|>Enum.into([{src_station|>Integer.to_string|>
 			String.to_atom, sched}])
 		obtain_other_mean(file, n-1, other_means)
 	end
