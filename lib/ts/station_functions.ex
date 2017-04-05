@@ -5,15 +5,15 @@ defmodule StationFunctions do
 	"""
 
 	def compute_congestion_delay1(delay, factor) do
-		congestion_delay=delay*factor
+		_=delay*factor
 	end
 
 	def compute_congestion_delay2(delay, factor) do
-		congestion_delay=delay*factor+0.2
+		_=delay*factor+0.2
 	end
 
 	def compute_congestion_delay3(delay, factor) do
-		congestion_delay=delay*factor*factor
+		_=delay*factor*factor
 	end
 
 	def func(choose_fn) do

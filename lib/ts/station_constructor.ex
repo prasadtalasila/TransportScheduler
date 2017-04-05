@@ -54,10 +54,6 @@ defmodule StationConstructor do
 		Station.receive_at_src(src, dest, itinerary)
 	end
 
-	#def receive_from_dest(server, itinerary) do
-		#GenServer.cast(server, {:msg_received_at_NC, itinerary})
-	#end
-
 	# Server-side callback functions
 
 	def init(:ok) do
@@ -91,40 +87,6 @@ defmodule StationConstructor do
 			{:reply, true, state}
 		end
 	end
-
-	#def handle_cast({:msg_received_at_NC, itinerary}, {names, codes, refs,
-	# queries}) do
-		# feasible itineraries returned to NC are displayed
-#API.start_link
-#queries=if (length(Map.keys(queries))!=0) do
-#query=List.first(itinerary)|>Map.delete(:day)
-#conn=Map.get(queries, query)
-#list=API.get(conn)
-#b#ool=if list===nil do
-###false
- ##     else
-###(length(list)<20)
- ##     end
- ##     case bool do
-###true ->
-##list=list++[itinerary]
-#A#PI.put(conn, query, list)
-##qpt=System.system_time(:milliseconds)-(API.get(query)|>elem(1))
-#API.put({query, "time"}, qpt)
-#I#O.inspect query
-###IO.puts "#{qpt}"
-###queries
- ##       false ->
-###if API.member(query) do
-###send(API.get(query)|>elem(0), :release)
- ##         end
- ##         Map.delete(queries, query)
- #     end
-	#  else
- ##     queries
- #   end
-		#{:noreply, {names, codes, refs, queries}}
-	#end
 
 	def handle_cast({:put_queries, queries}, {names, codes, refs, _}) do
 		{:noreply, {names, codes, refs, queries}}

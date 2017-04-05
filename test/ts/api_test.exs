@@ -85,11 +85,9 @@ defmodule APITest do
 		get("/api/station/schedule?station_code=2265&date=11-2-2017")|>json_response
 		assert %{"error"=>"Invalid data"}==conn|>
 		get("/api/station/schedule?station_code=-34&date=11-2-2017")|>json_response
-		#API.remove(:NC)
 	end
 
-	test "add new entry to schedule, update existing entry in schedule",
-	%{conn: conn} do
+	test "add new entry to schedule", %{conn: conn} do
 		get("/api")
 		assert "New Schedule added!\n"==conn|>put_body_or_params("{\"entry\":{\"v"<>
 			"ehicleID\":\"I5-1234_A320\",\"src_station\":135,\"dst_station\": 453,"<>
@@ -107,6 +105,10 @@ defmodule APITest do
 			"\"vehicleID\":\"11034\",\"src_station\":4267,\"dst_station\":4122,\"de"<>
 			"pt_time\":27620,\"arrival_time\":93700,\"mode_of_transport\":\"train\""<>
 			"}}")|>post("/api/station/schedule/add")|>json_response
+	end
+
+	test "update existing entry in schedule", %{conn: conn} do
+		get("/api")
 		assert "Schedule Updated!\n"==conn|>put_body_or_params("{\"entry\":{\"veh"<>
 			"icleID\":\"11043\",\"src_station\":115,\"mode_of_transport\":\"train\""<>
 			",\"dst_station\":294,\"dept_time\":51200,\"arrival_time\":64000}}")|>
@@ -119,14 +121,9 @@ defmodule APITest do
 			"\"vehicleID\":\"3401101\",\"src_station\":2378,\"dst_station\":0,\"dep"<>
 			"t_time\":87600,\"arrival_time\":24000,\"mode_of_transport\":\"bus\"}}")|>
 			put("/api/station/schedule/update")|>json_response
-		#assert "Vehicle not found\n"==conn|>put_body_or_params(~s({"entry":
-		# {"vehicleID": "11002", "src_station": 7, "dst_station": 4, "dept_time":
-		# 12300, "arrival_time": 14000, "mode_of_transport": "flight"}}))|>
-		# put("/api/station/schedule/update")|>text_response
-		#API.remove(:NC)
 	end
 
-	test "returns state, updates state", %{conn: conn} do
+	test "returns state", %{conn: conn} do
 		get("/api")
 		loc_vars_1="{\"disturbance\":\"no\",\"delay\":1.84,\"congestion_delay\":5"<>
 			".5200000000000005,\"congestion\":\"high\"}"
@@ -138,6 +135,10 @@ defmodule APITest do
 		text_response
 		assert %{"error"=>"Invalid data"}==conn|>get("/api/station/state?station_"<>
 			"code=2924")|>json_response
+	end
+
+	test "updates state", %{conn: conn} do
+		get("/api")
 		assert "State Updated!\n"==conn|>put_body_or_params("{\"station_code\":4,"<>
 			"\"local_vars\":{\"congestion\":\"low\",\"delay\":0.45,\"disturbance\":"<>
 			"\"yes\"}}")|>put("/api/station/state/update")|>text_response
@@ -153,7 +154,6 @@ defmodule APITest do
 			"\"dept_time\":0,\"arrival_time\":32300,\"mode_of_transport\":\"chario"<>
 			"t\"},\"station_code\":2500,\"station_name\":\"Atlantis\"}")|>
 			post("/api/station/create")|>text_response
-		#API.remove(:NC)
 	end
 
 end

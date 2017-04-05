@@ -52,8 +52,7 @@ defmodule QC do
 	@doc """
 	Performs cleanup when stop() is called.
 	"""
-	def terminate(reason, {itineraries}) do
-		itineraries=[]
+	def terminate(_, {_}) do
 		:ok
 	end
 

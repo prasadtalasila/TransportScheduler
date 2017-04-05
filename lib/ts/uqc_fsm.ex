@@ -7,16 +7,25 @@ defmodule UQCFSM do
 
 	# Client
 
+	@doc """
+	Starts a new FSM process
+	"""
 	def start_link do
 		GenStateMachine.start_link(UQCFSM, {:raw, nil})
 	end
 
-	def update(server, itineraries) do
+	@doc """
+	Updates the state of the FSM
+	"""
+	def update(server, _) do
 		GenStateMachine.cast(server, {:update})
 	end
 
 	# Server
-	def handle_event(:cast, {:update, it}, state, _) do
+	@doc """
+	Callback for update()
+	"""
+	def handle_event(:cast, {:update, _}, state, _) do
 		case state do
 			:raw->
 	{:next_state, :mode_transport, nil}

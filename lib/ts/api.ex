@@ -23,13 +23,11 @@ defmodule API do
 			for stn_key<-Map.keys(stn_map) do
 				stn_code=Map.get(stn_map, stn_key)
 				stn_struct=InputParser.get_station_struct(pid, stn_key)
-				#IO.inspect stn_struct
 				StationConstructor.create(StationConstructor, stn_key, stn_code)
 				{:ok, {_, station}}=StationConstructor.lookup_name(StationConstructor,
 					stn_key)
 				Station.update(station, stn_struct)
 			end
-			#API.put(:NC, registry)
 			conn|>put_status(200)|>text("Welcome to TransportScheduler API\n")
 		end
 
@@ -45,22 +43,12 @@ defmodule API do
 				# Obtain itinerary
 				query=%{src_station: params[:source], dst_station: params[:destination],
 				arrival_time: params[:start_time]}
-				#registry=API.get(:NC)
 				{:ok, {_, stn}}=StationConstructor.lookup_code(StationConstructor,
 					params[:source])
 				API.put(conn, query, [])
 				StationConstructor.add_query(StationConstructor, query, conn)
-				#:timer.sleep(50)
 				itinerary=[Map.put(query, :day, 0)]
 				{:ok, pid}=QC.start_link
-				#pid=spawn_link(fn ->
-					#receive do
-						#{:add_itinerary, complete_itinerary} ->
-							#IO.puts "msg"
-							#API.add_itinerary(StationConstructor.
-								#return_queries(StationConstructor), complete_itinerary)
-					#end
-				#end)
 				API.put(query, {self(), pid, System.system_time(:milliseconds)})
 				StationConstructor.send_to_src(StationConstructor, stn, itinerary)
 				Process.send_after(self(), :timeout, 10_000)
@@ -100,12 +88,10 @@ defmodule API do
 
 				get do
 					# Get schedule
-					#registry=API.get(:NC)
 					{:ok, {_, station}}=StationConstructor.lookup_code(StationConstructor,
 					params[:station_code])
 					st_str=Station.get_vars(station)
 					res=Map.fetch!(st_str, :schedule)
-					#IO.inspect st_str
 					conn|>put_status(200)|>json(res)
 				end
 
@@ -125,7 +111,6 @@ defmodule API do
 					post do
 						# Add New Schedule
 						entry_map=params[:entry]
-						#registry=API.get(:NC)
 						{:ok, {_, station}}=StationConstructor.
 						lookup_code(StationConstructor, entry_map.src_station)
 						st_str=Station.get_vars(station)
@@ -152,7 +137,6 @@ defmodule API do
 					put do
 						# Update Schedule
 						entry_map=params[:entry]
-						#registry=API.get(:NC)
 						{:ok, {_, station}}=StationConstructor.
 						lookup_code(StationConstructor, entry_map.src_station)
 						st_str=Station.get_vars(station)
@@ -172,7 +156,6 @@ defmodule API do
 				end
 				get do
 					# Get state vars of that station
-					#registry=API.get(:NC)
 					{:ok, {_, station}}=StationConstructor.lookup_code(StationConstructor,
 					params[:station_code])
 					st_str=Station.get_vars(station)
@@ -193,7 +176,6 @@ defmodule API do
 					end
 					put do
 						# Update state vars of that station
-						#registry=API.get(:NC)
 						{:ok, {_, station}}=StationConstructor.
 						lookup_code(StationConstructor, params[:station_code])
 						st_str=Station.get_vars(station)
@@ -230,7 +212,6 @@ defmodule API do
 
 				post do
 					# Add new station's details
-					#registry=API.get(:NC)
 					StationConstructor.create(StationConstructor, params[:station_name],
 						params[:station_code])
 					{:ok, {_, station}}=StationConstructor.lookup_code(StationConstructor,
@@ -248,10 +229,6 @@ defmodule API do
 
 	rescue_from Maru.Exceptions.NotFound do
 		conn|>put_status(404)|>json(%{error: "Entry not found"})
-	end
-
-	rescue_from Maru.Exceptions.Validation do
-		conn|>put_status(405)|>json(%{error: "Validation Exception"})
 	end
 
 	rescue_from [MatchError] do

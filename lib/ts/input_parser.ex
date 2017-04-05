@@ -35,11 +35,12 @@ defmodule InputParser do
 	end
 
 	def get_station_struct(pid, city) do
-		s=%StationStruct{}
+		stn_struct=%StationStruct{}
 		code=get_city_code(pid, city)
-		%{s|loc_vars: Map.merge(s.loc_vars, get_local_variables(pid, code)),
-			schedule: get_schedule(pid, code), other_means:
-			get_other_means(pid, code), station_number: code, station_name: city}
+		%{stn_struct|loc_vars: Map.merge(stn_struct.loc_vars,
+			get_local_variables(pid, code)), schedule: get_schedule(pid, code),
+			other_means: get_other_means(pid, code), station_number: code,
+			station_name: city}
 	end
 
 	def stop(pid) do
@@ -52,9 +53,9 @@ defmodule InputParser do
 		# values are read from input data files
 		station_map=obtain_stations
 		schedule=obtain_schedules
-		locvarmap=obtain_loc_var_map
+		loc_var_map=obtain_loc_var_map
 		other_means=obtain_other_means
-		{:ok, {station_map, schedule, locvarmap, other_means}}
+		{:ok, {station_map, schedule, loc_var_map, other_means}}
 	end
 
 	def handle_call(:get_station_map, _from, {station_map, _, _, _}=state) do
@@ -67,9 +68,9 @@ defmodule InputParser do
 		{:reply, schedule, state}
 	end
 
-	def handle_call({:get_loc_vars, code}, _from, {_, _, locvarmap, _}=state) do
+	def handle_call({:get_loc_vars, code}, _from, {_, _, loc_var_map, _}=state) do
 		# local variables for a station are returned
-		{:reply, Map.fetch!(locvarmap, code), state}
+		{:reply, Map.fetch!(loc_var_map, code), state}
 	end
 
 	def handle_call({:get_city_code, city}, _from, {station_map, _, _, _}=state)
@@ -88,7 +89,6 @@ defmodule InputParser do
 	do
 		# other means table for a station is returned
 		x=Keyword.get_values(other_means, String.to_atom(Integer.to_string(code)))
-		#IO.inspect x
 		{:reply, x, state}
 	end
 
@@ -126,11 +126,11 @@ defmodule InputParser do
 
 	# Obtains Map of local variables
 	def obtain_loc_var_map do
-		locvarmap=Map.new
+		loc_var_map=Map.new
 		{_, file}=open_file("data/local_variables.txt")
 		#n = IO.binread file, [:line] |> String.trim |> String.to_integer
 		n=2264
-		obtain_loc_vars(file, n, locvarmap)
+		obtain_loc_vars(file, n, loc_var_map)
 	end
 
 	# Opens the file specified by 'filename' parameter.
@@ -208,7 +208,7 @@ defmodule InputParser do
 
 	# 'Loops' through the n entries of the 'local_variables.txt' file and saves
 	# The local variables as (key, value) tuples in a map.
-	defp obtain_loc_vars(file, n, locvarmap) when n>0 do
+	defp obtain_loc_vars(file, n, loc_var_map) when n>0 do
 		[station_code|tail]=file|>IO.binread(:line)|>String.trim|>String.split(" ",
 			parts: 7)
 		station_code=String.to_integer(station_code)
@@ -224,14 +224,14 @@ defmodule InputParser do
 		val3=List.to_string(val3)
 		vals=Map.new|>Map.put(local_var1, val1)|>Map.put(local_var2, val2)|>
 		Map.put(local_var3, val3)
-		locvarmap=Map.put(locvarmap, station_code, vals)
-		obtain_loc_vars(file, n-1, locvarmap)
+		loc_var_map=Map.put(loc_var_map, station_code, vals)
+		obtain_loc_vars(file, n-1, loc_var_map)
 	end
 
 	# Closes the file after reading the local variables values of n stations.
-	defp obtain_loc_vars(file, _, locvarmap) do
+	defp obtain_loc_vars(file, _, loc_var_map) do
 		close_file(file)
-		locvarmap
+		loc_var_map
 	end
 
 	# Closes the file handle specified by 'file_handle' parameter.
