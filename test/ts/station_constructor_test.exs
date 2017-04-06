@@ -18,6 +18,7 @@ defmodule StationConstructorTest do
 	test "Add new Stations using InputParser" do
 		assert {:ok, pid}=InputParser.start_link
 		stn_map=InputParser.get_station_map(pid)
+		stn_sched=InputParser.get_schedules(pid)
 		for stn_key<-Map.keys(stn_map) do
 			stn_code=Map.get(stn_map, stn_key)
 			stn_struct=InputParser.get_station_struct(pid, stn_key)
@@ -37,6 +38,7 @@ defmodule StationConstructorTest do
 	test "Complete test" do
 		assert {:ok, pid}=InputParser.start_link
 		stn_map=InputParser.get_station_map(pid)
+		stn_sched=InputParser.get_schedules(pid)
 		for stn_key<-Map.keys(stn_map) do
 			stn_code=Map.get(stn_map, stn_key)
 			stn_struct=InputParser.get_station_struct(pid, stn_key)
@@ -60,7 +62,7 @@ defmodule StationConstructorTest do
 		{:ok, pid}=QC.start_link
 		API.put(it1, {self(), pid})
 		StationConstructor.send_to_src(StationConstructor, stn1, itinerary)
-		Process.send_after(self(), :timeout, 500)
+		Process.send_after(self(), :timeout, 50)
 		receive do
 			:timeout->
 				StationConstructor.del_query(StationConstructor, it1)

@@ -11,23 +11,9 @@ defmodule StationTest do
 		{:ok, station}=Station.start_link
 		Station.update(station, %StationStruct{loc_vars: %{"delay": 0.38,
 			"congestion": "low", "disturbance": "no"},
-						schedule: [], congestion_low: 4, choose_fn: 1})
+			schedule: [], congestion_low: 4, choose_fn: 1})
 		assert Station.get_vars(station).loc_vars.delay==0.38
 		assert Station.get_vars(station).loc_vars.congestion_delay==0.38*4
-	end
-
-	test "List feasible neighbouring stations" do
-		{:ok, station}=Station.start_link
-		Station.update(station, %StationStruct{loc_vars: %{"delay": 0.38,
-			"congestion": "low", "disturbance": "no", "congestion_low": 4,
-			"choose_fn": 1}, schedule: [%{vehicleID: 1111, src_station: 1,
-			dst_station: 2, dept_time: "07:12:00", arrival_time: "16:32:00",
-			mode_of_transport: "train"}, %{vehicleID: 2222, src_station: 1,
-			dst_station: 2, dept_time: "13:12:00", arrival_time: "14:32:00",
-			mode_of_transport: "train"}, %{vehicleID: 3333, src_station: 1,
-			dst_station: 2, dept_time: "03:12:00", arrival_time: "10:32:00",
-			mode_of_transport: "train"}, %{vehicleID: 4444, src_station: 1,
-			dst_station: 2, dept_time: "19:12:00", arrival_time: "20:32:00",
-			mode_of_transport: "train"}]})
+		assert Station.get_state(station)==:delay
 	end
 end
