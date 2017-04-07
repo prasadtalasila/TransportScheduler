@@ -231,12 +231,16 @@ defmodule API do
 		conn|>put_status(404)|>json(%{error: "Entry not found"})
 	end
 
-	rescue_from [MatchError] do
-		conn|>put_status(400)|>json(%{error: "Invalid data"})
+	rescue_from Maru.Exceptions.InvalidFormat do
+		conn|>put_status(400)|>json(%{error: "Invalid request format"})
 	end
 
-	rescue_from [RuntimeError] do
-		conn|>put_status(500)|>json(%{error: "Runtime Error"})
+	rescue_from Maru.Exceptions.MethodNotAllowed do
+		conn|>put_status(405)|>json(%{error: "Method not allowed"})
+	end
+
+	rescue_from [MatchError] do
+		conn|>put_status(400)|>json(%{error: "Invalid data"})
 	end
 
 	rescue_from :all do

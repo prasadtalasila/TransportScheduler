@@ -11,8 +11,10 @@ defmodule APITest do
 		{:ok, %{conn: conn}}
 	end
 
-	test "Return welcome message" do
+	test "Return welcome message and itinerary generation" do
 		assert "Welcome to TransportScheduler API\n"=="/api"|>get|>text_response
+		"/api/search?source=1&destination=10&start_time=0&date=7-4-2017"|>get|>
+			text_response
 	end
 
 	test "Returns schedule", %{conn: conn} do
@@ -154,6 +156,13 @@ defmodule APITest do
 			"\"dept_time\":0,\"arrival_time\":32300,\"mode_of_transport\":\"chario"<>
 			"t\"},\"station_code\":2500,\"station_name\":\"Atlantis\"}")|>
 			post("/api/station/create")|>text_response
+	end
+
+	test "error messages" do
+		assert_raise(Maru.Exceptions.NotFound, fn->"/"|>get end)
+		assert %{"error"=>"Invalid request format"}=="/api/search"|>get|>json_response
+		assert %{"error"=>"Method not allowed"}=="/api/station/schedule/update"|>get
+			|>json_response
 	end
 
 end
