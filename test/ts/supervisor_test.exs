@@ -15,7 +15,6 @@ defmodule SupervisorTest do
 		{:ok, {_, _}}=StationConstructor.lookup_name(StationConstructor,
 			"TestStationProcess")
 
-
 		StationConstructor.stop(StationConstructor)
 		StationConstructor.create(StationConstructor, "TestStationProcess", 1)
 
