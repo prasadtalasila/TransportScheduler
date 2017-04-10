@@ -1,0 +1,18 @@
+#!/bin/bash
+########################
+# Purpose: To get up to speed in the vagrant box
+# Author: Prasad Talasila
+# Date: 10-April-2017
+# Invocation: This script does not require any arguements. From the project top-level
+#             directory, invoke as follows. ONLY INVOKE INSIDE VAGRANT ENVIRONMENT.
+#             $bash script/vagrant
+########################
+
+set -e      # bail out on failure
+
+cd /home/vagrant/ts
+bash script/bootstrap
+bash script/setup
+bash script/test
+bash script/update
+bash script/server
