@@ -12,10 +12,6 @@ defmodule SupervisorTest do
 		Process.exit(pid, :shutdown)
 		assert_receive {:DOWN, ^ref, _, _, _}
 
-		assert StationConstructor.lookup_name(StationConstructor,
-			"TestStationProcess") == :error
-
-		StationConstructor.create(StationConstructor, "TestStationProcess", 1)
 		{:ok, {_, _}}=StationConstructor.lookup_name(StationConstructor,
 			"TestStationProcess")
 
