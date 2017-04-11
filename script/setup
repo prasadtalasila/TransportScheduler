@@ -10,6 +10,7 @@
 
 set -e
 
+source /home/vagrant/.bashrc
 cd /home/vagrant/ts
 mix local.rebar --force
 mix local.hex --force

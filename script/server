@@ -10,7 +10,11 @@
 
 set -e
 
-bash script/update
+source /home/vagrant/.bashrc
+source script/update
+
+git config receive.denyCurrentBranch ignore
+cp /home/vagrant/ts/script/.tool-versions ~/.
 
 mix edeliver build release
 mix edeliver deploy release

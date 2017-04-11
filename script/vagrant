@@ -11,8 +11,8 @@
 set -e      # bail out on failure
 
 cd /home/vagrant/ts
-bash script/bootstrap
-bash script/setup
-bash script/test
-bash script/update
-bash script/server
+source script/bootstrap
+source script/setup
+source script/test
+source script/update
+source script/server
