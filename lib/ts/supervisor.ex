@@ -4,6 +4,9 @@ defmodule TS.Supervisor do
 	"""
 	use Supervisor
 
+	@doc """
+	Start supervisor process
+	"""
 	def start_link do
 		Supervisor.start_link(__MODULE__, :ok)
 	end

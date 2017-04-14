@@ -280,42 +280,42 @@ defmodule API do
 	end
 
 	@doc """
-	Starts a new GenServer.
+	Start new API process
 	"""
 	def start_link do
 		GenServer.start_link(__MODULE__, :ok, name: UQC)
 	end
 
 	@doc """
-	Gets an entry from table.
+	Get entry from ETS table
 	"""
 	def get(key) do
 		GenServer.call(UQC, {:get, key})
 	end
 
 	@doc """
-	Puts a new entry/replaces entry into table.
+	Put new entry/replace entry into ETS table
 	"""
 	def put(key, value) do
 		GenServer.cast(UQC, {:put, key, value})
 	end
 
 	@doc """
-	Enters triple into table.
+	Enter triple into ETS table
 	"""
 	def put(connection, query, itineraries) do
 		GenServer.cast(UQC, {:put_entry, connection, query, itineraries})
 	end
 
 	@doc """
-	Removes entries from map.
+	Remove entries from ETS table
 	"""
 	def remove(key) do
 		GenServer.cast(UQC, {:remove, key})
 	end
 
 	@doc """
-	Checks whether a key is present or not
+	Check whether present in ETS table
 	"""
 	def member(key) do
 		GenServer.call(UQC, {:member, key})

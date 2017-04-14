@@ -4,40 +4,64 @@ defmodule Station do
 	"""
 	use GenStateMachine, async: true
 
+	@doc """
+	Start new Station process
+	"""	
 	def start_link do
 		GenStateMachine.start_link(Station, {:nodata, nil})
 	end
 
 	# Client-side getter and setter functions
 
+	@doc """
+	Update station struct values
+	"""
 	def update(station,  %StationStruct{}=new_vars) do
 		GenStateMachine.cast(station, {:update, new_vars})
 	end
 
+	@doc """
+	Return station struct values - local variables
+	"""
 	def get_vars(station) do
 		GenStateMachine.call(station, :get_vars)
 	end
-
+	
+	@doc """
+	Return station struct values - state
+	"""
 	def get_state(station) do
 		GenStateMachine.call(station, :get_state)
 	end
 
 	# Client-side message-passing functions
 
+	@doc """
+	Receive query at source station
+	"""
 	def receive_at_src(nc, src, itinerary) do
 		GenStateMachine.cast(src, {:receive_at_src, nc, src, itinerary})
 	end
 
+	@doc """
+	Send query to next station and append to itinerary
+	"""
 	def send_to_stn(nc, src, dst, itinerary) do
 		GenStateMachine.cast(dst, {:receive_at_stn, nc, src, itinerary})
 	end
 
+	@doc """
+	Check for valid next station
+	"""
 	def check_dest(dst, itinerary) do
 		[_|tail]=itinerary
 		dest_list=Enum.map(tail, fn (x)->x[:dst_station] end)
 		!Enum.member?(dest_list, dst)
 	end
 
+	@doc """
+	Return list of valid neighbouring stations
+	"""
 	def check_neighbours(schedule, other_means, time, itinerary) do
 		# schedule is filtered to reject neighbours with departure time earlier
 		# than arrival time at the station for the current itinerary
@@ -58,6 +82,9 @@ defmodule Station do
 		List.flatten(list, neighbour_list)
 	end
 
+	@doc """
+	Send query to neighbouring stations
+	"""
 	def function(nc, src, itinerary, dest_schedule) do
 		# schedule to reach this destination station is added to itinerary
 		new_itinerary=List.flatten([itinerary|[dest_schedule]])

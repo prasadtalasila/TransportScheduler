@@ -16,6 +16,9 @@ defmodule StationFunctions do
 		_=delay*factor*factor
 	end
 
+	@doc """
+	Choose congestion computation function
+	"""
 	def func(choose_fn) do
 		# appropriate function is called using choose_fn value as Map key
 		Map.get(

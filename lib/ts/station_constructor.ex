@@ -5,51 +5,84 @@ defmodule StationConstructor do
 	"""
 	use GenServer, async: true
 
+	@doc """
+	Add query to active list
+	"""
 	def add_query(server, query, conn) do
 		GenServer.cast(server, {:add_query, query, conn})
 	end
 
+	@doc """
+	Remove query from active list
+	"""
 	def del_query(server, query) do
 		GenServer.cast(server, {:del_query, query})
 	end
 
+	@doc """
+	Check if query active
+	"""
 	def check_active(server, query) do
 		GenServer.call(server, {:check_active, query})
 	end
 
+	@doc """
+	Return list of active queries
+	"""
 	def return_queries(server) do
 		GenServer.call(server, {:return_queries})
 	end
 
+	@doc """
+	Put queries
+	"""
 	def put_queries(server, queries) do
 		GenServer.cast(server, {:put_queries, queries})
 	end
 
 	# Client-side NC management functions
+	@doc """
+	Start new NC process
+	"""
 	def start_link(name) do
 		GenServer.start_link(__MODULE__, :ok, name: name)
 	end
 
+	@doc """
+	Start new Station process and add to registry
+	"""
 	def create(server, name, code) do
 		GenServer.cast(server, {:create, name, code})
 	end
 
+	@doc """
+	Stop process
+	"""
 	def stop(server) do
 		GenServer.stop(server, :normal)
 	end
 
 	# Client-side lookup functions
 
+	@doc """
+	Return station from registry by name
+	"""
 	def lookup_name(server, name) do
 		GenServer.call(server, {:lookup_name, name})
 	end
 
+	@doc """
+	Return station from registry by code
+	"""
 	def lookup_code(server, code) do
 		GenServer.call(server, {:lookup_code, code})
 	end
 
 	# Client-side message-passing functions
 
+	@doc """
+	Send query to source station
+	"""
 	def send_to_src(src, dest, itinerary) do
 		Station.receive_at_src(src, dest, itinerary)
 	end
