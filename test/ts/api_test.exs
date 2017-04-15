@@ -6,15 +6,20 @@ defmodule APITest do
 	use Maru.Test, for: API
 
 	setup do
-		conn=build_conn()|>put_req_header("content-type", "application/json")|>
-		put_plug(Plug.Parsers, parsers: [:json], pass: ["*/*"],json_decoder: Poison)
+		conn=build_conn()|>put_req_header("content-type", "application/json")
+			|>put_plug(Plug.Parsers, parsers: [:json], pass: ["*/*"],
+			json_decoder: Poison)
 		{:ok, %{conn: conn}}
 	end
 
 	test "Return welcome message and itinerary generation" do
 		assert "Welcome to TransportScheduler API\n"=="/api"|>get|>text_response
-		"/api/search?source=1&destination=10&start_time=0&date=7-4-2017"|>get|>
-			text_response
+		assert 200=="http://localhost:8880/api/search?source=1&destination=10&sta"<>
+			"rt_time=0&date=15-4-2017"|>HTTPoison.get!(["Accept": "Application/json"],
+			[recv_timeout: 5000])|>Map.get(:status_code)
+		assert 5=="http://localhost:8880/api/search?source=123&destination=309&"<>
+			"start_time=86000&date=15-4-2017"|>HTTPoison.get!(["Accept":
+			"Application/json"], [recv_timeout: 11000])|>Map.get(:headers)|>length
 	end
 
 	test "Returns schedule", %{conn: conn} do

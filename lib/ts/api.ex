@@ -39,6 +39,7 @@ defmodule API do
 				requires :start_time, type: Integer
 				requires :date, type: String
 			end
+
 			get do
 				# Obtain itinerary
 				query=%{src_station: params[:source], dst_station: params[:destination],

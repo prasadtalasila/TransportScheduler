@@ -18,7 +18,7 @@ defmodule TS.Mixfile do
 	#
 	# Type "mix help compile.app" for more information
 	def application do
-		[applications: [:gen_state_machine, :logger, :maru, :edeliver],
+		[applications: [:gen_state_machine, :logger, :maru, :edeliver, :httpoison],
 		mod: {TS, []}
 		]
 	end
@@ -40,7 +40,9 @@ defmodule TS.Mixfile do
 		{:edeliver, "~> 1.4.0"},
 		{:excoveralls, "~> 0.5", only: :test},
 		{:credo, "~> 0.3", only: [:dev, :test]},
-		{:exprof, "~> 0.2.0"}
+		{:exprof, "~> 0.2.0"},
+		{:httpoison, "0.11.1"},
+		{:csvlixir, "~> 2.0.4"}
 		]
 	end
 end
