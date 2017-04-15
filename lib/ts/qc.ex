@@ -9,21 +9,21 @@ defmodule QC do
 	## Functions (Client)
 
 	@doc """
-	Starts a new GenServer instance (of UQC module).
+	Start new UQC process
 	"""
 	def start_link do
 		GenServer.start_link(QC, :ok)
 	end
 
 	@doc """
-	Function called by client to add itinerary to list of itineraries.
+	Add itinerary to list of itineraries
 	"""
 	def collect(server, itinerary) do
 		GenServer.cast(server, {:collect, itinerary})
 	end
 
 	@doc """
-	Stops the given process
+	Stop process
 	"""
 	def stop(server) do
 		GenServer.stop(server)
@@ -31,17 +31,11 @@ defmodule QC do
 
 	## Callbacks (Server)
 
-	@doc """
-	Initialises an empty list as a part of the state.
-	"""
 	def init(:ok) do
 		itineraries=[]
 		{:ok, {itineraries}}
 	end
 
-	@doc """
-	Adds an itinerary to the list of itineraries.
-	"""
 	def handle_cast({:collect, itinerary}, {itineraries}) do
 		#itineraries=itineraries++[itinerary]
 		API.add_itinerary(StationConstructor.return_queries(StationConstructor),
@@ -49,9 +43,6 @@ defmodule QC do
 		{:noreply, {itineraries}}
 	end
 
-	@doc """
-	Performs cleanup when stop() is called.
-	"""
 	def terminate(_, {_}) do
 		:ok
 	end

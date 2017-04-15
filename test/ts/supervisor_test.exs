@@ -11,14 +11,7 @@ defmodule SupervisorTest do
 		ref = Process.monitor(pid)
 		Process.exit(pid, :shutdown)
 		assert_receive {:DOWN, ^ref, _, _, _}
-
-		StationConstructor.lookup_name(StationConstructor,
-			"TestStationProcess")
-
 		StationConstructor.stop(StationConstructor)
 		StationConstructor.create(StationConstructor, "TestStationProcess", 1)
-
-		
 	end
-
 end

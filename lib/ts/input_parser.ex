@@ -6,34 +6,58 @@ defmodule InputParser do
 
 	# Client-side functions
 
+	@doc """
+	Start input parser process
+	"""
 	def start_link do
 		GenServer.start_link(__MODULE__, :ok)
 	end
 
+	@doc """
+	Return map of station city and code
+	"""
 	def get_station_map(pid) do
 		GenServer.call(pid, :get_station_map)
 	end
 
+	@doc """
+	Return schedule list of vehicles from station
+	"""
 	def get_schedules(pid) do
 		GenServer.call(pid, :get_schedules)
 	end
 
+	@doc """
+	Return schedule list of vehicles from station to destination
+	"""
 	def get_schedule(pid, code) do
 		GenServer.call(pid, {:get_schedule, code})
 	end
 
+	@doc """
+	Return list of other means from station
+	"""
 	def get_other_means(pid, code) do
 		GenServer.call(pid, {:get_other_means, code})
 	end
 
+	@doc """
+	Return map of station local variables
+	"""
 	def get_local_variables(pid, code) do
 		GenServer.call(pid, {:get_loc_vars, code})
 	end
 
+	@doc """
+	Return station city code
+	"""
 	def get_city_code(pid, city) do
 		GenServer.call(pid, {:get_city_code, city})
 	end
 
+	@doc """
+	Return station struct
+	"""
 	def get_station_struct(pid, city) do
 		stn_struct=%StationStruct{}
 		code=get_city_code(pid, city)
@@ -43,6 +67,9 @@ defmodule InputParser do
 			station_name: city}
 	end
 
+	@doc """
+	Stop input parser process
+	"""
 	def stop(pid) do
 		GenServer.stop(pid, :normal, 100)
 	end
