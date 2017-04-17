@@ -1,23 +1,25 @@
 defmodule Mix.Tasks.AsyncBm do
+	@moduledoc """
+	Helper module to run asynchronous benchmark
+	"""
 	use Mix.Task
 
-	def run(mix_args) do
-		n=mix_args
-		setup
-		issue(n)|>process_async_requests
+	def run(arg) do
+		arg|>issue|>process_async_requests
 	end
 
 	def setup do
-		:ok=:hackney_pool.start_pool(:first_pool, [timeout: 35000,
+		:ok=:hackney_pool.start_pool(:first_pool, [timeout: 35_000,
 			max_connections: 1000])
 		HTTPoison.start
+		IO.puts "Initialising network..."
+		HTTPoison.get("http://localhost:8880/api", ["Accept": "Application/json"],
+			[recv_timeout: 10_000])
 	end
 
 	defp issue(n) do
-		IO.puts "no. of requests: #{Integer.to_string(n)}\nprocessing requests.."
-		HTTPoison.get("http://localhost:8880/api", ["Accept": "Application/json"],
-			[recv_timeout: 10_000])
-		urls=for _ <- 1..n do
+		IO.puts "No. of requests: #{Integer.to_string(n)}\nProcessing requests.."
+		urls=for _<-1..n do
 			src=:rand.uniform(2264)
 			dst=:rand.uniform(2264)
 			Enum.join(["http://localhost:8880/api/search?source=", to_string(src),
@@ -30,8 +32,8 @@ defmodule Mix.Tasks.AsyncBm do
 		{total_async_micros, has_status_200}=:timer.tc(fn->
 			Enum.reduce(1..1, false, fn(_x, acc)->
 				urls|>Enum.map(fn(url)->Task.async(fn->HTTPoison.get(url) end) end)
-					|>Enum.map(&Task.await(&1, 30000))|>Enum.map(fn({status, result})->
-						if (status==:ok) do
+					|>Enum.map(&Task.await(&1, 31_000))|>Enum.map(fn({status, result})->
+						if status==:ok do
 							result.status_code
 						else
 							result.reason

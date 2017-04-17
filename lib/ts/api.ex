@@ -52,7 +52,7 @@ defmodule API do
 				{:ok, pid}=QC.start_link
 				API.put(query, {self(), pid, System.system_time(:milliseconds)})
 				StationConstructor.send_to_src(StationConstructor, stn, itinerary)
-				Process.send_after(self(), :timeout, 10_000)
+				Process.send_after(self(), :timeout, 30_000)
 				receive do
 					:timeout->
 						StationConstructor.del_query(StationConstructor, query)

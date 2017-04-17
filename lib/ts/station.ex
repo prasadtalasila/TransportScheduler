@@ -6,7 +6,7 @@ defmodule Station do
 
 	@doc """
 	Start new Station process
-	"""	
+	"""
 	def start_link do
 		GenStateMachine.start_link(Station, {:nodata, nil})
 	end
@@ -26,7 +26,7 @@ defmodule Station do
 	def get_vars(station) do
 		GenStateMachine.call(station, :get_vars)
 	end
-	
+
 	@doc """
 	Return station struct values - state
 	"""
