@@ -78,10 +78,10 @@ defmodule InputParser do
 
 	def init(:ok) do
 		# values are read from input data files
-		station_map=obtain_stations
-		schedule=obtain_schedules
-		loc_var_map=obtain_loc_var_map
-		other_means=obtain_other_means
+		station_map=obtain_stations()
+		schedule=obtain_schedules()
+		loc_var_map=obtain_loc_var_map()
+		other_means=obtain_other_means()
 		{:ok, {station_map, schedule, loc_var_map, other_means}}
 	end
 
