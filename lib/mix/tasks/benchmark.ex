@@ -11,9 +11,9 @@ defmodule Mix.Tasks.Benchmark do
 		IO.write(f, CSVLixir.write_row(["no.of_reqs", "async_qpt"]))
 		File.close(f)
 		AsyncBm.setup
-		for x<-[1, 2, 5] do
+		for x<-[1, 2, 3] do
 			async_result=AsyncBm.run(x)
-			#IO.inspect async_result
+			IO.puts "#{async_result} ms"
 			f=File.open!("data/test.csv", [:append])
 			IO.write(f, CSVLixir.write_row([x, async_result]))
 			File.close(f)

@@ -18,7 +18,7 @@ defmodule Mix.Tasks.AsyncBm do
 	end
 
 	defp issue(n) do
-		IO.puts "No. of requests: #{Integer.to_string(n)}\nProcessing requests.."
+		IO.puts "No. of requests: #{Integer.to_string(n)}\nProcessing requests..."
 		urls=for _<-1..n do
 			src=:rand.uniform(2264)
 			dst=:rand.uniform(2264)
