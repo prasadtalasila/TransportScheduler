@@ -4,12 +4,14 @@ fonts/icomoon.eot
 fonts/icomoon.svg
 fonts/icomoon.ttf
 fonts/icomoon.woff
-dist/sidebar_items-fe8e603588.js
+dist/sidebar_items-cfc60f55c4.js
 api-reference.html
 readme.html
 404.html
 API.html
 InputParser.html
+Mix.Tasks.AsyncBm.html
+Mix.Tasks.Benchmark.html
 Mix.Tasks.Profile.html
 QC.html
 Station.html

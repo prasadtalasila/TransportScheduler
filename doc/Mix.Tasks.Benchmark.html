@@ -5,7 +5,7 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="ExDoc v0.15.0">
-    <title>UQCFSM – TransportScheduler v0.1.0</title>
+    <title>Mix.Tasks.Benchmark – TransportScheduler v0.1.0</title>
     <link rel="stylesheet" href="dist/app-f7824c48e6.css" />
     
     <script src="dist/sidebar_items-cfc60f55c4.js"></script>
@@ -59,10 +59,10 @@
 
       <h1>
         <small class="visible-xs">TransportScheduler v0.1.0</small>
-        UQCFSM
+        Mix.Tasks.Benchmark
         
         
-          <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/uqc_fsm.ex#L1" title="View Source" class="view-source" rel="help">
+          <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/mix/tasks/benchmark.ex#L1" title="View Source" class="view-source" rel="help">
             <i class="icon-code"></i>
           </a>
         
@@ -70,8 +70,7 @@
 
       
         <section id="moduledoc">
-          <p>Module to filter results of the search query in UQC based on user
-preferences</p>
+          <p>Module to run asynchronous benchmark to test multiple, concurrent queries</p>
 
         </section>
       
@@ -93,19 +92,11 @@ preferences</p>
     </h2>
     <div class="summary-row">
   <div class="summary-signature">
-    <a href="#start_link/0">start_link()</a>
+    <a href="#run/1">run(args)</a>
   </div>
   
-    <div class="summary-synopsis"><p>Start new FSM process</p>
-</div>
-  
-</div>
-<div class="summary-row">
-  <div class="summary-signature">
-    <a href="#update/2">update(server, )</a>
-  </div>
-  
-    <div class="summary-synopsis"><p>Update state of FSM</p>
+    <div class="summary-synopsis"><p>A task needs to implement <code class="inline">run</code> which receives
+a list of command line args</p>
 </div>
   
 </div>
@@ -128,15 +119,15 @@ preferences</p>
             </a>
             Functions
           </h1>
-          <div class="detail" id="start_link/0">
+          <div class="detail" id="run/1">
   
   <div class="detail-header">
-    <a href="#start_link/0" class="detail-link" title="Link to this function">
+    <a href="#run/1" class="detail-link" title="Link to this function">
       <i class="icon-link"></i>
     </a>
-    <span class="signature">start_link()</span>
+    <span class="signature">run(args)</span>
     
-      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/uqc_fsm.ex#L13" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/mix/tasks/benchmark.ex#L8" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -144,27 +135,9 @@ preferences</p>
     
   </div>
   <section class="docstring">
-    <p>Start new FSM process</p>
-
-  </section>
-</div>
-<div class="detail" id="update/2">
-  
-  <div class="detail-header">
-    <a href="#update/2" class="detail-link" title="Link to this function">
-      <i class="icon-link"></i>
-    </a>
-    <span class="signature">update(server, )</span>
-    
-      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/uqc_fsm.ex#L20" class="view-source" rel="help" title="View Source">
-       <i class="icon-code"></i>
-     </a>
-    
-    
-    
-  </div>
-  <section class="docstring">
-    <p>Update state of FSM</p>
+    <p>A task needs to implement <code class="inline">run</code> which receives
+a list of command line args.</p>
+<p>Callback implementation for <a href="https://hexdocs.pm/mix/Mix.Task.html#c:run/1"><code class="inline">Mix.Task.run/1</code></a>.</p>
 
   </section>
 </div>
