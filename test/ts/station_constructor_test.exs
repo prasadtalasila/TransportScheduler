@@ -50,7 +50,7 @@ defmodule StationConstructorTest do
 			"Madgaon")
 		{:ok, {code2, _}}=StationConstructor.lookup_name(StationConstructor,
 			"Ratnagiri")
-		itinerary=[%{src_station: code1, dst_station: code2, arrival_time: 0}]
+		itinerary=[%{src_station: code1, dst_station: code2, arrival_time: 0, end_time: 86400}]
 		it1=List.first(itinerary)
 		API.start_link
 		API.put("conn", it1, [])

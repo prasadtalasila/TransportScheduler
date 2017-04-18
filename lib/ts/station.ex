@@ -70,8 +70,10 @@ defmodule Station do
 		else
 			time
 		end
+		[query]=Enum.take(itinerary, 1)
 		neighbour_list=Enum.filter(schedule, fn(x)->x.dept_time>time&&
-			check_dest(x.dst_station, itinerary) end)
+			check_dest(x.dst_station, itinerary)&&(query.day*86_400+x.arrival_time)<=
+			query.end_time end)
 		possible_walks=Enum.filter(other_means,
 			fn(x)->check_dest(x.dst_station, itinerary) end)
 		list=for x<-possible_walks do
@@ -79,6 +81,8 @@ defmodule Station do
 			x.dst_station, dept_time: time, arrival_time: time+x.travel_time,
 			mode_of_transport: "Other Means"}
 		end
+		list=Enum.filter(list, fn(x)->(query.day*86_400+x.arrival_time)<=
+			query.end_time end)
 		List.flatten(list, neighbour_list)
 	end
 

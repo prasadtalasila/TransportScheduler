@@ -37,13 +37,14 @@ defmodule API do
 				requires :source, type: Integer
 				requires :destination, type: Integer
 				requires :start_time, type: Integer
+				requires :end_time, type: Integer
 				requires :date, type: String
 			end
 
 			get do
 				# Obtain itinerary
 				query=%{src_station: params[:source], dst_station: params[:destination],
-				arrival_time: params[:start_time]}
+				arrival_time: params[:start_time], end_time: params[:end_time]}
 				{:ok, {_, stn}}=StationConstructor.lookup_code(StationConstructor,
 					params[:source])
 				API.put(conn, query, [])
@@ -58,22 +59,14 @@ defmodule API do
 						StationConstructor.del_query(StationConstructor, query)
 						final=conn|>API.get|>sort_list
 						conn|>put_status(200)|>json(final)
-						#if (API.member({query, "time"})) do
-							#IO.puts "#{API.get({query, "time"})}"
-							#API.remove({query, "time"})
-						#end
 						API.remove(conn)
 						API.remove(query)
-						#IO.puts "done"
 						QC.stop(pid)
 					:release->
 						final=conn|>API.get|>sort_list
 						conn|>put_status(200)|>json(final)
-						#IO.puts "#{API.get({query, "time"})}"
-						#API.remove({query, "time"})
 						API.remove(conn)
 						API.remove(query)
-						#IO.puts "done"
 						QC.stop(pid)
 				end
 			end

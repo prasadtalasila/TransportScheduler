@@ -23,7 +23,8 @@ defmodule Mix.Tasks.AsyncBm do
 			src=:rand.uniform(2264)
 			dst=:rand.uniform(2264)
 			Enum.join(["http://localhost:8880/api/search?source=", to_string(src),
-				"&destination=", to_string(dst), "&start_time=0&date=15-3-2017"])
+				"&destination=", to_string(dst), "&start_time=0&end_time=172800&date="<>
+				"15-3-2017"])
 		end
 		urls
 	end
@@ -31,7 +32,8 @@ defmodule Mix.Tasks.AsyncBm do
 	defp process_async_requests(urls) do
 		{total_async_micros, has_status_200}=:timer.tc(fn->
 			Enum.reduce(1..1, false, fn(_x, acc)->
-				urls|>Enum.map(fn(url)->Task.async(fn->HTTPoison.get(url) end) end)
+				urls|>Enum.map(fn(url)->Task.async(fn->HTTPoison.get(url, %{},
+					[recv_timeout: 30_500]) end) end)
 					|>Enum.map(&Task.await(&1, 31_000))|>Enum.map(fn({status, result})->
 						if status==:ok do
 							result.status_code
