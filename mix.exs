@@ -12,7 +12,7 @@ defmodule TS.Mixfile do
 		 preferred_cli_env: [coveralls: :test],
 		 name: "TransportScheduler",
 		 source_url: "https://github.com/prasadtalasila/TransportScheduler",
-		 docs: [main: "TransportScheduler",
+		 docs: [main: "TS",
 			extras: ["README.md"]
 		       ]
 		]
