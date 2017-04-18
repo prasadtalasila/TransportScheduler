@@ -16,6 +16,8 @@ source script/update
 git config receive.denyCurrentBranch ignore
 cp /home/vagrant/ts/script/.tool-versions ~/.
 
-mix edeliver build release
-mix edeliver deploy release
-mix edeliver start
+mix release
+
+#mix edeliver build release
+#mix edeliver deploy release
+#mix edeliver start
