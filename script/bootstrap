@@ -37,6 +37,7 @@ else
     asdf list erlang
     asdf global erlang 19.0
 fi
+asdf global erlang 19.0
 
 if [ -f /home/vagrant/.asdf/installs/elixir/1.3.4/bin/elixir ]
 then
@@ -48,3 +49,4 @@ else
     asdf list elixir
     asdf global elixir 1.3.4
 fi
+asdf global elixir 1.3.4
