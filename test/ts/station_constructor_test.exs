@@ -65,11 +65,13 @@ defmodule StationConstructorTest do
 			:timeout->
 				StationConstructor.del_query(StationConstructor, it1)
 				_=API.get("conn")
+				API.remove("times")
 				API.remove("conn")
 				API.remove(it1)
 				QC.stop(pid)
 			:release->
 				_=API.get("conn")
+				API.remove("times")
 				API.remove("conn")
 				API.remove(it1)
 				QC.stop(pid)
