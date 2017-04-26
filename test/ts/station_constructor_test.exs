@@ -54,10 +54,11 @@ defmodule StationConstructorTest do
 		it1=List.first(itinerary)
 		API.start_link
 		API.put("conn", it1, [])
+		API.put("times", [])
 		StationConstructor.add_query(StationConstructor, it1, "conn")
 		itinerary=[Map.put(it1, :day, 0)]
 		{:ok, pid}=QC.start_link
-		API.put(it1, {self(), pid})
+		API.put(it1, {self(), pid, System.system_time(:milliseconds)})
 		StationConstructor.send_to_src(StationConstructor, stn1, itinerary)
 		Process.send_after(self(), :timeout, 50)
 		receive do

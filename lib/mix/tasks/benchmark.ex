@@ -7,16 +7,20 @@ defmodule Mix.Tasks.Benchmark do
 
 	def run(_args) do
 		Mix.Task.run "app.start", []
-		f=File.open!("data/test.csv", [:write])
-		IO.write(f, CSVLixir.write_row(["no.of_reqs", "async_qpt"]))
-		File.close(f)
+		#f=File.open!("data/test.csv", [:append])
+		#IO.write(f, CSVLixir.write_row(["No.", "Source", "Destination",
+		#	"Start time", "End time", "QPT (ms)"]))
+		#File.close(f)
 		AsyncBm.setup
-		for x<-[1, 2, 3] do
-			async_result=AsyncBm.run(x)
-			IO.puts "#{async_result} ms"
-			f=File.open!("data/test.csv", [:append])
-			IO.write(f, CSVLixir.write_row([x, async_result]))
-			File.close(f)
+		for x<-1..1 do
+			{async_result, src, dst, start_time, cutoff_time}=AsyncBm.run()
+			if async_result !==:wrong do
+				IO.puts "#{async_result} ms"
+				f=File.open!("data/test.csv", [:append])
+				IO.write(f, CSVLixir.write_row([x, src, dst, start_time,
+					cutoff_time, async_result]))
+				File.close(f)
+			end
 		end
 	end
 
