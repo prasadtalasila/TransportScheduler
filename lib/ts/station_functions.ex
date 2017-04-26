@@ -1,7 +1,7 @@
 defmodule StationFunctions do
 	@moduledoc """
 	Module listing possible functions to use to compute congestion_delay value
-	based on delay and factor
+	based on delay and some factor for multiplication.
 	"""
 
 	def compute_congestion_delay1(delay, factor) do
@@ -17,7 +17,13 @@ defmodule StationFunctions do
 	end
 
 	@doc """
-	Choose congestion computation function
+	Chooses congestion computation function
+	
+	### Parameters
+	choose_fn
+
+	### Return values
+	Returns congestion_delay value based on function chosen to compute it.
 	"""
 	def func(choose_fn) do
 		# appropriate function is called using choose_fn value as Map key

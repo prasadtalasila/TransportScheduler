@@ -1,62 +1,119 @@
 defmodule StationConstructor do
 	@moduledoc """
-	Module to create registry process for monitoring all station processes, i.e.,
-	Network Constructor NC
+	Module to create registry process for monitoring all station processes and queries using a Network Constructor. The NC process can be used to add or remove queries from the active query list and check if a query is active. It can also be used to maintain a map of station pids, station codes, and station city names for convenient retrieval.
 	"""
 	use GenServer, async: true
 
 	@doc """
-	Add query to active list
+	Adds a query to active list maintained at NC.
+	
+	### Parameters
+	pid   
+	query   
+	conn
+
+	### Return values
+	Returns {:ok}.
 	"""
 	def add_query(server, query, conn) do
 		GenServer.cast(server, {:add_query, query, conn})
 	end
 
 	@doc """
-	Remove query from active list
+	Removes a query from active list maintained at NC.
+	
+	### Parameters
+	pid   
+	query
+
+	### Return values
+	Returns {:ok}.
 	"""
 	def del_query(server, query) do
 		GenServer.cast(server, {:del_query, query})
 	end
 
 	@doc """
-	Check if query active
+	Checks if a query is currently in active list maintained at NC.
+	
+	### Parameters
+	pid   
+	query
+
+	### Return values
+	Returns {:ok}.
 	"""
 	def check_active(server, query) do
 		GenServer.call(server, {:check_active, query})
 	end
 
 	@doc """
-	Return list of active queries
+	Returns active query list maintained at NC.
+	
+	### Parameters
+	pid   
+
+	### Return values
+	Returns {:reply, queries, state}.
+
 	"""
 	def return_queries(server) do
 		GenServer.call(server, {:return_queries})
 	end
 
-	@doc """
-	Put queries
-	"""
 	def put_queries(server, queries) do
 		GenServer.cast(server, {:put_queries, queries})
 	end
 
 	# Client-side NC management functions
+
 	@doc """
-	Start new NC process
+	Starts a GenServer StationConstructor process linked to the current process.   
+	This is often used to start the GenServer as part of a supervision tree.   
+	Once the server is started, the `init/1' function of the given module is called with args as its arguments to initialize the server.
+	
+	### Parameters
+	module   
+	args   
+	options:
+	- :name - used for name registration
+	- :timeout - if present, the server is allowed to spend the given amount of milliseconds initializing or it will be terminated and the start function will return {:error, :timeout}
+	- :debug - if present, the corresponding function in the :sys module is invoked
+	- :spawn_opt - if present, its value is passed as options to the underlying process
+	
+	### Return values
+	If the server is successfully created and initialized, this function returns {:ok, pid}, where pid is the PID of the server. If a process with the specified server name already exists, this function returns {:error, {:already_started, pid}} with the PID of that process.   
+	If the `init/1' callback fails with reason, this function returns {:error, reason}. Otherwise, if it returns {:stop, reason} or :ignore, the process is terminated and this function returns {:error, reason} or :ignore, respectively.
+
 	"""
 	def start_link(name) do
 		GenServer.start_link(__MODULE__, :ok, name: name)
 	end
 
 	@doc """
-	Start new Station process and add to registry
+	Starts a new Station process and adds new pid to registry map using supervisor. Supervisor is also used to restart crashed process and update registry map with new pid.
+
+	### Parameters
+	nc_pid   
+	station_name   
+	station_code
+
+	### Return values
+	Returns {:ok}.
 	"""
 	def create(server, name, code) do
 		GenServer.cast(server, {:create, name, code})
 	end
 
+
 	@doc """
-	Stop process
+	Stops the NC process with the given reason.   
+
+	### Parameters
+	pid
+
+	### Return values
+	The `terminate/2' callback of the given server will be invoked before exiting. This function returns :ok if the server terminates with the given reason; if it terminates with another reason, the call exits.
 	"""
 	def stop(server) do
 		GenServer.stop(server, :normal)
@@ -65,14 +122,28 @@ defmodule StationConstructor do
 	# Client-side lookup functions
 
 	@doc """
-	Return station from registry by name
+	Returns station pid and code from registry given the station name.
+
+	### Parameters
+	nc_pid   
+	station_name
+
+	### Return values
+	Returns {:reply, {code, pid}, state}.
 	"""
 	def lookup_name(server, name) do
 		GenServer.call(server, {:lookup_name, name})
 	end
 
 	@doc """
-	Return station from registry by code
+	Returns station pid and name from registry given the station code.
+
+	### Parameters
+	nc_pid   
+	station_code
+
+	### Return values
+	Returns {:reply, {name, pid}, state}.
 	"""
 	def lookup_code(server, code) do
 		GenServer.call(server, {:lookup_code, code})
@@ -81,7 +152,15 @@ defmodule StationConstructor do
 	# Client-side message-passing functions
 
 	@doc """
-	Send query to source station
+	Sends a query encoded in itinerary from NC to the source station using `receive_at_src/3' of Station module. The pid of NC and source station must be known.
+	
+	### Parameters
+	nc_pid   
+	src_stn_pid   
+	itinerary
+
+	### Return values
+	Returns {:ok}
 	"""
 	def send_to_src(src, dest, itinerary) do
 		Station.receive_at_src(src, dest, itinerary)

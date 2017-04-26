@@ -1,6 +1,6 @@
 defmodule StationStruct do
 	@moduledoc """
-	Module defining the data structure used to describe a station
+	Module defining the data structure used to describe a station, with local variables, schedule, other means, and additional information fields such as station code, station city name, station process pid.
 	"""
 	defstruct loc_vars: %{delay: nil, congestion_delay: nil, congestion: nil,
 	disturbance: nil}, schedule: [%{vehicleID: nil, src_station: nil, dst_station:

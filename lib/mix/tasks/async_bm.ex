@@ -1,13 +1,29 @@
 defmodule Mix.Tasks.AsyncBm do
 	@moduledoc """
-	Helper module to run asynchronous benchmark
+	Helper module to run asynchronous benchmarking.
 	"""
 	use Mix.Task
 
+	@doc """
+	Runs the AsyncBm task with the given args.
+
+	
+	### Parameters
+	arg   
+	
+	### Return values
+	If the task was not yet invoked, it runs the task and returns the result.
+	If there is an alias with the same name, the alias will be invoked instead of the original task.
+	If the task or alias were already invoked, it does not run them again and simply aborts with :noop. 
+	"""
 	def run(arg) do
 		arg|>issue|>process_async_requests
 	end
 
+
+	@doc """
+	Initialises the network using HHTPoison for http://localhost:8880/api.
+	"""
 	def setup do
 		:ok=:hackney_pool.start_pool(:first_pool, [timeout: 35_000,
 			max_connections: 1000])

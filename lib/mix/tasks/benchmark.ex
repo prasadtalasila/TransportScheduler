@@ -1,10 +1,22 @@
 defmodule Mix.Tasks.Benchmark do
 	@moduledoc """
-	Module to run asynchronous benchmark to test multiple, concurrent queries
+	Helper module to run asynchronous benchmark to test multiple, concurrent queries.
 	"""
 	use Mix.Task
 	alias Mix.Tasks.AsyncBm, as: AsyncBm
 
+	@doc """
+	Runs the Benchmark task with the given args.
+
+	
+	### Parameters
+	arg   
+	
+	### Return values
+	If the task was not yet invoked, it runs the task and returns the result.
+	If there is an alias with the same name, the alias will be invoked instead of the original task.
+	If the task or alias were already invoked, it does not run them again and simply aborts with :noop.  
+	"""
 	def run(_args) do
 		Mix.Task.run "app.start", []
 		f=File.open!("data/test.csv", [:write])
@@ -21,7 +33,7 @@ defmodule Mix.Tasks.Benchmark do
 	end
 
 	#defp parse_args(args) do
-		#{options, _, _}=OptionParser.parse(args, [
+		# {options, _, _}=OptionParser.parse(args, [
 			#switches: [loop: :integer],
 			#aliases: [l: :loop]
 		#])
