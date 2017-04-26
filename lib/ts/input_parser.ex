@@ -18,7 +18,7 @@ defmodule InputParser do
 	
 	### Return values
 	If the server is successfully created and initialized, this function returns {:ok, pid}, where pid is the PID of the server. If a process with the specified server name already exists, this function returns {:error, {:already_started, pid}} with the PID of that process.   
-	If the `init/1' callback fails with reason, this function returns {:error, reason}. Otherwise, if it returns {:stop, reason} or :ignore, the process is terminated and this function returns {:error, reason} or :ignore, respectively.
+	If the `init/1` callback fails with reason, this function returns {:error, reason}. Otherwise, if it returns {:stop, reason} or :ignore, the process is terminated and this function returns {:error, reason} or :ignore, respectively.
 	"""
 	def start_link do
 		GenServer.start_link(__MODULE__, :ok)
@@ -133,7 +133,7 @@ defmodule InputParser do
 	pid
 
 	### Return values
-	The `terminate/2' callback of the given server will be invoked before exiting. This function returns :ok if the server terminates with the given reason; if it terminates with another reason, the call exits.
+	The `terminate/2` callback of the given server will be invoked before exiting. This function returns :ok if the server terminates with the given reason; if it terminates with another reason, the call exits.
 	"""
 	def stop(pid) do
 		GenServer.stop(pid, :normal, 100)

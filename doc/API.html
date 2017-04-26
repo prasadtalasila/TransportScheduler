@@ -70,8 +70,7 @@
 
       
         <section id="moduledoc">
-          <p>Module to define API to obtain and update station variables and find best
-itinerary</p>
+          <p>Module to define RESTful API using Maru library. cURL requests can be handled and appropriate response in JSON format can be returned to the user. This API is used to obtain and update station variables and find the best itinerary.</p>
 
         </section>
       
@@ -95,6 +94,10 @@ itinerary</p>
   <div class="summary-signature">
     <a href="#add_itinerary/2">add_itinerary(queries, itinerary)</a>
   </div>
+  
+    <div class="summary-synopsis"><p>This function is called by Query Collector in order to add an itinerary to the list of received itineraries returned from Station Constructor. In `collect/2’ function of QC, this function is called to add all returned queries to the list as they come in.   
+The API function check whether the number of itineraries received is crossing the limit of maximum itineraries required. If limit is reached, query is deleted form the map of active queries. Otherwise, itinerary is added to the list of itineraries collected for a given query</p>
+</div>
   
 </div>
 <div class="summary-row">
@@ -120,7 +123,7 @@ itinerary</p>
     <a href="#get/1">get(key)</a>
   </div>
   
-    <div class="summary-synopsis"><p>Get entry from ETS table</p>
+    <div class="summary-synopsis"><p>Gets entry from ETS table</p>
 </div>
   
 </div>
@@ -129,7 +132,7 @@ itinerary</p>
     <a href="#member/1">member(key)</a>
   </div>
   
-    <div class="summary-synopsis"><p>Check whether present in ETS table</p>
+    <div class="summary-synopsis"><p>Checks whether entry with given key is present in ETS table</p>
 </div>
   
 </div>
@@ -144,7 +147,7 @@ itinerary</p>
     <a href="#put/2">put(key, value)</a>
   </div>
   
-    <div class="summary-synopsis"><p>Put new entry/replace entry into ETS table</p>
+    <div class="summary-synopsis"><p>Inserts {key, value} pair into ETS table</p>
 </div>
   
 </div>
@@ -153,7 +156,7 @@ itinerary</p>
     <a href="#put/3">put(connection, query, itineraries)</a>
   </div>
   
-    <div class="summary-synopsis"><p>Enter triple into ETS table</p>
+    <div class="summary-synopsis"><p>Inserts {connection, query, itineraries} triple into ETS table</p>
 </div>
   
 </div>
@@ -162,7 +165,7 @@ itinerary</p>
     <a href="#remove/1">remove(key)</a>
   </div>
   
-    <div class="summary-synopsis"><p>Remove entries from ETS table</p>
+    <div class="summary-synopsis"><p>Deletes {key, value} pair from ETS table</p>
 </div>
   
 </div>
@@ -171,7 +174,10 @@ itinerary</p>
     <a href="#start_link/0">start_link()</a>
   </div>
   
-    <div class="summary-synopsis"><p>Start new API process</p>
+    <div class="summary-synopsis"><p>Starts a GenServer API process linked to the current process.   
+This is often used to start the GenServer as part of a supervision tree.   
+Once the server is started, the `init/1’ function of the given module is called with args as its arguments to initialize the server.   
+Creates new ETS table</p>
 </div>
   
 </div>
@@ -202,7 +208,7 @@ itinerary</p>
     </a>
     <span class="signature">add_itinerary(queries, itinerary)</span>
     
-      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/api.ex#L244" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/api.ex#L254" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -210,7 +216,16 @@ itinerary</p>
     
   </div>
   <section class="docstring">
-    
+    <p>This function is called by Query Collector in order to add an itinerary to the list of received itineraries returned from Station Constructor. In <code class="inline">collect/2&#39; function of QC, this function is called to add all returned queries to the list as they come in.   
+The API function check whether the number of itineraries received is crossing the limit of maximum itineraries required. If limit is reached, query is deleted form the map of active queries. Otherwise, itinerary is added to the list of itineraries collected for a given query.
+
+### Parameters
+queries is in the form of a map</code>%{src_station, dst_station, arrival_time, end_time}’.   
+itinerary is in the form of a map `%{vehicleID, src_station, dst_station, dept_time, arrival_time, mode_of_transport}’.
+
+### Return values
+Returns {:ok}</p>
+
   </section>
 </div>
 <div class="detail" id="arguments/0">
@@ -221,7 +236,7 @@ itinerary</p>
     </a>
     <span class="signature">arguments()</span>
     
-      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/api.ex#L7" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/api.ex#L6" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -278,7 +293,7 @@ itinerary</p>
     </a>
     <span class="signature">get(key)</span>
     
-      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/api.ex#L286" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/api.ex#L318" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -286,7 +301,11 @@ itinerary</p>
     
   </div>
   <section class="docstring">
-    <p>Get entry from ETS table</p>
+    <p>Gets entry from ETS table.</p>
+<h3>Parameters</h3>
+<p>key</p>
+<h3>Return values</h3>
+<p>If the table has an entry with the given key, returns {:reply, elem(tuple, tuple_size(tuple)-1), state} otherwise {:reply, nil, state}.</p>
 
   </section>
 </div>
@@ -298,7 +317,7 @@ itinerary</p>
     </a>
     <span class="signature">member(key)</span>
     
-      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/api.ex#L314" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/api.ex#L374" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -306,7 +325,11 @@ itinerary</p>
     
   </div>
   <section class="docstring">
-    <p>Check whether present in ETS table</p>
+    <p>Checks whether entry with given key is present in ETS table.    </p>
+<h3>Parameters</h3>
+<p>key   </p>
+<h3>Return values</h3>
+<p>Returns {:reply, true, state} or {:reply, false, state}.</p>
 
   </section>
 </div>
@@ -318,7 +341,7 @@ itinerary</p>
     </a>
     <span class="signature">parse(input, )</span>
     
-      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/api.ex#L7" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/api.ex#L6" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -337,7 +360,7 @@ itinerary</p>
     </a>
     <span class="signature">put(key, value)</span>
     
-      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/api.ex#L293" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/api.ex#L332" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -345,7 +368,12 @@ itinerary</p>
     
   </div>
   <section class="docstring">
-    <p>Put new entry/replace entry into ETS table</p>
+    <p>Inserts {key, value} pair into ETS table.</p>
+<h3>Parameters</h3>
+<p>key   
+value   </p>
+<h3>Return values</h3>
+<p>Returns {:ok}.</p>
 
   </section>
 </div>
@@ -357,7 +385,7 @@ itinerary</p>
     </a>
     <span class="signature">put(connection, query, itineraries)</span>
     
-      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/api.ex#L300" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/api.ex#L347" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -365,7 +393,13 @@ itinerary</p>
     
   </div>
   <section class="docstring">
-    <p>Enter triple into ETS table</p>
+    <p>Inserts {connection, query, itineraries} triple into ETS table.</p>
+<h3>Parameters</h3>
+<p>connection  
+query   
+itineraries   </p>
+<h3>Return values</h3>
+<p>Returns {:ok}.</p>
 
   </section>
 </div>
@@ -377,7 +411,7 @@ itinerary</p>
     </a>
     <span class="signature">remove(key)</span>
     
-      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/api.ex#L307" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/api.ex#L360" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -385,7 +419,11 @@ itinerary</p>
     
   </div>
   <section class="docstring">
-    <p>Remove entries from ETS table</p>
+    <p>Deletes {key, value} pair from ETS table.</p>
+<h3>Parameters</h3>
+<p>key   </p>
+<h3>Return values</h3>
+<p>Returns {:ok}.</p>
 
   </section>
 </div>
@@ -397,7 +435,7 @@ itinerary</p>
     </a>
     <span class="signature">start_link()</span>
     
-      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/api.ex#L279" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/api.ex#L305" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -405,7 +443,23 @@ itinerary</p>
     
   </div>
   <section class="docstring">
-    <p>Start new API process</p>
+    <p>Starts a GenServer API process linked to the current process.   
+This is often used to start the GenServer as part of a supervision tree.   
+Once the server is started, the <code class="inline">init/1&#39; function of the given module is called with args as its arguments to initialize the server.   
+Creates new ETS table.
+
+### Parameters
+module   
+args   
+options:
+- :name - used for name registration
+- :timeout - if present, the server is allowed to spend the given amount of milliseconds initializing or it will be terminated and the start function will return {:error, :timeout}
+- :debug - if present, the corresponding function in the :sys module is invoked
+- :spawn_opt - if present, its value is passed as options to the underlying process
+
+### Return values
+If the server is successfully created and initialized, this function returns {:ok, pid}, where pid is the PID of the server. If a process with the specified server name already exists, this function returns {:error, {:already_started, pid}} with the PID of that process.   
+If the</code>init/1’ callback fails with reason, this function returns {:error, reason}. Otherwise, if it returns {:stop, reason} or :ignore, the process is terminated and this function returns {:error, reason} or :ignore, respectively.</p>
 
   </section>
 </div>

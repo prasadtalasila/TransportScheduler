@@ -70,9 +70,7 @@
 
       
         <section id="moduledoc">
-          <p>The Query Collector: this module abstracts the final query collector i.e.
-for concurrent functionality, a separate process collects itineraries of a
-given query.</p>
+          <p>The Query Collector: this module abstracts the final query collector i.e. for concurrent functionality, a separate process collects itineraries of a given query.</p>
 
         </section>
       
@@ -97,7 +95,7 @@ given query.</p>
     <a href="#collect/2">collect(server, itinerary)</a>
   </div>
   
-    <div class="summary-synopsis"><p>Add itinerary to list of itineraries</p>
+    <div class="summary-synopsis"><p>Collects the list of itineraries for the query by appending given itinerary to exisiting list after checking whether query is active and limit of collected responses is not reached, using API function `add_itinerary/2’</p>
 </div>
   
 </div>
@@ -106,7 +104,9 @@ given query.</p>
     <a href="#start_link/0">start_link()</a>
   </div>
   
-    <div class="summary-synopsis"><p>Start new UQC process</p>
+    <div class="summary-synopsis"><p>Starts a GenServer QC process linked to the current process.   
+This is often used to start the GenServer as part of a supervision tree.   
+Once the server is started, the `init/1’ function of the given module is called with args as its arguments to initialize the server</p>
 </div>
   
 </div>
@@ -115,7 +115,7 @@ given query.</p>
     <a href="#stop/1">stop(server)</a>
   </div>
   
-    <div class="summary-synopsis"><p>Stop process</p>
+    <div class="summary-synopsis"><p>Stops the QC process with the given reason</p>
 </div>
   
 </div>
@@ -146,7 +146,7 @@ given query.</p>
     </a>
     <span class="signature">collect(server, itinerary)</span>
     
-      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/qc.ex#L21" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/qc.ex#L38" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -154,7 +154,14 @@ given query.</p>
     
   </div>
   <section class="docstring">
-    <p>Add itinerary to list of itineraries</p>
+    <p>Collects the list of itineraries for the query by appending given itinerary to exisiting list after checking whether query is active and limit of collected responses is not reached, using API function `add_itinerary/2’.
+
+### Parameters
+server
+itinerary
+
+### Return values
+Returns {:ok}.</p>
 
   </section>
 </div>
@@ -166,7 +173,7 @@ given query.</p>
     </a>
     <span class="signature">start_link()</span>
     
-      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/qc.ex#L14" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/qc.ex#L24" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -174,7 +181,17 @@ given query.</p>
     
   </div>
   <section class="docstring">
-    <p>Start new UQC process</p>
+    <p>Starts a GenServer QC process linked to the current process.   
+This is often used to start the GenServer as part of a supervision tree.   
+Once the server is started, the <code class="inline">init/1&#39; function of the given module is called with args as its arguments to initialize the server.
+
+### Parameters
+module   
+args   
+
+### Return values
+If the server is successfully created and initialized, this function returns {:ok, pid}, where pid is the PID of the server. If a process with the specified server name already exists, this function returns {:error, {:already_started, pid}} with the PID of that process.   
+If the</code>init/1’ callback fails with reason, this function returns {:error, reason}. Otherwise, if it returns {:stop, reason} or :ignore, the process is terminated and this function returns {:error, reason} or :ignore, respectively.</p>
 
   </section>
 </div>
@@ -186,7 +203,7 @@ given query.</p>
     </a>
     <span class="signature">stop(server)</span>
     
-      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/qc.ex#L28" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/qc.ex#L52" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -194,7 +211,11 @@ given query.</p>
     
   </div>
   <section class="docstring">
-    <p>Stop process</p>
+    <p>Stops the QC process with the given reason.   </p>
+<h3>Parameters</h3>
+<p>pid</p>
+<h3>Return values</h3>
+<p>The `terminate/2’ callback of the given server will be invoked before exiting. This function returns :ok if the server terminates with the given reason; if it terminates with another reason, the call exits.</p>
 
   </section>
 </div>

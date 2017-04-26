@@ -8,7 +8,7 @@ defmodule TS.Station.Supervisor do
 
 	@doc """
 	Starts a station supervisor process with the given module and arg.   
-	To start the supervisor, the `init/1' callback will be invoked in the given module, with arg as its argument. The `init/1' callback must return a supervisor specification which can be created with the help of the functions in the Supervisor.Spec module.
+	To start the supervisor, the `init/1` callback will be invoked in the given module, with arg as its argument. The `init/1` callback must return a supervisor specification which can be created with the help of the functions in the Supervisor.Spec module.
    
 	### Parameters
 	module   
@@ -30,7 +30,7 @@ defmodule TS.Station.Supervisor do
 	- any other term - in such cases, the exit will be logged, there are restarts in transient mode, and linked processes exit with the same reason unless they're trapping exits.
 
 	### Return values
-	If the `init/1' callback returns :ignore, this function returns :ignore as well and the supervisor terminates with reason :normal. If it fails or returns an incorrect value, this function returns {:error, term} where term is a term with information about the error, and the supervisor terminates with reason term.
+	If the `init/1` callback returns :ignore, this function returns :ignore as well and the supervisor terminates with reason :normal. If it fails or returns an incorrect value, this function returns {:error, term} where term is a term with information about the error, and the supervisor terminates with reason term.
 	"""
 	def start_link do
 		Supervisor.start_link(__MODULE__, :ok, name: @name)

@@ -6,7 +6,7 @@ defmodule TS do
 	use Application
 
 	@doc """
-	This function is called when an the application is started using `Application.start/2` (and functions on top of that, such as Application.ensure_started/2). This function should start the top-level process of the application (which should be the top supervisor of the application's supervision tree if the application follows the OTP design principles around supervision).
+	This function is called when an the application is started using `Application.start/2`. This function should start the top-level process of the application (which should be the top supervisor of the application's supervision tree if the application follows the OTP design principles around supervision).
 
 	### Parameters
 	start_type defines how the application is started:

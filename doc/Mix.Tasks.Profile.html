@@ -70,7 +70,7 @@
 
       
         <section id="moduledoc">
-          <p>Code profiling code</p>
+          <p>Helper module to run profiling code using ExProf.</p>
 
         </section>
       
@@ -95,7 +95,7 @@
     <a href="#do_analyze/0">do_analyze()</a>
   </div>
   
-    <div class="summary-synopsis"><p>analyze with profile macro</p>
+    <div class="summary-synopsis"><p>Runs the Profile task with the given args to analyze the enclosed code</p>
 </div>
   
 </div>
@@ -104,7 +104,7 @@
     <a href="#run/1">run(mix_args)</a>
   </div>
   
-    <div class="summary-synopsis"><p>get analysis records and sum them up</p>
+    <div class="summary-synopsis"><p>Prints analysis results</p>
 </div>
   
 </div>
@@ -135,7 +135,7 @@
     </a>
     <span class="signature">do_analyze()</span>
     
-      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/mix/tasks/profile.ex#L9" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/mix/tasks/profile.ex#L16" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -143,7 +143,11 @@
     
   </div>
   <section class="docstring">
-    <p>analyze with profile macro</p>
+    <p>Runs the Profile task with the given args to analyze the enclosed code.</p>
+<h3>Return values</h3>
+<p>If the task was not yet invoked, it runs the task and returns the result.
+If there is an alias with the same name, the alias will be invoked instead of the original task.
+If the task or alias were already invoked, it does not run them again and simply aborts with :noop.  </p>
 
   </section>
 </div>
@@ -155,7 +159,7 @@
     </a>
     <span class="signature">run(mix_args)</span>
     
-      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/mix/tasks/profile.ex#L55" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/mix/tasks/profile.ex#L64" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -163,7 +167,7 @@
     
   </div>
   <section class="docstring">
-    <p>get analysis records and sum them up</p>
+    <p>Prints analysis results. </p>
 
   </section>
 </div>

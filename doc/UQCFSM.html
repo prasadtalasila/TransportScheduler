@@ -71,7 +71,7 @@
       
         <section id="moduledoc">
           <p>Module to filter results of the search query in UQC based on user
-preferences</p>
+preferences.</p>
 
         </section>
       
@@ -96,7 +96,9 @@ preferences</p>
     <a href="#start_link/0">start_link()</a>
   </div>
   
-    <div class="summary-synopsis"><p>Start new FSM process</p>
+    <div class="summary-synopsis"><p>Starts a GenStateMachine UQCFSM process linked to the current process.   
+This is often used to start the GenStateMachine as part of a supervision tree.   
+Once the server is started, the `init/1’ function of the given module is called with args as its arguments to initialize the server</p>
 </div>
   
 </div>
@@ -105,7 +107,7 @@ preferences</p>
     <a href="#update/2">update(server, )</a>
   </div>
   
-    <div class="summary-synopsis"><p>Update state of FSM</p>
+    <div class="summary-synopsis"><p>Update the state of the UQC FSM</p>
 </div>
   
 </div>
@@ -136,7 +138,7 @@ preferences</p>
     </a>
     <span class="signature">start_link()</span>
     
-      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/uqc_fsm.ex#L13" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/uqc_fsm.ex#L23" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -144,7 +146,17 @@ preferences</p>
     
   </div>
   <section class="docstring">
-    <p>Start new FSM process</p>
+    <p>Starts a GenStateMachine UQCFSM process linked to the current process.   
+This is often used to start the GenStateMachine as part of a supervision tree.   
+Once the server is started, the <code class="inline">init/1&#39; function of the given module is called with args as its arguments to initialize the server.   
+
+### Parameters
+module   
+args   
+
+### Return values
+If the server is successfully created and initialized, this function returns {:ok, pid}, where pid is the PID of the server. If a process with the specified server name already exists, this function returns {:error, {:already_started, pid}} with the PID of that process.   
+If the</code>init/1’ callback fails with reason, this function returns {:error, reason}. Otherwise, if it returns {:stop, reason} or :ignore, the process is terminated and this function returns {:error, reason} or :ignore, respectively.</p>
 
   </section>
 </div>
@@ -156,7 +168,7 @@ preferences</p>
     </a>
     <span class="signature">update(server, )</span>
     
-      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/uqc_fsm.ex#L20" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/uqc_fsm.ex#L36" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -164,7 +176,11 @@ preferences</p>
     
   </div>
   <section class="docstring">
-    <p>Update state of FSM</p>
+    <p>Update the state of the UQC FSM.</p>
+<h3>Parameters</h3>
+<p>pid   </p>
+<h3>Return values</h3>
+<p>Returns {:next_state, next_state, nil}.</p>
 
   </section>
 </div>

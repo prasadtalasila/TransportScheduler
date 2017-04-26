@@ -70,7 +70,7 @@
 
       
         <section id="moduledoc">
-          <p>Module to run asynchronous benchmark to test multiple, concurrent queries</p>
+          <p>Helper module to run asynchronous benchmark to test multiple, concurrent queries.</p>
 
         </section>
       
@@ -95,8 +95,7 @@
     <a href="#run/1">run(args)</a>
   </div>
   
-    <div class="summary-synopsis"><p>A task needs to implement <code class="inline">run</code> which receives
-a list of command line args</p>
+    <div class="summary-synopsis"><p>Runs the Benchmark task with the given args</p>
 </div>
   
 </div>
@@ -127,7 +126,7 @@ a list of command line args</p>
     </a>
     <span class="signature">run(args)</span>
     
-      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/mix/tasks/benchmark.ex#L8" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/mix/tasks/benchmark.ex#L20" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -135,9 +134,13 @@ a list of command line args</p>
     
   </div>
   <section class="docstring">
-    <p>A task needs to implement <code class="inline">run</code> which receives
-a list of command line args.</p>
-<p>Callback implementation for <a href="https://hexdocs.pm/mix/Mix.Task.html#c:run/1"><code class="inline">Mix.Task.run/1</code></a>.</p>
+    <p>Runs the Benchmark task with the given args.</p>
+<h3>Parameters</h3>
+<p>arg   </p>
+<h3>Return values</h3>
+<p>If the task was not yet invoked, it runs the task and returns the result.
+If there is an alias with the same name, the alias will be invoked instead of the original task.
+If the task or alias were already invoked, it does not run them again and simply aborts with :noop.  </p>
 
   </section>
 </div>

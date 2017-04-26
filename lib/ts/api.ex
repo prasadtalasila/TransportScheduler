@@ -241,12 +241,12 @@ defmodule API do
 	end
 
 	@doc """
-	This function is called by Query Collector in order to add an itinerary to the list of received itineraries returned from Station Constructor. In `collect/2' function of QC, this function is called to add all returned queries to the list as they come in.   
+	This function is called by Query Collector in order to add an itinerary to the list of received itineraries returned from Station Constructor. In `collect/2` function of QC, this function is called to add all returned queries to the list as they come in.   
 	The API function check whether the number of itineraries received is crossing the limit of maximum itineraries required. If limit is reached, query is deleted form the map of active queries. Otherwise, itinerary is added to the list of itineraries collected for a given query.
 
 	### Parameters
-	queries is in the form of a map	`%{src_station, dst_station, arrival_time, end_time}'.   
-	itinerary is in the form of a map `%{vehicleID, src_station, dst_station, dept_time, arrival_time, mode_of_transport}'.
+	queries is in the form of a map	`%{src_station, dst_station, arrival_time, end_time}`.   
+	itinerary is in the form of a map `%{vehicleID, src_station, dst_station, dept_time, arrival_time, mode_of_transport}`.
 	
 	### Return values
 	Returns {:ok}
@@ -286,7 +286,7 @@ defmodule API do
 	@doc """
 	Starts a GenServer API process linked to the current process.   
 	This is often used to start the GenServer as part of a supervision tree.   
-	Once the server is started, the `init/1' function of the given module is called with args as its arguments to initialize the server.   
+	Once the server is started, the `init/1` function of the given module is called with args as its arguments to initialize the server.   
 	Creates new ETS table.
 	
 	### Parameters
@@ -300,7 +300,7 @@ defmodule API do
 	
 	### Return values
 	If the server is successfully created and initialized, this function returns {:ok, pid}, where pid is the PID of the server. If a process with the specified server name already exists, this function returns {:error, {:already_started, pid}} with the PID of that process.   
-	If the `init/1' callback fails with reason, this function returns {:error, reason}. Otherwise, if it returns {:stop, reason} or :ignore, the process is terminated and this function returns {:error, reason} or :ignore, respectively.
+	If the `init/1` callback fails with reason, this function returns {:error, reason}. Otherwise, if it returns {:stop, reason} or :ignore, the process is terminated and this function returns {:error, reason} or :ignore, respectively.
 	"""
 	def start_link do
 		GenServer.start_link(__MODULE__, :ok, name: UQC)

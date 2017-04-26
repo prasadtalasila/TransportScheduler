@@ -7,7 +7,7 @@ defmodule Station do
 	@doc """
 	Starts a GenStateMachine Station process linked to the current process.   
 	This is often used to start the GenStateMachine as part of a supervision tree.   
-	Once the server is started, the `init/1' function of the given module is called with args as its arguments to initialize the server.   
+	Once the server is started, the `init/1` function of the given module is called with args as its arguments to initialize the server.   
 	
 	### Parameters
 	module   
@@ -15,7 +15,7 @@ defmodule Station do
 	
 	### Return values
 	If the server is successfully created and initialized, this function returns {:ok, pid}, where pid is the PID of the server. If a process with the specified server name already exists, this function returns {:error, {:already_started, pid}} with the PID of that process.   
-	If the `init/1' callback fails with reason, this function returns {:error, reason}. Otherwise, if it returns {:stop, reason} or :ignore, the process is terminated and this function returns {:error, reason} or :ignore, respectively.
+	If the `init/1` callback fails with reason, this function returns {:error, reason}. Otherwise, if it returns {:stop, reason} or :ignore, the process is terminated and this function returns {:error, reason} or :ignore, respectively.
 	"""
 	def start_link do
 		GenStateMachine.start_link(Station, {:nodata, nil})
@@ -113,7 +113,7 @@ defmodule Station do
 	end
 
 	@doc """
-	Lists all valid neighbouring stations given a station and arrival time at that station. This takes care of oevrnight journey arrival time modifications. It also adds other means connections to the list of all possible connections to neighbouring stations. If a neighbour is valid based on `check_dest/2', it is added to the list.
+	Lists all valid neighbouring stations given a station and arrival time at that station. This takes care of oevrnight journey arrival time modifications. It also adds other means connections to the list of all possible connections to neighbouring stations. If a neighbour is valid based on `check_dest/2`, it is added to the list.
 
 	### Parameters   
 	schedule
@@ -122,7 +122,7 @@ defmodule Station do
 	itinerary
 
 	### Return values
-	Returns list of connections to valid neighbouring stations, each in the form of a map %{vehicleID, src_station, dst_station, dept_time, arrival_time, mode_of_transport}.
+	Returns list of connections to valid neighbouring stations, each in the form of a map `%{vehicleID, src_station, dst_station, dept_time, arrival_time, mode_of_transport}`.
 	"""
 	def check_neighbours(schedule, other_means, time, itinerary) do
 		# schedule is filtered to reject neighbours with departure time earlier
