@@ -10,12 +10,8 @@
 
 set -e
 
-cd /home/vagrant/ts
+cd /home/ubuntu/ts
 git pull origin $(git rev-parse --abbrev-ref HEAD)
 
-source /home/vagrant/.bashrc
-mix local.rebar --force
-mix local.hex --force
-mix deps.get
-
+source script/setup	  #run setup on the updated code base
 source script/test        #make sure all tests pass

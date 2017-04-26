@@ -14,7 +14,7 @@ Vagrant.configure("2") do |config|
   end
 
   # Setup synced folder
-  config.vm.synced_folder ".", "/home/vagrant/ts"
+  config.vm.synced_folder ".", "/home/ubuntu/ts"
 
   # install dependencies and create a development environment
   config.vm.provision :shell, privileged: true, path: "script/vagrant"

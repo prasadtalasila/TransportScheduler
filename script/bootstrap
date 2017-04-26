@@ -10,24 +10,16 @@
 
 set -e      # bail out on failure
 
-sudo apt-get update
-sudo apt-get -y install git
-
-sudo su ubuntu
-if [ -f /home/vagrant/.asdf/completions/asdf.bash ]
+if [ -f /home/ubuntu/.asdf/completions/asdf.bash ]
 then
     echo "asdf already installed"
 else
-    git clone https://github.com/asdf-vm/asdf.git /home/vagrant/.asdf --branch v0.3.0
-    cp script/.bashrc /home/vagrant/.bashrc
-    source /home/vagrant/.bashrc
-    echo "\n . /home/vagrant/.bashrc" >> ~/.bashrc
+    git clone https://github.com/asdf-vm/asdf.git /home/ubuntu/.asdf --branch v0.3.0
+    . /home/ubuntu/.asdf/asdf.sh
+    . /home/ubuntu/.asdf/completions/asdf.bash
 fi
 
-sudo apt-get install -y automake autoconf libreadline-dev libncurses-dev libssl-dev libyaml-dev \
-  libxslt-dev libffi-dev libtool unixodbc-dev make zip
-
-if [ -f /home/vagrant/.asdf/installs/erlang/19.0/bin/erl ]
+if [ -f /home/ubuntu/.asdf/installs/erlang/19.0/bin/erl ]
 then
     echo "erlang already installed"
 else

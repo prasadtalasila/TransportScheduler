@@ -10,14 +10,14 @@
 
 set -e
 
-source /home/vagrant/.bashrc
-source script/update
+cd /home/ubuntu/ts
 
-git config receive.denyCurrentBranch ignore
-cp /home/vagrant/ts/script/.tool-versions ~/.
+# uncomment next line if you want to pull from github before server release
+#source script/update
 
 mix release
 
+#undemonstrated, but can do remote deployment
 #mix edeliver build release
 #mix edeliver deploy release
 #mix edeliver start
