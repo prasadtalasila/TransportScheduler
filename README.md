@@ -22,24 +22,15 @@ mix deps.get
 mix compile
 mix test
 ```
+
 Run the following command to build a release:
 ```bash
 mix release
 ```
+
 Run the following command to run the application interactively:
 ```bash
 _build/dev/rel/ts/bin/ts console
-```
-
-UNTESTED Run the following commands to deploy (currently server and user are localhost):   
-```bash
-mix edeliver build release
-mix edeliver deploy release
-```
-
-UNTESTED Run the following command to start application:   
-```bash
-mix edeliver start
 ```
 
 Issue the following cURL command for initialisation of the network:
@@ -60,3 +51,15 @@ where `%STATION_CODE%` is a positive integer indicating the station code of the 
 curl -X GET 'http://localhost:8880/api/station/state?station_code=%STATION_CODE%'
 ```  
 where `%STATION_CODE%` is a positive integer indicating the required station code.
+
+Run the following commands to deploy (currently server and user are localhost): **UNTESTED**    
+```bash
+mix edeliver build release
+mix edeliver deploy release
+```
+
+Run the following command to start application: **UNTESTED**   
+```bash
+mix edeliver start
+```
+
