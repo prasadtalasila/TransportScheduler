@@ -8,7 +8,7 @@
     <title>UQCFSM – TransportScheduler v0.1.0</title>
     <link rel="stylesheet" href="dist/app-f7824c48e6.css" />
     
-    <script src="dist/sidebar_items-cfc60f55c4.js"></script>
+    <script src="dist/sidebar_items-93390bdd36.js"></script>
   </head>
   <body data-type="modules">
     <script>if(localStorage.getItem('night-mode')) document.body.className += ' night-mode';</script>
@@ -72,6 +72,7 @@
         <section id="moduledoc">
           <p>Module to filter results of the search query in UQC based on user
 preferences.</p>
+<p>Uses GenStateMachine.</p>
 
         </section>
       
@@ -96,9 +97,7 @@ preferences.</p>
     <a href="#start_link/0">start_link()</a>
   </div>
   
-    <div class="summary-synopsis"><p>Starts a GenStateMachine UQCFSM process linked to the current process.   
-This is often used to start the GenStateMachine as part of a supervision tree.   
-Once the server is started, the `init/1’ function of the given module is called with args as its arguments to initialize the server</p>
+    <div class="summary-synopsis"><p>Starts a GenStateMachine UQCFSM process linked to the current process</p>
 </div>
   
 </div>
@@ -138,7 +137,7 @@ Once the server is started, the `init/1’ function of the given module is calle
     </a>
     <span class="signature">start_link()</span>
     
-      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/uqc_fsm.ex#L23" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/uqc_fsm.ex#L34" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -146,17 +145,20 @@ Once the server is started, the `init/1’ function of the given module is calle
     
   </div>
   <section class="docstring">
-    <p>Starts a GenStateMachine UQCFSM process linked to the current process.   
-This is often used to start the GenStateMachine as part of a supervision tree.   
-Once the server is started, the <code class="inline">init/1&#39; function of the given module is called with args as its arguments to initialize the server.   
-
-### Parameters
-module   
-args   
-
-### Return values
-If the server is successfully created and initialized, this function returns {:ok, pid}, where pid is the PID of the server. If a process with the specified server name already exists, this function returns {:error, {:already_started, pid}} with the PID of that process.   
-If the</code>init/1’ callback fails with reason, this function returns {:error, reason}. Otherwise, if it returns {:stop, reason} or :ignore, the process is terminated and this function returns {:error, reason} or :ignore, respectively.</p>
+    <p>Starts a GenStateMachine UQCFSM process linked to the current process.</p>
+<p>This is often used to start the GenStateMachine as part of a supervision tree.</p>
+<p>Once the server is started, the <code class="inline">init/1</code> function of the given module is called with args as its
+arguments to initialize the server.   </p>
+<h3>Parameters</h3>
+<p>module</p>
+<p>args   </p>
+<h3>Return values</h3>
+<p>If the server is successfully created and initialized, this function returns {:ok, pid}, where pid 
+is the PID of the server. If a process with the specified server name already exists, this function 
+returns {:error, {:already_started, pid}} with the PID of that process.</p>
+<p>If the <code class="inline">init/1</code> callback fails with reason, this function returns {:error, reason}. Otherwise, if it
+returns {:stop, reason} or :ignore, the process is terminated and this function returns 
+{:error, reason} or :ignore, respectively.</p>
 
   </section>
 </div>
@@ -168,7 +170,7 @@ If the</code>init/1’ callback fails with reason, this function returns {:error
     </a>
     <span class="signature">update(server, )</span>
     
-      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/uqc_fsm.ex#L36" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/uqc_fsm.ex#L47" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     

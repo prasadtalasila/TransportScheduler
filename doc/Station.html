@@ -8,7 +8,7 @@
     <title>Station – TransportScheduler v0.1.0</title>
     <link rel="stylesheet" href="dist/app-f7824c48e6.css" />
     
-    <script src="dist/sidebar_items-cfc60f55c4.js"></script>
+    <script src="dist/sidebar_items-93390bdd36.js"></script>
   </head>
   <body data-type="modules">
     <script>if(localStorage.getItem('night-mode')) document.body.className += ' night-mode';</script>
@@ -70,7 +70,9 @@
 
       
         <section id="moduledoc">
-          <p>Module to create a transit station node. The station process pid can be used to retrieve station struct values such as local variables and schedule. It can also be used to handle local variable updates.</p>
+          <p>Module to create a transit station node. The station process pid can be used to retrieve station struct 
+values such as local variables and schedule. It can also be used to handle local variable updates.</p>
+<p>Uses GenStateMachine.</p>
 
         </section>
       
@@ -95,7 +97,7 @@
     <a href="#check_dest/2">check_dest(dst, itinerary)</a>
   </div>
   
-    <div class="summary-synopsis"><p>Checks if neighbouring station is valid, ie, that it does not result in a looping itinerary</p>
+    <div class="summary-synopsis"><p>Checks if neighbouring station is valid, ie, that it does not result in a looping itinerary. The potential new destination to be added to the itinerary path is compared with all stations already in the itinerary upto this point to decide whether a loop is being formed</p>
 </div>
   
 </div>
@@ -104,7 +106,10 @@
     <a href="#check_neighbours/4">check_neighbours(schedule, other_means, time, itinerary)</a>
   </div>
   
-    <div class="summary-synopsis"><p>Lists all valid neighbouring stations given a station and arrival time at that station. This takes care of oevrnight journey arrival time modifications. It also adds other means connections to the list of all possible connections to neighbouring stations. If a neighbour is valid based on `check_dest/2’, it is added to the list</p>
+    <div class="summary-synopsis"><p>Lists all valid neighbouring stations given a station and arrival time at that station. This takes
+care of overnight journey arrival time modifications. It also adds other means connections to the 
+list of all possible connections to neighbouring stations. If a neighbour is valid based on
+<a href="#check_dest/2"><code class="inline">check_dest/2</code></a>, it is added to the list</p>
 </div>
   
 </div>
@@ -113,7 +118,12 @@
     <a href="#function/4">function(nc, src, itinerary, dest_schedule)</a>
   </div>
   
-    <div class="summary-synopsis"><p>This function passes queries through the network to build the final itinerary. The connection that is required from the schedule list to reach this station from the source station is added to the itinerary path. This resulting itinerary is passed along itinerary to neighbouring stations from a given source station. If the neighbouring station happens to be the destination station required in the query, then the function passes the final itinerary directly to the Query Collector and the search is terminated</p>
+    <div class="summary-synopsis"><p>This function passes queries through the network to build the final itinerary. The connection that
+is required from the schedule list to reach this station from the source station is added to the
+itinerary path. This resulting itinerary is passed along itinerary to neighbouring stations from a
+given source station. If the neighbouring station happens to be the destination station required in
+the query, then the function passes the final itinerary directly to the Query Collector and the search
+is terminated</p>
 </div>
   
 </div>
@@ -140,7 +150,8 @@
     <a href="#receive_at_src/3">receive_at_src(nc, src, itinerary)</a>
   </div>
   
-    <div class="summary-synopsis"><p>Receives a query encoded in itinerary from NC at source station. The pid of NC and source station must be known</p>
+    <div class="summary-synopsis"><p>Receives a query encoded in itinerary from NC at source station. The pid of NC and source station
+must be known</p>
 </div>
   
 </div>
@@ -149,7 +160,8 @@
     <a href="#send_to_stn/4">send_to_stn(nc, src, dst, itinerary)</a>
   </div>
   
-    <div class="summary-synopsis"><p>Sends query from a source station to the neighbouring station and append to itinerary built upto this point, ie, upto source station. The pid of NC, source station, and destination station must be known</p>
+    <div class="summary-synopsis"><p>Sends query from a source station to the neighbouring station and append to itinerary built upto this
+point, ie, upto source station. The pid of NC, source station, and destination station must be known</p>
 </div>
   
 </div>
@@ -158,9 +170,7 @@
     <a href="#start_link/0">start_link()</a>
   </div>
   
-    <div class="summary-synopsis"><p>Starts a GenStateMachine Station process linked to the current process.   
-This is often used to start the GenStateMachine as part of a supervision tree.   
-Once the server is started, the `init/1’ function of the given module is called with args as its arguments to initialize the server</p>
+    <div class="summary-synopsis"><p>Starts a GenStateMachine Station process linked to the current process</p>
 </div>
   
 </div>
@@ -169,7 +179,8 @@ Once the server is started, the `init/1’ function of the given module is calle
     <a href="#update/2">update(station, new_vars)</a>
   </div>
   
-    <div class="summary-synopsis"><p>Updates station struct values by replacing with new struct composed of the new values for the station, and update the state of the station FSM</p>
+    <div class="summary-synopsis"><p>Updates station struct values by replacing with new struct composed of the new values for the station,
+and update the state of the station FSM</p>
 </div>
   
 </div>
@@ -200,7 +211,7 @@ Once the server is started, the `init/1’ function of the given module is calle
     </a>
     <span class="signature">check_dest(dst, itinerary)</span>
     
-      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/station.ex#L109" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/station.ex#L134" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -208,10 +219,11 @@ Once the server is started, the `init/1’ function of the given module is calle
     
   </div>
   <section class="docstring">
-    <p>Checks if neighbouring station is valid, ie, that it does not result in a looping itinerary.</p>
+    <p>Checks if neighbouring station is valid, ie, that it does not result in a looping itinerary. The potential new destination to be added to the itinerary path is compared with all stations already in the itinerary upto this point to decide whether a loop is being formed.</p>
 <h3>Parameters</h3>
-<p>dst   
-itinerary</p>
+<p>dst_station_pid</p>
+<p>itinerary - in the form of a map <code class="inline">%{vehicleID, src_station, dst_station, dept_time, arrival_time, 
+mode_of_transport}</code></p>
 <h3>Return values</h3>
 <p>Returns true or false.</p>
 
@@ -225,7 +237,7 @@ itinerary</p>
     </a>
     <span class="signature">check_neighbours(schedule, other_means, time, itinerary)</span>
     
-      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/station.ex#L127" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/station.ex#L161" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -233,16 +245,20 @@ itinerary</p>
     
   </div>
   <section class="docstring">
-    <p>Lists all valid neighbouring stations given a station and arrival time at that station. This takes care of oevrnight journey arrival time modifications. It also adds other means connections to the list of all possible connections to neighbouring stations. If a neighbour is valid based on `check_dest/2’, it is added to the list.
-
-### Parameters   
-schedule
-other_means
-time
-itinerary
-
-### Return values
-Returns list of connections to valid neighbouring stations, each in the form of a map %{vehicleID, src_station, dst_station, dept_time, arrival_time, mode_of_transport}.</p>
+    <p>Lists all valid neighbouring stations given a station and arrival time at that station. This takes
+care of overnight journey arrival time modifications. It also adds other means connections to the 
+list of all possible connections to neighbouring stations. If a neighbour is valid based on
+<a href="#check_dest/2"><code class="inline">check_dest/2</code></a>, it is added to the list.</p>
+<h3>Parameters</h3>
+<p>schedule - in the form of a list of maps <code class="inline">%{vehicleID, src_station, dst_station, dept_time,
+arrival_time, mode_of_transport}</code></p>
+<p>other_means - in the form of a similar list with mode_of_transport: “Other Means”</p>
+<p>time - time of arrival at station</p>
+<p>itinerary - in the form of list of maps <code class="inline">%{vehicleID, src_station, dst_station, dept_time, arrival_time, 
+mode_of_transport}</code></p>
+<h3>Return values</h3>
+<p>Returns list of connections to valid neighbouring stations, each in the form of a map <code class="inline">%{vehicleID, 
+src_station, dst_station, dept_time, arrival_time, mode_of_transport}</code>.</p>
 
   </section>
 </div>
@@ -254,7 +270,7 @@ Returns list of connections to valid neighbouring stations, each in the form of 
     </a>
     <span class="signature">function(nc, src, itinerary, dest_schedule)</span>
     
-      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/station.ex#L163" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/station.ex#L207" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -262,12 +278,19 @@ Returns list of connections to valid neighbouring stations, each in the form of 
     
   </div>
   <section class="docstring">
-    <p>This function passes queries through the network to build the final itinerary. The connection that is required from the schedule list to reach this station from the source station is added to the itinerary path. This resulting itinerary is passed along itinerary to neighbouring stations from a given source station. If the neighbouring station happens to be the destination station required in the query, then the function passes the final itinerary directly to the Query Collector and the search is terminated.</p>
+    <p>This function passes queries through the network to build the final itinerary. The connection that
+is required from the schedule list to reach this station from the source station is added to the
+itinerary path. This resulting itinerary is passed along itinerary to neighbouring stations from a
+given source station. If the neighbouring station happens to be the destination station required in
+the query, then the function passes the final itinerary directly to the Query Collector and the search
+is terminated.</p>
 <h3>Parameters</h3>
-<p>nc
-src
-itinerary
-dest_schedule</p>
+<p>nc_pid</p>
+<p>src_station_pid</p>
+<p>itinerary - in the form of a map <code class="inline">%{vehicleID, src_station, dst_station, dept_time, arrival_time, 
+mode_of_transport}</code></p>
+<p>dst_schedule - in the form of a list of maps <code class="inline">%{vehicleID, src_station, dst_station, dept_time,
+arrival_time, mode_of_transport}</code></p>
 <h3>Return values</h3>
 <p>Returns {:ok}.</p>
 
@@ -281,7 +304,7 @@ dest_schedule</p>
     </a>
     <span class="signature">get_state(station)</span>
     
-      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/station.ex#L62" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/station.ex#L76" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -291,7 +314,7 @@ dest_schedule</p>
   <section class="docstring">
     <p>Retrieves station struct state value given the station pid.</p>
 <h3>Parameters</h3>
-<p>pid   </p>
+<p>station_pid   </p>
 <h3>Return values</h3>
 <p>Returns {:next_state, state, vars, [{:reply, from, state}]}.</p>
 
@@ -305,7 +328,7 @@ dest_schedule</p>
     </a>
     <span class="signature">get_vars(station)</span>
     
-      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/station.ex#L49" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/station.ex#L63" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -315,7 +338,7 @@ dest_schedule</p>
   <section class="docstring">
     <p>Retrieves station struct local variable values given the station pid.</p>
 <h3>Parameters</h3>
-<p>pid   </p>
+<p>station_pid   </p>
 <h3>Return values</h3>
 <p>{:next_state, state, vars, [{:reply, from, vars}]}.</p>
 
@@ -329,7 +352,7 @@ dest_schedule</p>
     </a>
     <span class="signature">receive_at_src(nc, src, itinerary)</span>
     
-      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/station.ex#L79" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/station.ex#L97" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -337,11 +360,13 @@ dest_schedule</p>
     
   </div>
   <section class="docstring">
-    <p>Receives a query encoded in itinerary from NC at source station. The pid of NC and source station must be known.</p>
+    <p>Receives a query encoded in itinerary from NC at source station. The pid of NC and source station
+must be known.</p>
 <h3>Parameters</h3>
-<p>nc   
-src   
-itinerary</p>
+<p>nc_pid</p>
+<p>src_station_pid</p>
+<p>itinerary - in the form of a map <code class="inline">%{vehicleID, src_station, dst_station, dept_time, arrival_time, 
+mode_of_transport}</code></p>
 <h3>Return values</h3>
 <p>Returns {:ok}.</p>
 
@@ -355,7 +380,7 @@ itinerary</p>
     </a>
     <span class="signature">send_to_stn(nc, src, dst, itinerary)</span>
     
-      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/station.ex#L95" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/station.ex#L118" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -363,12 +388,14 @@ itinerary</p>
     
   </div>
   <section class="docstring">
-    <p>Sends query from a source station to the neighbouring station and append to itinerary built upto this point, ie, upto source station. The pid of NC, source station, and destination station must be known.</p>
+    <p>Sends query from a source station to the neighbouring station and append to itinerary built upto this
+point, ie, upto source station. The pid of NC, source station, and destination station must be known.</p>
 <h3>Parameters</h3>
-<p>nc   
-src   
-dst   
-itinerary</p>
+<p>nc_pid</p>
+<p>src_station_pid</p>
+<p>dst_station_pid</p>
+<p>itinerary - in the form of a map <code class="inline">%{vehicleID, src_station, dst_station, dept_time, arrival_time, 
+mode_of_transport}</code></p>
 <h3>Return values</h3>
 <p>Returns {:ok}</p>
 
@@ -382,7 +409,7 @@ itinerary</p>
     </a>
     <span class="signature">start_link()</span>
     
-      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/station.ex#L20" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/station.ex#L32" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -390,17 +417,20 @@ itinerary</p>
     
   </div>
   <section class="docstring">
-    <p>Starts a GenStateMachine Station process linked to the current process.   
-This is often used to start the GenStateMachine as part of a supervision tree.   
-Once the server is started, the <code class="inline">init/1&#39; function of the given module is called with args as its arguments to initialize the server.   
-
-### Parameters
-module   
-args   
-
-### Return values
-If the server is successfully created and initialized, this function returns {:ok, pid}, where pid is the PID of the server. If a process with the specified server name already exists, this function returns {:error, {:already_started, pid}} with the PID of that process.   
-If the</code>init/1’ callback fails with reason, this function returns {:error, reason}. Otherwise, if it returns {:stop, reason} or :ignore, the process is terminated and this function returns {:error, reason} or :ignore, respectively.</p>
+    <p>Starts a GenStateMachine Station process linked to the current process.</p>
+<p>This is often used to start the GenStateMachine as part of a supervision tree.</p>
+<p>Once the server is started, the <code class="inline">init/1</code> function of the given module is called with args as its 
+arguments to initialize the server.   </p>
+<h3>Parameters</h3>
+<p>module</p>
+<p>args   </p>
+<h3>Return values</h3>
+<p>If the server is successfully created and initialized, this function returns {:ok, pid}, where pid
+is the PID of the server. If a process with the specified server name already exists, this function
+returns {:error, {:already_started, pid}} with the PID of that process.</p>
+<p>If the <code class="inline">init/1</code> callback fails with reason, this function returns {:error, reason}. Otherwise, if 
+it returns {:stop, reason} or :ignore, the process is terminated and this function returns
+{:error, reason} or :ignore, respectively.</p>
 
   </section>
 </div>
@@ -412,7 +442,7 @@ If the</code>init/1’ callback fails with reason, this function returns {:error
     </a>
     <span class="signature">update(station, new_vars)</span>
     
-      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/station.ex#L36" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/station.ex#L50" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -420,10 +450,11 @@ If the</code>init/1’ callback fails with reason, this function returns {:error
     
   </div>
   <section class="docstring">
-    <p>Updates station struct values by replacing with new struct composed of the new values for the station, and update the state of the station FSM.</p>
+    <p>Updates station struct values by replacing with new struct composed of the new values for the station,
+and update the state of the station FSM.</p>
 <h3>Parameters</h3>
-<p>pid   
-station_struct</p>
+<p>station_pid</p>
+<p>station_struct</p>
 <h3>Return values</h3>
 <p>Returns {:next_state, next_state, new_vars}.</p>
 

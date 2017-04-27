@@ -8,7 +8,7 @@
     <title>InputParser – TransportScheduler v0.1.0</title>
     <link rel="stylesheet" href="dist/app-f7824c48e6.css" />
     
-    <script src="dist/sidebar_items-cfc60f55c4.js"></script>
+    <script src="dist/sidebar_items-93390bdd36.js"></script>
   </head>
   <body data-type="modules">
     <script>if(localStorage.getItem('night-mode')) document.body.className += ' night-mode';</script>
@@ -70,7 +70,10 @@
 
       
         <section id="moduledoc">
-          <p>Module to store data from input files in the defined station structure. Files stations.txt, schedule.txt, OMT.txt, local_variables.txt store data of transit stations and connections. These are read into appropriate maps for storing in corresponding Station processes.</p>
+          <p>Module to store data from input files in the defined station structure. Files stations.txt,
+schedule.txt, OMT.txt, local_variables.txt store data of transit stations and connections. 
+These are read into appropriate maps for storing in corresponding Station processes.</p>
+<p>Uses GenServer.</p>
 
         </section>
       
@@ -95,7 +98,8 @@
     <a href="#get_city_code/2">get_city_code(pid, city)</a>
   </div>
   
-    <div class="summary-synopsis"><p>Returns station code from map using station city as key, taken from InputParser process when its pid is known</p>
+    <div class="summary-synopsis"><p>Returns station code from map using station city as key, taken from InputParser process when its pid
+is known</p>
 </div>
   
 </div>
@@ -104,7 +108,8 @@
     <a href="#get_local_variables/2">get_local_variables(pid, code)</a>
   </div>
   
-    <div class="summary-synopsis"><p>Return map of local variables from source station having given code, taken from InputParser process when its pid is known</p>
+    <div class="summary-synopsis"><p>Return map of local variables from source station having given code, taken from InputParser process
+when its pid is known</p>
 </div>
   
 </div>
@@ -113,7 +118,8 @@
     <a href="#get_other_means/2">get_other_means(pid, code)</a>
   </div>
   
-    <div class="summary-synopsis"><p>Returns schedule list of other means connections from source station having given code, taken from InputParser process when its pid is known</p>
+    <div class="summary-synopsis"><p>Returns schedule list of other means connections from source station having given code, taken from
+InputParser process when its pid is known</p>
 </div>
   
 </div>
@@ -122,7 +128,8 @@
     <a href="#get_schedule/2">get_schedule(pid, code)</a>
   </div>
   
-    <div class="summary-synopsis"><p>Return schedule list of vehicles from source station having given code, taken from InputParser process when its pid is known</p>
+    <div class="summary-synopsis"><p>Return schedule list of vehicles from source station having given code, taken from InputParser process
+when its pid is known</p>
 </div>
   
 </div>
@@ -131,7 +138,8 @@
     <a href="#get_schedules/1">get_schedules(pid)</a>
   </div>
   
-    <div class="summary-synopsis"><p>Returns map of source station codes to schedule list of vehicles from that source station, taken from InputParser process when its pid is known</p>
+    <div class="summary-synopsis"><p>Returns map of source station codes to schedule list of vehicles from that source station, taken from
+InputParser process when its pid is known</p>
 </div>
   
 </div>
@@ -149,7 +157,8 @@
     <a href="#get_station_struct/2">get_station_struct(pid, city)</a>
   </div>
   
-    <div class="summary-synopsis"><p>Return Station struct having local variable and schedule information for a given station city, taken from InputParser process when its pid is known</p>
+    <div class="summary-synopsis"><p>Return Station struct having local variable and schedule information for a given station city, taken
+from InputParser process when its pid is known</p>
 </div>
   
 </div>
@@ -182,9 +191,7 @@
     <a href="#start_link/0">start_link()</a>
   </div>
   
-    <div class="summary-synopsis"><p>Starts a GenServer InputParser process linked to the current process.   
-This is often used to start the GenServer as part of a supervision tree.   
-Once the server is started, the `init/1’ function of the given module is called with args as its arguments to initialize the server</p>
+    <div class="summary-synopsis"><p>Starts a GenServer InputParser process linked to the current process</p>
 </div>
   
 </div>
@@ -224,7 +231,7 @@ Once the server is started, the `init/1’ function of the given module is calle
     </a>
     <span class="signature">get_city_code(pid, city)</span>
     
-      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/input_parser.ex#L106" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/input_parser.ex#L128" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -232,10 +239,11 @@ Once the server is started, the `init/1’ function of the given module is calle
     
   </div>
   <section class="docstring">
-    <p>Returns station code from map using station city as key, taken from InputParser process when its pid is known.</p>
+    <p>Returns station code from map using station city as key, taken from InputParser process when its pid
+is known.</p>
 <h3>Parameters</h3>
-<p>pid   
-code</p>
+<p>ip_pid</p>
+<p>station_name</p>
 <h3>Return values</h3>
 <p>Returns {:reply, station_code, state}.</p>
 
@@ -249,7 +257,7 @@ code</p>
     </a>
     <span class="signature">get_local_variables(pid, code)</span>
     
-      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/input_parser.ex#L92" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/input_parser.ex#L112" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -257,10 +265,11 @@ code</p>
     
   </div>
   <section class="docstring">
-    <p>Return map of local variables from source station having given code, taken from InputParser process when its pid is known.</p>
+    <p>Return map of local variables from source station having given code, taken from InputParser process
+when its pid is known.</p>
 <h3>Parameters</h3>
-<p>pid   
-code</p>
+<p>ip_pid</p>
+<p>station_code</p>
 <h3>Return values</h3>
 <p>Returns {:reply, loc_var_map, state}.</p>
 
@@ -274,7 +283,7 @@ code</p>
     </a>
     <span class="signature">get_other_means(pid, code)</span>
     
-      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/input_parser.ex#L78" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/input_parser.ex#L96" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -282,10 +291,11 @@ code</p>
     
   </div>
   <section class="docstring">
-    <p>Returns schedule list of other means connections from source station having given code, taken from InputParser process when its pid is known.</p>
+    <p>Returns schedule list of other means connections from source station having given code, taken from
+InputParser process when its pid is known.</p>
 <h3>Parameters</h3>
-<p>pid   
-code</p>
+<p>ip_pid</p>
+<p>station_code</p>
 <h3>Return values</h3>
 <p>Returns {:reply, OMT_list, state}.</p>
 
@@ -299,7 +309,7 @@ code</p>
     </a>
     <span class="signature">get_schedule(pid, code)</span>
     
-      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/input_parser.ex#L64" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/input_parser.ex#L80" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -307,10 +317,11 @@ code</p>
     
   </div>
   <section class="docstring">
-    <p>Return schedule list of vehicles from source station having given code, taken from InputParser process when its pid is known.</p>
+    <p>Return schedule list of vehicles from source station having given code, taken from InputParser process
+when its pid is known.</p>
 <h3>Parameters</h3>
-<p>pid   
-code</p>
+<p>ip_pid</p>
+<p>station_code</p>
 <h3>Return values</h3>
 <p>Returns {:reply, schedule_list, state}.</p>
 
@@ -324,7 +335,7 @@ code</p>
     </a>
     <span class="signature">get_schedules(pid)</span>
     
-      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/input_parser.ex#L50" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/input_parser.ex#L64" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -332,9 +343,10 @@ code</p>
     
   </div>
   <section class="docstring">
-    <p>Returns map of source station codes to schedule list of vehicles from that source station, taken from InputParser process when its pid is known.</p>
+    <p>Returns map of source station codes to schedule list of vehicles from that source station, taken from
+InputParser process when its pid is known.</p>
 <h3>Parameters</h3>
-<p>pid</p>
+<p>ip_pid</p>
 <h3>Return values</h3>
 <p>Returns {:reply, schedules_map, state}.</p>
 
@@ -348,7 +360,7 @@ code</p>
     </a>
     <span class="signature">get_station_map(pid)</span>
     
-      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/input_parser.ex#L37" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/input_parser.ex#L50" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -358,7 +370,7 @@ code</p>
   <section class="docstring">
     <p>Returns map of station cities to station codes, taken from InputParser process when its pid is known.</p>
 <h3>Parameters</h3>
-<p>pid</p>
+<p>ip_pid</p>
 <h3>Return values</h3>
 <p>Returns {:reply, station_map, state}.</p>
 
@@ -372,7 +384,7 @@ code</p>
     </a>
     <span class="signature">get_station_struct(pid, city)</span>
     
-      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/input_parser.ex#L120" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/input_parser.ex#L145" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -380,12 +392,14 @@ code</p>
     
   </div>
   <section class="docstring">
-    <p>Return Station struct having local variable and schedule information for a given station city, taken from InputParser process when its pid is known.</p>
+    <p>Return Station struct having local variable and schedule information for a given station city, taken
+from InputParser process when its pid is known.</p>
 <h3>Parameters</h3>
-<p>pid   
-city</p>
+<p>ip_pid</p>
+<p>station_name</p>
 <h3>Return values</h3>
-<p>Returns station struct of the form %{loc_vars_map, schedule_list, other_means_list, station_code, station_city}.</p>
+<p>Returns station struct of the form <code class="inline">%{loc_vars_map, schedule_list, other_means_list, station_code,
+station_city}</code>.</p>
 
   </section>
 </div>
@@ -397,7 +411,7 @@ city</p>
     </a>
     <span class="signature">obtain_loc_var_map()</span>
     
-      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/input_parser.ex#L220" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/input_parser.ex#L247" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -416,7 +430,7 @@ city</p>
     </a>
     <span class="signature">obtain_other_means()</span>
     
-      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/input_parser.ex#L212" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/input_parser.ex#L239" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -435,7 +449,7 @@ city</p>
     </a>
     <span class="signature">obtain_schedules()</span>
     
-      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/input_parser.ex#L203" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/input_parser.ex#L230" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -454,7 +468,7 @@ city</p>
     </a>
     <span class="signature">obtain_stations()</span>
     
-      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/input_parser.ex#L194" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/input_parser.ex#L221" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -473,7 +487,7 @@ city</p>
     </a>
     <span class="signature">start_link()</span>
     
-      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/input_parser.ex#L23" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/input_parser.ex#L36" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -481,17 +495,20 @@ city</p>
     
   </div>
   <section class="docstring">
-    <p>Starts a GenServer InputParser process linked to the current process.   
-This is often used to start the GenServer as part of a supervision tree.   
-Once the server is started, the <code class="inline">init/1&#39; function of the given module is called with args as its arguments to initialize the server.   
-
-### Parameters
-module   
-args   
-
-### Return values
-If the server is successfully created and initialized, this function returns {:ok, pid}, where pid is the PID of the server. If a process with the specified server name already exists, this function returns {:error, {:already_started, pid}} with the PID of that process.   
-If the</code>init/1’ callback fails with reason, this function returns {:error, reason}. Otherwise, if it returns {:stop, reason} or :ignore, the process is terminated and this function returns {:error, reason} or :ignore, respectively.</p>
+    <p>Starts a GenServer InputParser process linked to the current process.</p>
+<p>This is often used to start the GenServer as part of a supervision tree.</p>
+<p>Once the server is started, the <code class="inline">init/1</code> function of the given module is called with args as its
+arguments to initialize the server.   </p>
+<h3>Parameters</h3>
+<p>module</p>
+<p>args   </p>
+<h3>Return values</h3>
+<p>If the server is successfully created and initialized, this function returns {:ok, pid}, where pid
+is the PID of the server. If a process with the specified server name already exists, this function 
+returns {:error, {:already_started, pid}} with the PID of that process.</p>
+<p>If the <code class="inline">init/1</code> callback fails with reason, this function returns {:error, reason}. Otherwise, if
+it returns {:stop, reason} or :ignore, the process is terminated and this function returns
+{:error, reason} or :ignore, respectively.</p>
 
   </section>
 </div>
@@ -503,7 +520,7 @@ If the</code>init/1’ callback fails with reason, this function returns {:error
     </a>
     <span class="signature">stop(pid)</span>
     
-      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/input_parser.ex#L138" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/input_parser.ex#L165" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -513,9 +530,11 @@ If the</code>init/1’ callback fails with reason, this function returns {:error
   <section class="docstring">
     <p>Stops the InputParser process with the given reason.   </p>
 <h3>Parameters</h3>
-<p>pid</p>
+<p>ip_pid</p>
 <h3>Return values</h3>
-<p>The `terminate/2’ callback of the given server will be invoked before exiting. This function returns :ok if the server terminates with the given reason; if it terminates with another reason, the call exits.</p>
+<p>The <code class="inline">terminate/2</code> callback of the given server will be invoked before exiting. This function returns
+:ok if the server terminates with the given reason; if it terminates with another reason,
+the call exits.</p>
 
   </section>
 </div>

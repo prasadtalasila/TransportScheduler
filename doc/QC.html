@@ -8,7 +8,7 @@
     <title>QC – TransportScheduler v0.1.0</title>
     <link rel="stylesheet" href="dist/app-f7824c48e6.css" />
     
-    <script src="dist/sidebar_items-cfc60f55c4.js"></script>
+    <script src="dist/sidebar_items-93390bdd36.js"></script>
   </head>
   <body data-type="modules">
     <script>if(localStorage.getItem('night-mode')) document.body.className += ' night-mode';</script>
@@ -70,7 +70,9 @@
 
       
         <section id="moduledoc">
-          <p>The Query Collector: this module abstracts the final query collector i.e. for concurrent functionality, a separate process collects itineraries of a given query.</p>
+          <p>Module to abstract the final query collector, ie, for concurrent functionality, a separate process
+collects itineraries of a given query.</p>
+<p>Uses GenServer.</p>
 
         </section>
       
@@ -95,7 +97,9 @@
     <a href="#collect/2">collect(server, itinerary)</a>
   </div>
   
-    <div class="summary-synopsis"><p>Collects the list of itineraries for the query by appending given itinerary to exisiting list after checking whether query is active and limit of collected responses is not reached, using API function `add_itinerary/2’</p>
+    <div class="summary-synopsis"><p>Collects the list of itineraries for the query by appending given itinerary to exisiting list after
+checking whether query is active and limit of collected responses is not reached, using API function
+<code class="inline">add_itinerary/2</code></p>
 </div>
   
 </div>
@@ -104,9 +108,7 @@
     <a href="#start_link/0">start_link()</a>
   </div>
   
-    <div class="summary-synopsis"><p>Starts a GenServer QC process linked to the current process.   
-This is often used to start the GenServer as part of a supervision tree.   
-Once the server is started, the `init/1’ function of the given module is called with args as its arguments to initialize the server</p>
+    <div class="summary-synopsis"><p>Starts a GenServer QC process linked to the current process</p>
 </div>
   
 </div>
@@ -146,7 +148,7 @@ Once the server is started, the `init/1’ function of the given module is calle
     </a>
     <span class="signature">collect(server, itinerary)</span>
     
-      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/qc.ex#L38" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/qc.ex#L54" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -154,14 +156,15 @@ Once the server is started, the `init/1’ function of the given module is calle
     
   </div>
   <section class="docstring">
-    <p>Collects the list of itineraries for the query by appending given itinerary to exisiting list after checking whether query is active and limit of collected responses is not reached, using API function `add_itinerary/2’.
-
-### Parameters
-server
-itinerary
-
-### Return values
-Returns {:ok}.</p>
+    <p>Collects the list of itineraries for the query by appending given itinerary to exisiting list after
+checking whether query is active and limit of collected responses is not reached, using API function
+<code class="inline">add_itinerary/2</code>.</p>
+<h3>Parameters</h3>
+<p>qc_pid</p>
+<p>itinerary - in the form of a map <code class="inline">%{vehicleID, src_station, dst_station, dept_time, 
+arrival_time, mode_of_transport}</code>.</p>
+<h3>Return values</h3>
+<p>Returns {:ok}.</p>
 
   </section>
 </div>
@@ -173,7 +176,7 @@ Returns {:ok}.</p>
     </a>
     <span class="signature">start_link()</span>
     
-      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/qc.ex#L24" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/qc.ex#L36" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -181,17 +184,20 @@ Returns {:ok}.</p>
     
   </div>
   <section class="docstring">
-    <p>Starts a GenServer QC process linked to the current process.   
-This is often used to start the GenServer as part of a supervision tree.   
-Once the server is started, the <code class="inline">init/1&#39; function of the given module is called with args as its arguments to initialize the server.
-
-### Parameters
-module   
-args   
-
-### Return values
-If the server is successfully created and initialized, this function returns {:ok, pid}, where pid is the PID of the server. If a process with the specified server name already exists, this function returns {:error, {:already_started, pid}} with the PID of that process.   
-If the</code>init/1’ callback fails with reason, this function returns {:error, reason}. Otherwise, if it returns {:stop, reason} or :ignore, the process is terminated and this function returns {:error, reason} or :ignore, respectively.</p>
+    <p>Starts a GenServer QC process linked to the current process.</p>
+<p>This is often used to start the GenServer as part of a supervision tree.</p>
+<p>Once the server is started, the <code class="inline">init/1</code> function of the given module is called with args as its 
+arguments to initialize the server.</p>
+<h3>Parameters</h3>
+<p>module</p>
+<p>args</p>
+<h3>Return values</h3>
+<p>If the server is successfully created and initialized, this function returns {:ok, pid}, where pid
+is the PID of the server. If a process with the specified server name already exists, this function 
+returns {:error, {:already_started, pid}} with the PID of that process.</p>
+<p>If the <code class="inline">init/1</code> callback fails with reason, this function returns {:error, reason}. Otherwise, if
+it returns {:stop, reason} or :ignore, the process is terminated and this function returns
+{:error, reason} or :ignore, respectively.</p>
 
   </section>
 </div>
@@ -203,7 +209,7 @@ If the</code>init/1’ callback fails with reason, this function returns {:error
     </a>
     <span class="signature">stop(server)</span>
     
-      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/qc.ex#L52" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/qc.ex#L70" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -213,9 +219,11 @@ If the</code>init/1’ callback fails with reason, this function returns {:error
   <section class="docstring">
     <p>Stops the QC process with the given reason.   </p>
 <h3>Parameters</h3>
-<p>pid</p>
+<p>qc_pid</p>
 <h3>Return values</h3>
-<p>The `terminate/2’ callback of the given server will be invoked before exiting. This function returns :ok if the server terminates with the given reason; if it terminates with another reason, the call exits.</p>
+<p>The <code class="inline">terminate/2</code> callback of the given server will be invoked before exiting. This function returns
+:ok if the server terminates with the given reason; if it terminates with another reason, the 
+call exits.</p>
 
   </section>
 </div>

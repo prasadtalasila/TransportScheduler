@@ -8,7 +8,7 @@
     <title>TS – TransportScheduler v0.1.0</title>
     <link rel="stylesheet" href="dist/app-f7824c48e6.css" />
     
-    <script src="dist/sidebar_items-cfc60f55c4.js"></script>
+    <script src="dist/sidebar_items-93390bdd36.js"></script>
   </head>
   <body data-type="modules">
     <script>if(localStorage.getItem('night-mode')) document.body.className += ' night-mode';</script>
@@ -70,8 +70,12 @@
 
       
         <section id="moduledoc">
-          <p>The TransportScheduler application implements an Actor-based concurrent approach to allow interactive journey planning in multimodal public transit networks.   
-Each transit station is modelled as an Actor. Concurrent itinerary search over transit schedules is possible by users. Itineraries obtained can be filtered based on user preference. Real-time update to timetables and station status is possible by local network managers.</p>
+          <p>The TransportScheduler application implements an Actor-based concurrent approach to allow
+interactive journey planning in multimodal public transit networks.</p>
+<p>Each transit station is modelled as an Actor. Concurrent itinerary search over transit 
+schedules is possible by users. Itineraries obtained can be filtered based on user preference.
+Real-time update to timetables and station status is possible by local network managers.</p>
+<p>Uses Application.</p>
 
         </section>
       
@@ -96,7 +100,7 @@ Each transit station is modelled as an Actor. Concurrent itinerary search over t
     <a href="#start/2">start(type, args)</a>
   </div>
   
-    <div class="summary-synopsis"><p>This function is called when an the application is started using <a href="https://hexdocs.pm/elixir/Application.html#start/2"><code class="inline">Application.start/2</code></a> (and functions on top of that, such as Application.ensure_started/2). This function should start the top-level process of the application (which should be the top supervisor of the application’s supervision tree if the application follows the OTP design principles around supervision)</p>
+    <div class="summary-synopsis"><p>This function is called when an the application is started using <a href="https://hexdocs.pm/elixir/Application.html#start/2"><code class="inline">Application.start/2</code></a></p>
 </div>
   
 </div>
@@ -127,7 +131,7 @@ Each transit station is modelled as an Actor. Concurrent itinerary search over t
     </a>
     <span class="signature">start(type, args)</span>
     
-      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts.ex#L22" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts.ex#L39" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -135,20 +139,30 @@ Each transit station is modelled as an Actor. Concurrent itinerary search over t
     
   </div>
   <section class="docstring">
-    <p>This function is called when an the application is started using <a href="https://hexdocs.pm/elixir/Application.html#start/2"><code class="inline">Application.start/2</code></a> (and functions on top of that, such as Application.ensure_started/2). This function should start the top-level process of the application (which should be the top supervisor of the application’s supervision tree if the application follows the OTP design principles around supervision).</p>
+    <p>This function is called when an the application is started using <a href="https://hexdocs.pm/elixir/Application.html#start/2"><code class="inline">Application.start/2</code></a>.</p>
+<p>This function should start the top-level process of the application (which should be the 
+top supervisor of the application’s supervision tree if the application follows the OTP 
+design principles around supervision).</p>
 <h3>Parameters</h3>
-<p>start_type defines how the application is started:</p>
+<p>start_type - defines how the application is started:</p>
 <ul>
-<li>:normal - used if the startup is a normal startup or if the application is distributed and is started on the current node because of a failover from another mode and the application specification key :start_phases is :undefined.
+<li>:normal - used if the startup is a normal startup or if the application is distributed 
+and is started on the current node because of a failover from another mode and the application
+specification key :start_phases is :undefined.
 </li>
-<li>{:takeover, node} - used if the application is distributed and is started on the current node because of a failover on the node node.
+<li>{:takeover, node} - used if the application is distributed and is started on the current
+node because of a failover on the node node.
 </li>
-<li>{:failover, node} - used if the application is distributed and is started on the current node because of a failover on node node, and the application specification key :start_phases is not :undefined.   
+<li>{:failover, node} - used if the application is distributed and is started on the current
+node because of a failover on node node, and the application specification key :start_phases
+is not :undefined.   
 </li>
 </ul>
-<p>start_args are the arguments passed to the application in the :mod specification key (e.g., mod: {MyApp, [:my_args]}).</p>
+<p>start_args - arguments passed to the application in the :mod specification key.</p>
 <h3>Return values</h3>
-<p>This function should either return {:ok, pid} or {:ok, pid, state} if startup is successful. pid should be the pid of the top supervisor. state can be an arbitrary term, and if omitted will default to [].</p>
+<p>This function should either return {:ok, pid} or {:ok, pid, state} if startup is successful.
+pid should be the pid of the top supervisor. state can be an arbitrary term, and if omitted
+will default to [].</p>
 
   </section>
 </div>

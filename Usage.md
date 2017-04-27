@@ -1,7 +1,5 @@
 # TS
 
-[![Build Status](https://travis-ci.org/prasadtalasila/TransportScheduler.svg?branch=master)](https://travis-ci.org/prasadtalasila/TransportScheduler) [![Coverage Status](https://coveralls.io/repos/github/prasadtalasila/TransportScheduler/badge.svg?branch=master)](https://coveralls.io/github/prasadtalasila/TransportScheduler?branch=master) [![Code Climate](https://codeclimate.com/github/prasadtalasila/TransportScheduler/badges/gpa.svg)](https://codeclimate.com/github/prasadtalasila/TransportScheduler)
-
 TransportScheduler application dependencies:   
 GenStateMachine for station FSM and GenServer for IPC.   
 Maru for RESTful API implementation.   
@@ -61,5 +59,10 @@ mix edeliver deploy release
 Run the following command to start application: **UNTESTED**   
 ```bash
 mix edeliver start
+```
+
+## Interaction
+```bash
+iex>
 ```
 
