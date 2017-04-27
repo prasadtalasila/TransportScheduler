@@ -8,7 +8,7 @@
     <title>TS – TransportScheduler v0.1.0</title>
     <link rel="stylesheet" href="dist/app-f7824c48e6.css" />
     
-    <script src="dist/sidebar_items-cfc60f55c4.js"></script>
+    <script src="dist/sidebar_items-93390bdd36.js"></script>
   </head>
   <body data-type="extras">
     <script>if(localStorage.getItem('night-mode')) document.body.className += ' night-mode';</script>
@@ -58,7 +58,6 @@
 
 
 <h1>TS</h1>
-<p><a href="https://travis-ci.org/prasadtalasila/TransportScheduler"><img src="https://travis-ci.org/prasadtalasila/TransportScheduler.svg?branch=master" alt="Build Status"/></a> <a href="https://coveralls.io/github/prasadtalasila/TransportScheduler?branch=master"><img src="https://coveralls.io/repos/github/prasadtalasila/TransportScheduler/badge.svg?branch=master" alt="Coverage Status"/></a> <a href="https://codeclimate.com/github/prasadtalasila/TransportScheduler"><img src="https://codeclimate.com/github/prasadtalasila/TransportScheduler/badges/gpa.svg" alt="Code Climate"/></a></p>
 <p>TransportScheduler application dependencies:   
 GenStateMachine for station FSM and GenServer for IPC.   
 Maru for RESTful API implementation.   
@@ -77,11 +76,10 @@ Credo for code quality.   </p>
 mix deps.get
 mix compile
 mix test</code></pre>
-<p>Run the following commands to deploy (currently server and user are localhost):   </p>
-<pre><code class="bash">mix edeliver build release
-mix edeliver deploy release</code></pre>
-<p>Run the following command to start application:   </p>
-<pre><code class="bash">mix edeliver start</code></pre>
+<p>Run the following command to build a release:</p>
+<pre><code class="bash">mix release</code></pre>
+<p>Run the following command to run the application interactively:</p>
+<pre><code class="bash">_build/dev/rel/ts/bin/ts console</code></pre>
 <p>Issue the following cURL command for initialisation of the network:</p>
 <pre><code class="bash">curl http://localhost:8880/api</code></pre>
 <p>For testing the API, following cURL commands are issued to:</p>
@@ -97,6 +95,17 @@ mix edeliver deploy release</code></pre>
 </ol>
 <pre><code class="bash">curl -X GET &#39;http://localhost:8880/api/station/state?station_code=%STATION_CODE%&#39;</code></pre>
 <p>where <code class="inline">%STATION_CODE%</code> is a positive integer indicating the required station code.</p>
+<p>Run the following commands to deploy (currently server and user are localhost): <strong>UNTESTED</strong>    </p>
+<pre><code class="bash">mix edeliver build release
+mix edeliver deploy release</code></pre>
+<p>Run the following command to start application: <strong>UNTESTED</strong>   </p>
+<pre><code class="bash">mix edeliver start</code></pre>
+<h2 id="interaction" class="section-heading">
+  <a href="#interaction" class="hover-link"><i class="icon-link"></i></a>
+  Interaction
+</h2>
+
+<pre><code class="bash">iex&gt;</code></pre>
 
       <footer class="footer">
         <p>

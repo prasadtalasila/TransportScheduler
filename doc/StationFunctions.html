@@ -8,7 +8,7 @@
     <title>StationFunctions – TransportScheduler v0.1.0</title>
     <link rel="stylesheet" href="dist/app-f7824c48e6.css" />
     
-    <script src="dist/sidebar_items-cfc60f55c4.js"></script>
+    <script src="dist/sidebar_items-93390bdd36.js"></script>
   </head>
   <body data-type="modules">
     <script>if(localStorage.getItem('night-mode')) document.body.className += ' night-mode';</script>
@@ -70,8 +70,10 @@
 
       
         <section id="moduledoc">
-          <p>Module listing possible functions to use to compute congestion_delay value
-based on delay and factor</p>
+          <p>Module listing possible functions to use to compute congestion_delay value based on delay and 
+some factor for multiplication. Based on the choice of function when Station local variables 
+are being updated, a different mathematical formula gives the final congestion delay value from
+the original base delay value and the factor value.</p>
 
         </section>
       
@@ -96,11 +98,19 @@ based on delay and factor</p>
     <a href="#compute_congestion_delay1/2">compute_congestion_delay1(delay, factor)</a>
   </div>
   
+    <div class="summary-synopsis"><p>Congestion computation function 1.
+Computes congestion_delay=delay*factor</p>
+</div>
+  
 </div>
 <div class="summary-row">
   <div class="summary-signature">
     <a href="#compute_congestion_delay2/2">compute_congestion_delay2(delay, factor)</a>
   </div>
+  
+    <div class="summary-synopsis"><p>Congestion computation function 2.
+Computes congestion_delay=delay*factor+0.2</p>
+</div>
   
 </div>
 <div class="summary-row">
@@ -108,13 +118,17 @@ based on delay and factor</p>
     <a href="#compute_congestion_delay3/2">compute_congestion_delay3(delay, factor)</a>
   </div>
   
+    <div class="summary-synopsis"><p>Congestion computation function 3.
+Computes congestion_delay=delay<em>factor</em>factor</p>
+</div>
+  
 </div>
 <div class="summary-row">
   <div class="summary-signature">
     <a href="#func/1">func(choose_fn)</a>
   </div>
   
-    <div class="summary-synopsis"><p>Choose congestion computation function</p>
+    <div class="summary-synopsis"><p>Chooses congestion computation function</p>
 </div>
   
 </div>
@@ -145,7 +159,7 @@ based on delay and factor</p>
     </a>
     <span class="signature">compute_congestion_delay1(delay, factor)</span>
     
-      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/station_functions.ex#L7" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/station_functions.ex#L21" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -153,7 +167,14 @@ based on delay and factor</p>
     
   </div>
   <section class="docstring">
-    
+    <p>Congestion computation function 1.
+Computes congestion_delay=delay*factor.</p>
+<h3>Parameters</h3>
+<p>delay</p>
+<p>factor</p>
+<h3>Return values</h3>
+<p>Returns congestion_delay value.</p>
+
   </section>
 </div>
 <div class="detail" id="compute_congestion_delay2/2">
@@ -164,7 +185,7 @@ based on delay and factor</p>
     </a>
     <span class="signature">compute_congestion_delay2(delay, factor)</span>
     
-      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/station_functions.ex#L11" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/station_functions.ex#L37" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -172,7 +193,14 @@ based on delay and factor</p>
     
   </div>
   <section class="docstring">
-    
+    <p>Congestion computation function 2.
+Computes congestion_delay=delay*factor+0.2.</p>
+<h3>Parameters</h3>
+<p>delay</p>
+<p>factor</p>
+<h3>Return values</h3>
+<p>Returns congestion_delay value.</p>
+
   </section>
 </div>
 <div class="detail" id="compute_congestion_delay3/2">
@@ -183,7 +211,7 @@ based on delay and factor</p>
     </a>
     <span class="signature">compute_congestion_delay3(delay, factor)</span>
     
-      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/station_functions.ex#L15" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/station_functions.ex#L53" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -191,7 +219,14 @@ based on delay and factor</p>
     
   </div>
   <section class="docstring">
-    
+    <p>Congestion computation function 3.
+Computes congestion_delay=delay<em>factor</em>factor.</p>
+<h3>Parameters</h3>
+<p>delay</p>
+<p>factor</p>
+<h3>Return values</h3>
+<p>Returns congestion_delay value.</p>
+
   </section>
 </div>
 <div class="detail" id="func/1">
@@ -202,7 +237,7 @@ based on delay and factor</p>
     </a>
     <span class="signature">func(choose_fn)</span>
     
-      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/station_functions.ex#L22" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/station_functions.ex#L66" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -210,7 +245,11 @@ based on delay and factor</p>
     
   </div>
   <section class="docstring">
-    <p>Choose congestion computation function</p>
+    <p>Chooses congestion computation function</p>
+<h3>Parameters</h3>
+<p>choose_fn</p>
+<h3>Return values</h3>
+<p>Returns congestion_delay value based on function chosen to compute it.</p>
 
   </section>
 </div>

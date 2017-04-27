@@ -8,7 +8,7 @@
     <title>API Reference – TransportScheduler v0.1.0</title>
     <link rel="stylesheet" href="dist/app-f7824c48e6.css" />
     
-    <script src="dist/sidebar_items-cfc60f55c4.js"></script>
+    <script src="dist/sidebar_items-93390bdd36.js"></script>
   </head>
   <body data-type="extras">
     <script>if(localStorage.getItem('night-mode')) document.body.className += ' night-mode';</script>
@@ -73,101 +73,122 @@
       <div class="summary-row">
   <div class="summary-signature"><a href="API.html">API</a></div>
   
-    <div class="summary-synopsis"><p>Module to define API to obtain and update station variables and find best
-itinerary</p>
+    <div class="summary-synopsis"><p>Module to define RESTful API using Maru library. cURL requests can be handled and appropriate 
+response in JSON format can be returned to the user. This API is used to obtain and update 
+station variables and find the best itinerary</p>
 </div>
   
 </div>
 <div class="summary-row">
   <div class="summary-signature"><a href="InputParser.html">InputParser</a></div>
   
-    <div class="summary-synopsis"><p>Module to store data from input files in the defined station structure</p>
+    <div class="summary-synopsis"><p>Module to store data from input files in the defined station structure. Files stations.txt,
+schedule.txt, OMT.txt, local_variables.txt store data of transit stations and connections. 
+These are read into appropriate maps for storing in corresponding Station processes</p>
 </div>
   
 </div>
 <div class="summary-row">
   <div class="summary-signature"><a href="Mix.Tasks.AsyncBm.html">Mix.Tasks.AsyncBm</a></div>
   
-    <div class="summary-synopsis"><p>Helper module to run asynchronous benchmark</p>
+    <div class="summary-synopsis"><p>Helper module to run asynchronous benchmarking</p>
 </div>
   
 </div>
 <div class="summary-row">
   <div class="summary-signature"><a href="Mix.Tasks.Benchmark.html">Mix.Tasks.Benchmark</a></div>
   
-    <div class="summary-synopsis"><p>Module to run asynchronous benchmark to test multiple, concurrent queries</p>
+    <div class="summary-synopsis"><p>Helper module to run asynchronous benchmark to test multiple, concurrent queries</p>
 </div>
   
 </div>
 <div class="summary-row">
   <div class="summary-signature"><a href="Mix.Tasks.Profile.html">Mix.Tasks.Profile</a></div>
   
-    <div class="summary-synopsis"><p>Code profiling code</p>
+    <div class="summary-synopsis"><p>Helper module to run profiling code using ExProf</p>
 </div>
   
 </div>
 <div class="summary-row">
   <div class="summary-signature"><a href="QC.html">QC</a></div>
   
-    <div class="summary-synopsis"><p>The Query Collector: this module abstracts the final query collector i.e.
-for concurrent functionality, a separate process collects itineraries of a
-given query</p>
+    <div class="summary-synopsis"><p>Module to abstract the final query collector, ie, for concurrent functionality, a separate process
+collects itineraries of a given query</p>
 </div>
   
 </div>
 <div class="summary-row">
   <div class="summary-signature"><a href="Station.html">Station</a></div>
   
-    <div class="summary-synopsis"><p>Module to create a station process and FSM and handle local variable updates</p>
+    <div class="summary-synopsis"><p>Module to create a transit station node. The station process pid can be used to retrieve station struct 
+values such as local variables and schedule. It can also be used to handle local variable updates</p>
 </div>
   
 </div>
 <div class="summary-row">
   <div class="summary-signature"><a href="StationConstructor.html">StationConstructor</a></div>
   
-    <div class="summary-synopsis"><p>Module to create registry process for monitoring all station processes, i.e.,
-Network Constructor NC</p>
+    <div class="summary-synopsis"><p>Module to create registry process for monitoring all station processes and queries using a 
+Network Constructor. The NC process can be used to add or remove queries from the active query
+list and check if a query is active. It can also be used to maintain a map of station pids,
+station codes, and station city names for convenient retrieval</p>
 </div>
   
 </div>
 <div class="summary-row">
   <div class="summary-signature"><a href="StationFunctions.html">StationFunctions</a></div>
   
-    <div class="summary-synopsis"><p>Module listing possible functions to use to compute congestion_delay value
-based on delay and factor</p>
+    <div class="summary-synopsis"><p>Module listing possible functions to use to compute congestion_delay value based on delay and 
+some factor for multiplication. Based on the choice of function when Station local variables 
+are being updated, a different mathematical formula gives the final congestion delay value from
+the original base delay value and the factor value</p>
 </div>
   
 </div>
 <div class="summary-row">
   <div class="summary-signature"><a href="StationStruct.html">StationStruct</a></div>
   
-    <div class="summary-synopsis"><p>Module defining the data structure used to describe a station</p>
+    <div class="summary-synopsis"><p>Module defining the data structure used to describe a station, with local variables, schedule, 
+other means, and additional information fields such as station code, station city name, 
+station process pid</p>
 </div>
   
 </div>
 <div class="summary-row">
   <div class="summary-signature"><a href="TS.html">TS</a></div>
   
-    <div class="summary-synopsis"></div>
+    <div class="summary-synopsis"><p>The TransportScheduler application implements an Actor-based concurrent approach to allow
+interactive journey planning in multimodal public transit networks</p>
+</div>
   
 </div>
 <div class="summary-row">
   <div class="summary-signature"><a href="TS.API.Supervisor.html">TS.API.Supervisor</a></div>
   
-    <div class="summary-synopsis"><p>Module to start supervisor for API process</p>
+    <div class="summary-synopsis"><p>Module for implementing API process supervision functionality. Supervisor process supervises
+other processes, which we refer to as child processes. In the event of API process crashing, the
+TS.API.Supervisor is responsible for restarting it based on the exit reasons and strategies mentioned</p>
 </div>
   
 </div>
 <div class="summary-row">
   <div class="summary-signature"><a href="TS.Station.Supervisor.html">TS.Station.Supervisor</a></div>
   
-    <div class="summary-synopsis"></div>
+    <div class="summary-synopsis"><p>Module for implementing station process supervision functionality. Supervisor process supervises other
+processes, which we refer to as child processes. In the event of station process crashing,
+TS.Station.Supervisor is responsible for restarting it based on the exit reasons and strategies
+mentioned</p>
+</div>
   
 </div>
 <div class="summary-row">
   <div class="summary-signature"><a href="TS.Supervisor.html">TS.Supervisor</a></div>
   
-    <div class="summary-synopsis"></div>
+    <div class="summary-synopsis"><p>Module for implementing supervision functionality. Supervisor process supervises other processes, 
+which we refer to as child processes. In the event of NC process crashing or other child Supervisors
+crashing, TS.Supervisor is responsible for restarting it based on the exit reasons and strategies
+mentioned</p>
+</div>
   
 </div>
 <div class="summary-row">

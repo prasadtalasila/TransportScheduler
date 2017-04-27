@@ -8,7 +8,7 @@
     <title>StationStruct – TransportScheduler v0.1.0</title>
     <link rel="stylesheet" href="dist/app-f7824c48e6.css" />
     
-    <script src="dist/sidebar_items-cfc60f55c4.js"></script>
+    <script src="dist/sidebar_items-93390bdd36.js"></script>
   </head>
   <body data-type="modules">
     <script>if(localStorage.getItem('night-mode')) document.body.className += ' night-mode';</script>
@@ -70,7 +70,71 @@
 
       
         <section id="moduledoc">
-          <p>Module defining the data structure used to describe a station</p>
+          <p>Module defining the data structure used to describe a station, with local variables, schedule, 
+other means, and additional information fields such as station code, station city name, 
+station process pid.</p>
+<p>The structure looks as follows:</p>
+<p><code class="inline">%StationStruct{loc_vars: %{delay, congestion_delay, congestion, disturbance}, 
+schedule: [%{vehicleID, src_station, dst_station, dept_time, arrival_time, mode_of_transport}],
+other_means,
+station_number,
+station_name,
+pid,
+congestion_low,
+congestion_high,
+choose_fn}</code></p>
+<p>The map fields are described below:</p>
+<p>loc_vars - holds a map of local variable values:</p>
+<ul>
+<li>delay : value for average delay in seconds at the station
+</li>
+<li>congestion_delay : computed value from delay and congestion
+</li>
+<li>congestion : “none”, “low”, or “high”
+</li>
+<li>disturbance : “yes” or “no”
+</li>
+</ul>
+<p>schedule - holds a list of maps of connections to neighbouring stations given this source station, 
+with each map <code class="inline">%{vehicleID, src_station, dst_station, dept_time, arrival_time, mode_of_transport}</code>
+having:</p>
+<ul>
+<li>vehicleID : string vehicle ID
+</li>
+<li>src_station : source station code
+</li>
+<li>dst_station : destination station code
+</li>
+<li>dept_time : time of departure from source
+</li>
+<li>arrival_time : tim of arrival at destination
+</li>
+<li>mode_of_transport : “train” or “bus” or “flight”
+</li>
+</ul>
+<p>other_means - holds a list of maps of connections to neighbouring stations given this source station,
+with each map <code class="inline">%{vehicleID, src_station, dst_station, dept_time, arrival_time, mode_of_transport}</code>
+having:</p>
+<ul>
+<li>vehicleID : string vehicle ID
+</li>
+<li>src_station : source station code
+</li>
+<li>dst_station : destination station code
+</li>
+<li>dept_time : time of departure from source
+</li>
+<li>arrival_time : tim of arrival at destination
+</li>
+<li>mode_of_transport : “Other Means”
+</li>
+</ul>
+<p>station_number - station code</p>
+<p>station_name - station city name</p>
+<p>pid - station process pid</p>
+<p>congestion_low - factor value if congestion is low</p>
+<p>congestion_high - factor value if congestion is high</p>
+<p>choose_fn - value (currently 1, 2, or 3)  to decide choice of function to compute final congestion delay</p>
 
         </section>
       

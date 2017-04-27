@@ -8,7 +8,7 @@
     <title>StationConstructor – TransportScheduler v0.1.0</title>
     <link rel="stylesheet" href="dist/app-f7824c48e6.css" />
     
-    <script src="dist/sidebar_items-cfc60f55c4.js"></script>
+    <script src="dist/sidebar_items-93390bdd36.js"></script>
   </head>
   <body data-type="modules">
     <script>if(localStorage.getItem('night-mode')) document.body.className += ' night-mode';</script>
@@ -70,8 +70,11 @@
 
       
         <section id="moduledoc">
-          <p>Module to create registry process for monitoring all station processes, i.e.,
-Network Constructor NC</p>
+          <p>Module to create registry process for monitoring all station processes and queries using a 
+Network Constructor. The NC process can be used to add or remove queries from the active query
+list and check if a query is active. It can also be used to maintain a map of station pids,
+station codes, and station city names for convenient retrieval.</p>
+<p>Uses GenServer.</p>
 
         </section>
       
@@ -96,7 +99,7 @@ Network Constructor NC</p>
     <a href="#add_query/3">add_query(server, query, conn)</a>
   </div>
   
-    <div class="summary-synopsis"><p>Add query to active list</p>
+    <div class="summary-synopsis"><p>Adds a query to active list maintained at NC</p>
 </div>
   
 </div>
@@ -105,7 +108,7 @@ Network Constructor NC</p>
     <a href="#check_active/2">check_active(server, query)</a>
   </div>
   
-    <div class="summary-synopsis"><p>Check if query active</p>
+    <div class="summary-synopsis"><p>Checks if a query is currently in active list maintained at NC</p>
 </div>
   
 </div>
@@ -114,7 +117,8 @@ Network Constructor NC</p>
     <a href="#create/3">create(server, name, code)</a>
   </div>
   
-    <div class="summary-synopsis"><p>Start new Station process and add to registry</p>
+    <div class="summary-synopsis"><p>Starts a new Station process and adds new pid to registry map using supervisor. Supervisor is also 
+used to restart crashed process and update registry map with new pid</p>
 </div>
   
 </div>
@@ -123,7 +127,7 @@ Network Constructor NC</p>
     <a href="#del_query/2">del_query(server, query)</a>
   </div>
   
-    <div class="summary-synopsis"><p>Remove query from active list</p>
+    <div class="summary-synopsis"><p>Removes a query from active list maintained at NC</p>
 </div>
   
 </div>
@@ -132,7 +136,7 @@ Network Constructor NC</p>
     <a href="#lookup_code/2">lookup_code(server, code)</a>
   </div>
   
-    <div class="summary-synopsis"><p>Return station from registry by code</p>
+    <div class="summary-synopsis"><p>Returns station pid and name from registry given the station code</p>
 </div>
   
 </div>
@@ -141,7 +145,7 @@ Network Constructor NC</p>
     <a href="#lookup_name/2">lookup_name(server, name)</a>
   </div>
   
-    <div class="summary-synopsis"><p>Return station from registry by name</p>
+    <div class="summary-synopsis"><p>Returns station pid and code from registry given the station name</p>
 </div>
   
 </div>
@@ -150,16 +154,13 @@ Network Constructor NC</p>
     <a href="#put_queries/2">put_queries(server, queries)</a>
   </div>
   
-    <div class="summary-synopsis"><p>Put queries</p>
-</div>
-  
 </div>
 <div class="summary-row">
   <div class="summary-signature">
     <a href="#return_queries/1">return_queries(server)</a>
   </div>
   
-    <div class="summary-synopsis"><p>Return list of active queries</p>
+    <div class="summary-synopsis"><p>Returns active query list maintained at NC</p>
 </div>
   
 </div>
@@ -168,7 +169,8 @@ Network Constructor NC</p>
     <a href="#send_to_src/3">send_to_src(src, dest, itinerary)</a>
   </div>
   
-    <div class="summary-synopsis"><p>Send query to source station</p>
+    <div class="summary-synopsis"><p>Sends a query encoded in itinerary from NC to the source station using <code class="inline">receive_at_src/3</code> of Station
+module. The pid of NC and source station must be known</p>
 </div>
   
 </div>
@@ -177,7 +179,10 @@ Network Constructor NC</p>
     <a href="#start_link/1">start_link(name)</a>
   </div>
   
-    <div class="summary-synopsis"><p>Start new NC process</p>
+    <div class="summary-synopsis"><p>Starts a GenServer StationConstructor process linked to the current process.   
+This is often used to start the GenServer as part of a supervision tree.   
+Once the server is started, the <code class="inline">init/1</code> function of the given module is called with args as
+its arguments to initialize the server</p>
 </div>
   
 </div>
@@ -186,7 +191,7 @@ Network Constructor NC</p>
     <a href="#stop/1">stop(server)</a>
   </div>
   
-    <div class="summary-synopsis"><p>Stop process</p>
+    <div class="summary-synopsis"><p>Stops the NC process with the given reason</p>
 </div>
   
 </div>
@@ -217,7 +222,7 @@ Network Constructor NC</p>
     </a>
     <span class="signature">add_query(server, query, conn)</span>
     
-      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/station_constructor.ex#L11" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/station_constructor.ex#L25" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -225,7 +230,13 @@ Network Constructor NC</p>
     
   </div>
   <section class="docstring">
-    <p>Add query to active list</p>
+    <p>Adds a query to active list maintained at NC.</p>
+<h3>Parameters</h3>
+<p>nc_pid</p>
+<p>query - in the form of a map %{src_station, dst_station, arrival_time, end_time}</p>
+<p>conn</p>
+<h3>Return values</h3>
+<p>Returns {:ok}.</p>
 
   </section>
 </div>
@@ -237,7 +248,7 @@ Network Constructor NC</p>
     </a>
     <span class="signature">check_active(server, query)</span>
     
-      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/station_constructor.ex#L25" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/station_constructor.ex#L57" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -245,7 +256,12 @@ Network Constructor NC</p>
     
   </div>
   <section class="docstring">
-    <p>Check if query active</p>
+    <p>Checks if a query is currently in active list maintained at NC.</p>
+<h3>Parameters</h3>
+<p>nc_pid</p>
+<p>query - in the form of a map %{src_station, dst_station, arrival_time, end_time}</p>
+<h3>Return values</h3>
+<p>Returns {:ok}.</p>
 
   </section>
 </div>
@@ -257,7 +273,7 @@ Network Constructor NC</p>
     </a>
     <span class="signature">create(server, name, code)</span>
     
-      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/station_constructor.ex#L54" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/station_constructor.ex#L125" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -265,7 +281,14 @@ Network Constructor NC</p>
     
   </div>
   <section class="docstring">
-    <p>Start new Station process and add to registry</p>
+    <p>Starts a new Station process and adds new pid to registry map using supervisor. Supervisor is also 
+used to restart crashed process and update registry map with new pid.</p>
+<h3>Parameters</h3>
+<p>nc_pid</p>
+<p>station_name</p>
+<p>station_code</p>
+<h3>Return values</h3>
+<p>Returns {:ok}.</p>
 
   </section>
 </div>
@@ -277,7 +300,7 @@ Network Constructor NC</p>
     </a>
     <span class="signature">del_query(server, query)</span>
     
-      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/station_constructor.ex#L18" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/station_constructor.ex#L41" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -285,7 +308,12 @@ Network Constructor NC</p>
     
   </div>
   <section class="docstring">
-    <p>Remove query from active list</p>
+    <p>Removes a query from active list maintained at NC.</p>
+<h3>Parameters</h3>
+<p>nc_pid</p>
+<p>query - in the form of a map %{src_station, dst_station, arrival_time, end_time}</p>
+<h3>Return values</h3>
+<p>Returns {:ok}.</p>
 
   </section>
 </div>
@@ -297,7 +325,7 @@ Network Constructor NC</p>
     </a>
     <span class="signature">lookup_code(server, code)</span>
     
-      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/station_constructor.ex#L77" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/station_constructor.ex#L172" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -305,7 +333,12 @@ Network Constructor NC</p>
     
   </div>
   <section class="docstring">
-    <p>Return station from registry by code</p>
+    <p>Returns station pid and name from registry given the station code.</p>
+<h3>Parameters</h3>
+<p>nc_pid</p>
+<p>station_code</p>
+<h3>Return values</h3>
+<p>Returns {:reply, {name, pid}, state}.</p>
 
   </section>
 </div>
@@ -317,7 +350,7 @@ Network Constructor NC</p>
     </a>
     <span class="signature">lookup_name(server, name)</span>
     
-      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/station_constructor.ex#L70" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/station_constructor.ex#L157" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -325,7 +358,12 @@ Network Constructor NC</p>
     
   </div>
   <section class="docstring">
-    <p>Return station from registry by name</p>
+    <p>Returns station pid and code from registry given the station name.</p>
+<h3>Parameters</h3>
+<p>nc_pid</p>
+<p>station_name</p>
+<h3>Return values</h3>
+<p>Returns {:reply, {code, pid}, state}.</p>
 
   </section>
 </div>
@@ -337,7 +375,7 @@ Network Constructor NC</p>
     </a>
     <span class="signature">put_queries(server, queries)</span>
     
-      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/station_constructor.ex#L39" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/station_constructor.ex#L75" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -345,8 +383,7 @@ Network Constructor NC</p>
     
   </div>
   <section class="docstring">
-    <p>Put queries</p>
-
+    
   </section>
 </div>
 <div class="detail" id="return_queries/1">
@@ -357,7 +394,7 @@ Network Constructor NC</p>
     </a>
     <span class="signature">return_queries(server)</span>
     
-      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/station_constructor.ex#L32" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/station_constructor.ex#L71" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -365,7 +402,11 @@ Network Constructor NC</p>
     
   </div>
   <section class="docstring">
-    <p>Return list of active queries</p>
+    <p>Returns active query list maintained at NC.</p>
+<h3>Parameters</h3>
+<p>nc_pid</p>
+<h3>Return values</h3>
+<p>Returns {:reply, queries, state}.</p>
 
   </section>
 </div>
@@ -377,7 +418,7 @@ Network Constructor NC</p>
     </a>
     <span class="signature">send_to_src(src, dest, itinerary)</span>
     
-      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/station_constructor.ex#L86" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/station_constructor.ex#L193" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -385,7 +426,15 @@ Network Constructor NC</p>
     
   </div>
   <section class="docstring">
-    <p>Send query to source station</p>
+    <p>Sends a query encoded in itinerary from NC to the source station using <code class="inline">receive_at_src/3</code> of Station
+module. The pid of NC and source station must be known.</p>
+<h3>Parameters</h3>
+<p>nc_pid</p>
+<p>src_stn_pid</p>
+<p>itinerary - in the form of a map %{vehicleID, src_station, dst_station, dept_time, arrival_time, 
+mode_of_transport}</p>
+<h3>Return values</h3>
+<p>Returns {:ok}</p>
 
   </section>
 </div>
@@ -397,7 +446,7 @@ Network Constructor NC</p>
     </a>
     <span class="signature">start_link(name)</span>
     
-      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/station_constructor.ex#L47" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/station_constructor.ex#L107" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -405,7 +454,32 @@ Network Constructor NC</p>
     
   </div>
   <section class="docstring">
-    <p>Start new NC process</p>
+    <p>Starts a GenServer StationConstructor process linked to the current process.   
+This is often used to start the GenServer as part of a supervision tree.   
+Once the server is started, the <code class="inline">init/1</code> function of the given module is called with args as
+its arguments to initialize the server.</p>
+<h3>Parameters</h3>
+<p>module   
+args   
+options:</p>
+<ul>
+<li>:name - used for name registration
+</li>
+<li>:timeout - if present, the server is allowed to spend the given amount of milliseconds initializing 
+or it will be terminated and the start function will return {:error, :timeout}
+</li>
+<li>:debug - if present, the corresponding function in the :sys module is invoked
+</li>
+<li>:spawn_opt - if present, its value is passed as options to the underlying process
+</li>
+</ul>
+<h3>Return values</h3>
+<p>If the server is successfully created and initialized, this function returns {:ok, pid}, where pid is
+the PID of the server. If a process with the specified server name already exists, this function
+returns {:error, {:already_started, pid}} with the PID of that process.</p>
+<p>If the <code class="inline">init/1</code> callback fails with reason, this function returns {:error, reason}. Otherwise, if it
+returns {:stop, reason} or :ignore, the process is terminated and this function returns
+{:error, reason} or :ignore, respectively.</p>
 
   </section>
 </div>
@@ -417,7 +491,7 @@ Network Constructor NC</p>
     </a>
     <span class="signature">stop(server)</span>
     
-      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/station_constructor.ex#L61" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/station_constructor.ex#L140" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -425,7 +499,12 @@ Network Constructor NC</p>
     
   </div>
   <section class="docstring">
-    <p>Stop process</p>
+    <p>Stops the NC process with the given reason.   </p>
+<h3>Parameters</h3>
+<p>nc_pid</p>
+<h3>Return values</h3>
+<p>The <code class="inline">terminate/2</code> callback of the given server will be invoked before exiting. This function returns 
+:ok if the server terminates with the given reason; if it terminates with another reason, the call exits.</p>
 
   </section>
 </div>

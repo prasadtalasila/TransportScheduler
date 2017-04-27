@@ -8,7 +8,7 @@
     <title>TS.Supervisor – TransportScheduler v0.1.0</title>
     <link rel="stylesheet" href="dist/app-f7824c48e6.css" />
     
-    <script src="dist/sidebar_items-cfc60f55c4.js"></script>
+    <script src="dist/sidebar_items-93390bdd36.js"></script>
   </head>
   <body data-type="modules">
     <script>if(localStorage.getItem('night-mode')) document.body.className += ' night-mode';</script>
@@ -70,7 +70,11 @@
 
       
         <section id="moduledoc">
-          <p>.</p>
+          <p>Module for implementing supervision functionality. Supervisor process supervises other processes, 
+which we refer to as child processes. In the event of NC process crashing or other child Supervisors
+crashing, TS.Supervisor is responsible for restarting it based on the exit reasons and strategies
+mentioned.</p>
+<p>Uses Supervisor.</p>
 
         </section>
       
@@ -104,7 +108,7 @@
     <a href="#start_link/0">start_link()</a>
   </div>
   
-    <div class="summary-synopsis"><p>Start supervisor process</p>
+    <div class="summary-synopsis"><p>Starts a supervisor process with the given module and arg</p>
 </div>
   
 </div>
@@ -135,7 +139,7 @@
     </a>
     <span class="signature">init(atom)</span>
     
-      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/supervisor.ex#L14" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/supervisor.ex#L57" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -156,7 +160,7 @@
     </a>
     <span class="signature">start_link()</span>
     
-      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/supervisor.ex#L10" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/supervisor.ex#L53" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -164,7 +168,49 @@
     
   </div>
   <section class="docstring">
-    <p>Start supervisor process</p>
+    <p>Starts a supervisor process with the given module and arg.</p>
+<p>To start the supervisor, the <a href="#init/1"><code class="inline">init/1</code></a> callback will be invoked in the given module, with arg 
+as its argument. The <a href="#init/1"><code class="inline">init/1</code></a> callback must return a supervisor specification which can be created
+with the help of the functions in the Supervisor.Spec module.</p>
+<h3>Parameters</h3>
+<p>For TS, required parameters passed to Supervisor function are <code class="inline">Supervisor.start_link(__MODULE__, 
+:ok)</code>, specifying:</p>
+<p>module_name</p>
+<p>args</p>
+<h3>Strategies</h3>
+<p>Supervisors support different supervision strategies (through the :strategy option):</p>
+<ul>
+<li>:one_for_one - if a child process terminates, only that process is restarted.
+</li>
+<li>:one_for_all - if a child process terminates, all other child processes are terminated and then 
+all child processes (including the terminated one) are restarted.
+</li>
+<li>:rest_for_one - if a child process terminates, the rest of the child processes, ie, the child
+processes after the terminated one in start order, are terminated. Then the terminated child process
+and the rest of the child processes are restarted.
+</li>
+<li>:simple_one_for_one - similar to :one_for_one but suits better when dynamically attaching children.
+This strategy requires the supervisor specification to contain only one child.
+</li>
+</ul>
+<h3>Exit reasons</h3>
+<p>There are three options:</p>
+<ul>
+<li>:normal - in such cases, the exit won’t be logged, there is no restart in transient mode, and linked 
+processes do not exit.
+</li>
+<li>:shutdown or {:shutdown, term} - in such cases, the exit won’t be logged, there is no restart in
+transient mode, and linked processes exit with the same reason unless they’re trapping exits.
+</li>
+<li>any other term - in such cases, the exit will be logged, there are restarts in transient mode, and
+linked processes exit with the same reason unless they’re trapping exits.
+</li>
+</ul>
+<h3>Return values</h3>
+<p>If the <a href="#init/1"><code class="inline">init/1</code></a> callback returns :ignore, this function returns :ignore as well and the supervisor
+terminates with reason :normal. If it fails or returns an incorrect value, this function returns 
+{:error, term} where term is a term with information about the error, and the supervisor terminates
+with reason term.</p>
 
   </section>
 </div>
