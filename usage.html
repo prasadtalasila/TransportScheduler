@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="ExDoc v0.15.0">
+    <title>TS – TransportScheduler v0.1.0</title>
+    <link rel="stylesheet" href="dist/app-f7824c48e6.css" />
+    
+    <script src="dist/sidebar_items-93390bdd36.js"></script>
+  </head>
+  <body data-type="extras">
+    <script>if(localStorage.getItem('night-mode')) document.body.className += ' night-mode';</script>
+
+<div class="main">
+<button class="sidebar-toggle">
+  <i class="icon-menu"></i>
+</button>
+<section class="sidebar">
+
+  
+  <a href="TS.html" class="sidebar-projectLink">
+    <div class="sidebar-projectDetails">
+      <h1 class="sidebar-projectName">
+        TransportScheduler
+      </h1>
+      <h2 class="sidebar-projectVersion">
+        v0.1.0
+      </h2>
+    </div>
+    
+  </a>
+
+  <div class="sidebar-search">
+    <i class="icon-search"></i>
+    <input type="text" class="sidebar-searchInput" placeholder="search" autocomplete="off" />
+  </div>
+
+  <ul class="sidebar-listNav">
+    <li><a id="extras-list" href="#full-list">Pages</a></li>
+
+    
+      <li><a id="modules-list" href="#full-list">Modules</a></li>
+    
+
+    
+
+    
+  </ul>
+  <div class="gradient"></div>
+  <ul id="full-list" class="sidebar-fullList"></ul>
+</section>
+
+<section class="content">
+  <div class="content-outer">
+    <div id="content" class="content-inner">
+
+
+<h1>TS</h1>
+<p>TransportScheduler application dependencies:   
+GenStateMachine for station FSM and GenServer for IPC.   
+Maru for RESTful API implementation.   
+Edeliver using Distillery for building releases and deployment.   </p>
+<p>Other packages used:   
+ExCoveralls for test coverage.   
+ExProf for profiling.   
+Credo for code quality.   </p>
+<h2 id="usage" class="section-heading">
+  <a href="#usage" class="hover-link"><i class="icon-link"></i></a>
+  Usage
+</h2>
+
+<p>Run the following commands to compile:</p>
+<pre><code class="bash">cd TransportScheduler
+mix deps.get
+mix compile
+mix test</code></pre>
+<p>Run the following command to build a release:</p>
+<pre><code class="bash">mix release</code></pre>
+<p>Run the following command to run the application interactively:</p>
+<pre><code class="bash">_build/dev/rel/ts/bin/ts console</code></pre>
+<p>Issue the following cURL command for initialisation of the network:</p>
+<pre><code class="bash">curl http://localhost:8880/api</code></pre>
+<p>For testing the API, following cURL commands are issued to:</p>
+<ol>
+<li>Obtain Schedule of a Station:  
+</li>
+</ol>
+<pre><code class="bash">curl -X GET &#39;http://localhost:8880/api/station/schedule?station_code=%STATION_CODE%&amp;date=%DATE%&#39;</code></pre>
+<p>where <code class="inline">%STATION_CODE%</code> is a positive integer indicating the station code of the source and <code class="inline">%DATE%</code> is the date of travel in the format ‘dd-mm-yyyy’.</p>
+<ol start="2">
+<li>Obtain State of a Station:  
+</li>
+</ol>
+<pre><code class="bash">curl -X GET &#39;http://localhost:8880/api/station/state?station_code=%STATION_CODE%&#39;</code></pre>
+<p>where <code class="inline">%STATION_CODE%</code> is a positive integer indicating the required station code.</p>
+<p>Run the following commands to deploy (currently server and user are localhost): <strong>UNTESTED</strong>    </p>
+<pre><code class="bash">mix edeliver build release
+mix edeliver deploy release</code></pre>
+<p>Run the following command to start application: <strong>UNTESTED</strong>   </p>
+<pre><code class="bash">mix edeliver start</code></pre>
+<h2 id="interaction" class="section-heading">
+  <a href="#interaction" class="hover-link"><i class="icon-link"></i></a>
+  Interaction
+</h2>
+
+<pre><code class="bash">iex&gt;</code></pre>
+
+      <footer class="footer">
+        <p>
+          <span class="line">
+            Built using
+            <a href="https://github.com/elixir-lang/ex_doc" title="ExDoc" rel="help" target="_blank">ExDoc</a> (v0.15.0),
+          </span>
+          <span class="line">
+            designed by
+            <a href="https://twitter.com/dignifiedquire" target="_blank" title="@dignifiedquire">Friedel Ziegelmayer</a>.
+            </span>
+        </p>
+        <button class="night-mode-toggle" />
+      </footer>
+    </div>
+  </div>
+</section>
+</div>
+  <script src="dist/app-372682077e.js"></script>
+  </body>
+</html>
+
