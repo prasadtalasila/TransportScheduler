@@ -48,7 +48,7 @@ defmodule API do
 				{:ok, {_, stn}}=StationConstructor.lookup_code(StationConstructor,
 					params[:source])
 				API.put(conn, query, [])
-				API.put("times", [])
+				API.put({"times", query}, [])
 				StationConstructor.add_query(StationConstructor, query, conn)
 				itinerary=[Map.put(query, :day, 0)]
 				{:ok, pid}=QC.start_link
@@ -63,9 +63,9 @@ defmodule API do
 						days=final|>List.first|>List.first|>Map.get(:day)
 						conn|>put_status(200)|>json(days*86_400+resp)
 						f=File.open!("data/times.csv", [:append])
-						IO.write(f, CSVLixir.write_row(API.get("times")))
+						IO.write(f, CSVLixir.write_row(API.get({"times", query})))
 						File.close(f)
-						API.remove("times")
+						API.remove({"times", query})
 						API.remove(conn)
 						API.remove(query)
 						QC.stop(pid)
@@ -75,9 +75,9 @@ defmodule API do
 						days=final|>List.first|>List.first|>Map.get(:day)
 						conn|>put_status(200)|>json(days*86_400+resp)
 						f=File.open!("data/times.csv", [:append])
-						IO.write(f, CSVLixir.write_row(API.get("times")))
+						IO.write(f, CSVLixir.write_row(API.get({"times", query})))
 						File.close(f)
-						API.remove("times")
+						API.remove({"times", query})
 						API.remove(conn)
 						API.remove(query)
 						QC.stop(pid)
@@ -261,7 +261,7 @@ defmodule API do
 			query=itinerary|>List.first|>Map.delete(:day)
 			conn=Map.get(queries, query)
 			list=API.get(conn)
-			times=API.get("times")
+			times=API.get({"times", query})
 			bool=if list===nil do
 				false
 			else
@@ -272,7 +272,7 @@ defmodule API do
 					list=list++[itinerary]
 					times=times++[System.system_time(:milliseconds)-(query|>API.get|>elem(2))]
 					API.put(conn, query, list)
-					API.put("times", times)
+					API.put({"times", query}, times)
 					queries
 				false->
 					if API.member(query) do

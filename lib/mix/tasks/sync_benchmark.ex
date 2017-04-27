@@ -1,13 +1,47 @@
-defmodule Mix.Tasks.AsyncBm do
+defmodule Mix.Tasks.SyncBenchmark do
 	@moduledoc """
 	Helper module to run asynchronous benchmark
 	"""
+	use Mix.Task
 
-	def run do
-		issue()|>process_request
+	@doc """
+	Runs the Synchronous Benchmark task for a single query.   
+	
+	### Return values
+	If the task was not yet invoked, it runs the task and returns the result.
+	If there is an alias with the same name, the alias will be invoked instead of the original task.
+	If the task or alias were already invoked, it does not run them again and simply aborts with :noop.  
+	"""
+	def run(_args) do
+		Mix.Task.run "app.start", []
+		f=File.open! "data/test_sync.csv", [:append]
+		IO.write(f, CSVLixir.write_row(["No.", "Source", "Destination",
+			"Start time", "End time", "QPT (ms)"]))
+		File.close(f)
+		setup()
+		{async_result, src, dst, start_time, cutoff_time}=process_request()
+		if async_result !==:wrong do
+			IO.puts "#{async_result} ms"
+			f=File.open!("data/test_sync.csv", [:append])
+			IO.write(f, CSVLixir.write_row([1, src, dst, start_time,
+				cutoff_time, async_result]))
+			File.close(f)
+		end
 	end
 
-	def setup do
+	@doc """
+	Processes a single synchronous request.
+	
+	### Return values
+	If the task was not yet invoked, it runs the task and returns the result.
+	If there is an alias with the same name, the alias will be invoked instead of the original task.
+	If the task or alias were already invoked, it does not run them again and simply aborts with :noop. 
+	"""
+	def process_request do
+		issue()|>process_sync_request()
+	end
+
+	defp setup do
 		:ok=:hackney_pool.start_pool(:first_pool, [timeout: 35_000,
 			max_connections: 1000])
 		HTTPoison.start
@@ -17,7 +51,6 @@ defmodule Mix.Tasks.AsyncBm do
 	end
 
 	defp issue do
-		#IO.puts "No. of requests: #{Integer.to_string(1)}\nProcessing requests..."
 		src=:rand.uniform(2264)
 		IO.puts "Source: #{src}"
 		dst=:rand.uniform(2264)
@@ -41,7 +74,7 @@ defmodule Mix.Tasks.AsyncBm do
 		end
 	end
 
-	defp process_request({uri, src, dst, start_time, cutoff_time}) do
+	defp process_sync_request({uri, src, dst, start_time, cutoff_time}) do
 		if uri !==:wrong do
 			{time, _}=:timer.tc(fn->uri|>HTTPoison.get(
 				["Content-Type": "application/json"], [recv_timeout: 30_500]) end)
@@ -50,31 +83,5 @@ defmodule Mix.Tasks.AsyncBm do
 			{:wrong, src, dst, start_time, cutoff_time}
 		end
 	end
-
-	#defp process_async_requests({urls, src, dst, start_time, cutoff_time}) do
-		#{total_async_micros, has_status_200}=:timer.tc(fn->
-			#Enum.reduce(1..1, false, fn(_x, acc)->
-				#urls|>Enum.map(fn(url)->Task.async(fn->HTTPoison.get(url, %{},
-					#[recv_timeout: 30_500]) end) end)
-					#|>Enum.map(&Task.await(&1, 31_000))|>Enum.map(fn({status, result})->
-						#if status==:ok do
-							#result.status_code
-						#else
-							#result.reason
-						#end
-					#end)
-					#|>Enum.reduce(false, fn(x, acc)->x==200||acc end)|>Kernel.||(acc)
-			#end)
-		#end)
-		#check_status_code(:async, has_status_200)
-		#{Float.round(total_async_micros/1000, 4), src, dst, start_time, cutoff_time}
-	#end
-
-	#defp check_status_code(type, false) do
-		#IO.puts "!Warning: #{Atom.to_string(type)} request, cannot find at least "<>
-			#{}"1 HTTP status 200"
-	#end
-
-	#defp check_status_code(_, true) do end
 
 end
