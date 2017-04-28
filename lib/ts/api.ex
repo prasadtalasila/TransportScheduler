@@ -1,7 +1,10 @@
 defmodule API do
 	@moduledoc """
-	Module to define API to obtain and update station variables and find best
-	itinerary
+	Module to define RESTful API using Maru library. cURL requests can be handled and appropriate 
+	response in JSON format can be returned to the user. This API is used to obtain and update 
+	station variables and find the best itinerary.
+
+	Uses Maru, GenServer.
 	"""
 	use Maru.Router, make_plug: true
 	use Maru.Type
@@ -255,6 +258,24 @@ defmodule API do
 		conn|>put_status(500)|>json(%{error: "Server Error"})
 	end
 
+	@doc """
+	This function is called by Query Collector in order to add an itinerary to the list of received 
+	itineraries returned from Station Constructor. In `collect/2` function of QC, this function is
+	called to add all returned queries to the list as they come in.
+
+	The API function check whether the number of itineraries received is crossing the limit of
+	maximum itineraries required. If limit is reached, query is deleted form the map of active
+	queries. Otherwise, itinerary is added to the list of itineraries collected for a given query.
+
+	### Parameters
+	queries - in the form of a map	`%{src_station, dst_station, arrival_time, end_time}`.
+
+	itinerary - in the form of a map `%{vehicleID, src_station, dst_station, dept_time, 
+	arrival_time, mode_of_transport}`.
+	
+	### Return values
+	Returns {:ok}
+	"""
 	def add_itinerary(queries, itinerary) do
 		API.start_link
 		queries=if length(Map.keys(queries))!=0 do
@@ -287,42 +308,111 @@ defmodule API do
 	end
 
 	@doc """
-	Start new API process
+	Starts a GenServer API process linked to the current process.
+
+	This is often used to start the GenServer as part of a supervision tree.
+
+	Once the server is started, the `init/1` function of the given module is called with args as its 
+	arguments to initialize the server.
+
+	Creates new ETS table.
+	
+	### Parameters
+	For API, required parameters passed to GenServer function are `GenServer.start_link(__MODULE__,
+	:ok, name: UQC)`, specifying:
+
+	module_name
+
+	args
+
+	options:
+	- :name - used for name registration
+	- :timeout - if present, the server is allowed to spend the given amount of milliseconds initializing
+	or it will be terminated and the start function will return {:error, :timeout}
+	- :debug - if present, the corresponding function in the :sys module is invoked
+	- :spawn_opt - if present, its value is passed as options to the underlying process
+	
+	### Return values
+	If the server is successfully created and initialized, this function returns {:ok, pid}, where pid 
+	is the PID of the server. If a process with the specified server name already exists, this function 
+	returns {:error, {:already_started, pid}} with the PID of that process.
+
+	If the `init/1` callback fails with reason, this function returns {:error, reason}. Otherwise, if it
+	returns {:stop, reason} or :ignore, the process is terminated and this function returns {:error, reason}
+	or :ignore, respectively.
 	"""
 	def start_link do
 		GenServer.start_link(__MODULE__, :ok, name: UQC)
 	end
 
 	@doc """
-	Get entry from ETS table
+	Gets entry from ETS table.
+	
+	### Parameters
+	key
+
+	### Return values
+	If the table has an entry with the given key, returns {:reply, elem(tuple, tuple_size(tuple)-1), state}
+	otherwise {:reply, nil, state}.
 	"""
 	def get(key) do
 		GenServer.call(UQC, {:get, key})
 	end
 
 	@doc """
-	Put new entry/replace entry into ETS table
+	Inserts {key, value} pair into ETS table.
+
+	### Parameters
+	key
+
+	value   
+
+	### Return values
+	Returns {:ok}.
 	"""
 	def put(key, value) do
 		GenServer.cast(UQC, {:put, key, value})
 	end
 
 	@doc """
-	Enter triple into ETS table
+	Inserts {connection, query, itineraries} triple into ETS table.
+
+	### Parameters
+	connection
+
+	query
+
+	itineraries
+
+	### Return values
+	Returns {:ok}.
 	"""
 	def put(connection, query, itineraries) do
 		GenServer.cast(UQC, {:put_entry, connection, query, itineraries})
 	end
 
 	@doc """
-	Remove entries from ETS table
+	Deletes {key, value} pair from ETS table.
+
+	### Parameters
+	key   
+
+	### Return values
+	Returns {:ok}.
 	"""
 	def remove(key) do
 		GenServer.cast(UQC, {:remove, key})
 	end
 
 	@doc """
-	Check whether present in ETS table
+	Checks whether entry with given key is present in ETS table.   	
+
+	### Parameters
+	key   
+
+	### Return values
+	Returns {:reply, true, state} or {:reply, false, state}.
+
 	"""
 	def member(key) do
 		GenServer.call(UQC, {:member, key})

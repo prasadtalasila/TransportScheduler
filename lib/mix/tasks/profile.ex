@@ -1,11 +1,18 @@
 defmodule Mix.Tasks.Profile do
 	@moduledoc """
-	Code profiling code
+	Helper module to run profiling code using ExProf.
 	"""
 	use Mix.Task
 	import ExProf.Macro
 
-	@doc "analyze with profile macro"
+	@doc """
+	Runs the Profile task with the given args to analyze the enclosed code.
+
+	### Return values
+	If the task was not yet invoked, it runs the task and returns the result.
+	If there is an alias with the same name, the alias will be invoked instead of the original task.
+	If the task or alias were already invoked, it does not run them again and simply aborts with :noop.  
+	"""
 	def do_analyze do
 		TS.Supervisor.start_link
 		{:ok, pid}=InputParser.start_link
@@ -53,7 +60,9 @@ defmodule Mix.Tasks.Profile do
 		end
 	end
 
-	@doc "get analysis records and sum them up"
+	@doc """
+	Prints analysis results. 
+	"""
 	def run(_mix_args) do
 		records=do_analyze()
 		total_percent=Enum.reduce(records, 0.0, &(&1.percent+&2))
