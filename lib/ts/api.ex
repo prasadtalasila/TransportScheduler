@@ -84,7 +84,6 @@ defmodule API do
 						API.remove(conn)
 						API.remove(query)
 						QC.stop(pid)
-
 				end
 			end
 		end

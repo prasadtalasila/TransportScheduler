@@ -1,6 +1,6 @@
 # TS
 
-[![Build Status](https://travis-ci.org/prasadtalasila/TransportScheduler.svg?branch=master)](https://travis-ci.org/prasadtalasila/TransportScheduler) [![Coverage Status](https://coveralls.io/repos/github/prasadtalasila/TransportScheduler/badge.svg?branch=master)](https://coveralls.io/github/prasadtalasila/TransportScheduler?branch=master) [![Code Climate](https://codeclimate.com/github/prasadtalasila/TransportScheduler/badges/gpa.svg)](https://codeclimate.com/github/prasadtalasila/TransportScheduler) (For master branch)
+[![Build Status](https://travis-ci.org/prasadtalasila/TransportScheduler.svg?branch=master)](https://travis-ci.org/prasadtalasila/TransportScheduler) [![Coverage Status](https://coveralls.io/repos/github/prasadtalasila/TransportScheduler/badge.svg?branch=master)](https://coveralls.io/github/prasadtalasila/TransportScheduler?branch=master) [![Code Climate](https://codeclimate.com/github/prasadtalasila/TransportScheduler/badges/gpa.svg)](https://codeclimate.com/github/prasadtalasila/TransportScheduler)
 
 TransportScheduler application dependencies:   
 GenStateMachine for station FSM and GenServer for IPC.   
@@ -23,15 +23,14 @@ mix compile
 mix test
 ```
 
-Run the following commands to deploy (currently server and user are localhost):   
+Run the following command to build a release:
 ```bash
-mix edeliver build release
-mix edeliver deploy release
+mix release
 ```
 
-Run the following command to start application:   
+Run the following command to run the application interactively:
 ```bash
-mix edeliver start
+_build/dev/rel/ts/bin/ts console
 ```
 
 Issue the following cURL command for initialisation of the network:
@@ -52,6 +51,19 @@ where `%STATION_CODE%` is a positive integer indicating the station code of the 
 curl -X GET 'http://localhost:8880/api/station/state?station_code=%STATION_CODE%'
 ```  
 where `%STATION_CODE%` is a positive integer indicating the required station code.
+
+Run the following commands to deploy (currently server and user are localhost): **UNTESTED**    
+```bash
+mix edeliver build release
+mix edeliver deploy release
+```
+
+Run the following command to start application: **UNTESTED**   
+```bash
+mix edeliver start
+```
+
+## Benchmark Tests
 
 For running the respective benchmarks (async/synchronous), use
 ```bash

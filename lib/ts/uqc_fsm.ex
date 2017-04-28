@@ -1,7 +1,9 @@
 defmodule UQCFSM do
 	@moduledoc """
 	Module to filter results of the search query in UQC based on user
-	preferences
+	preferences.
+
+	Uses GenStateMachine.
 	"""
 	use GenStateMachine
 
