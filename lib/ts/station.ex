@@ -87,7 +87,7 @@ defmodule Station do
 	nc_pid
 
 	src_station_pid
-   
+
 	itinerary - in the form of a map `%{vehicleID, src_station, dst_station, dept_time, arrival_time, 
 	mode_of_transport}`
 

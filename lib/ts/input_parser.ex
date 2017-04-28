@@ -10,7 +10,6 @@ defmodule InputParser do
 
 	# Client-side functions
 
-	
 	@doc """
 	Starts a GenServer InputParser process linked to the current process.
 

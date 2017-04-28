@@ -9,7 +9,6 @@ defmodule QC do
 
 	## Functions (Client)
 
-
 	@doc """
 	Starts a GenServer QC process linked to the current process.
 
@@ -54,7 +53,6 @@ defmodule QC do
 	def collect(server, itinerary) do
 		GenServer.cast(server, {:collect, itinerary})
 	end
-
 
 	@doc """
 	Stops the QC process with the given reason.   

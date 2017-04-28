@@ -34,7 +34,6 @@ defmodule StationConstructor do
 
 	query - in the form of a map %{src_station, dst_station, arrival_time, end_time}
 
-
 	### Return values
 	Returns {:ok}.
 	"""
@@ -49,7 +48,6 @@ defmodule StationConstructor do
 	nc_pid
 
 	query - in the form of a map %{src_station, dst_station, arrival_time, end_time}
-
 
 	### Return values
 	Returns {:ok}.
@@ -125,7 +123,6 @@ defmodule StationConstructor do
 	def create(server, name, code) do
 		GenServer.cast(server, {:create, name, code})
 	end
-
 
 	@doc """
 	Stops the NC process with the given reason.   

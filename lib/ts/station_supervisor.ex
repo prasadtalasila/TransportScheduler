@@ -17,7 +17,7 @@ defmodule TS.Station.Supervisor do
 	To start the supervisor, the `init/1` callback will be invoked in the given module, with arg as its
 	argument. The `init/1` callback must return a supervisor specification which can be created with the
 	help of the functions in the Supervisor.Spec module.
-   
+
 	### Parameters
 	For Station, required parameters passed to Supervisor function are `Supervisor.start_link(__MODULE__, 
 	:ok, name: @name)`, specifying:
