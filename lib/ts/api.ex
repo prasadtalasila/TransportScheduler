@@ -51,6 +51,7 @@ defmodule API do
 				{:ok, {_, stn}}=StationConstructor.lookup_code(StationConstructor,
 					params[:source])
 				API.put(conn, query, [])
+				API.put({"times", query}, [])
 				StationConstructor.add_query(StationConstructor, query, conn)
 				itinerary=[Map.put(query, :day, 0)]
 				{:ok, pid}=QC.start_link
@@ -61,13 +62,25 @@ defmodule API do
 					:timeout->
 						StationConstructor.del_query(StationConstructor, query)
 						final=conn|>API.get|>sort_list
-						conn|>put_status(200)|>json(final)
+						resp=final|>List.last|>List.last|>Map.get(:arrival_time)
+						days=final|>List.first|>List.first|>Map.get(:day)
+						conn|>put_status(200)|>json(days*86_400+resp)
+						f=File.open!("data/times.csv", [:append])
+						IO.write(f, CSVLixir.write_row(API.get({"times", query})))
+						File.close(f)
+						API.remove({"times", query})
 						API.remove(conn)
 						API.remove(query)
 						QC.stop(pid)
 					:release->
 						final=conn|>API.get|>sort_list
-						conn|>put_status(200)|>json(final)
+						resp=final|>List.last|>List.last|>Map.get(:arrival_time)
+						days=final|>List.first|>List.first|>Map.get(:day)
+						conn|>put_status(200)|>json(days*86_400+resp)
+						f=File.open!("data/times.csv", [:append])
+						IO.write(f, CSVLixir.write_row(API.get({"times", query})))
+						File.close(f)
+						API.remove({"times", query})
 						API.remove(conn)
 						API.remove(query)
 						QC.stop(pid)
@@ -268,19 +281,18 @@ defmodule API do
 			query=itinerary|>List.first|>Map.delete(:day)
 			conn=Map.get(queries, query)
 			list=API.get(conn)
+			times=API.get({"times", query})
 			bool=if list===nil do
 				false
 			else
-				(length(list)<10)
+				(length(list)<15)
 			end
 			case bool do
 				true->
 					list=list++[itinerary]
+					times=times++[System.system_time(:milliseconds)-(query|>API.get|>elem(2))]
 					API.put(conn, query, list)
-					#qpt=System.system_time(:milliseconds)-(API.get(query)|>elem(2))
-					#API.put({query, "time"}, qpt)
-					#IO.inspect query
-					#IO.puts "#{qpt}"
+					API.put({"times", query}, times)
 					queries
 				false->
 					if API.member(query) do

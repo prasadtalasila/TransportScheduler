@@ -51,26 +51,29 @@ defmodule StationConstructorTest do
 		{:ok, {code2, _}}=StationConstructor.lookup_name(StationConstructor,
 			"Ratnagiri")
 		itinerary=[%{src_station: code1, dst_station: code2, arrival_time: 0, end_time: 86400}]
-		it1=List.first(itinerary)
+		query=List.first(itinerary)
 		API.start_link
-		API.put("conn", it1, [])
-		StationConstructor.add_query(StationConstructor, it1, "conn")
-		itinerary=[Map.put(it1, :day, 0)]
+		API.put("conn", query, [])
+		API.put({"times", query}, [])
+		StationConstructor.add_query(StationConstructor, query, "conn")
+		itinerary=[Map.put(query, :day, 0)]
 		{:ok, pid}=QC.start_link
-		API.put(it1, {self(), pid})
+		API.put(query, {self(), pid, System.system_time(:milliseconds)})
 		StationConstructor.send_to_src(StationConstructor, stn1, itinerary)
-		Process.send_after(self(), :timeout, 50)
+		Process.send_after(self(), :timeout, 500)
 		receive do
 			:timeout->
-				StationConstructor.del_query(StationConstructor, it1)
+				StationConstructor.del_query(StationConstructor, query)
 				_=API.get("conn")
+				API.remove({"times", query})
 				API.remove("conn")
-				API.remove(it1)
+				API.remove(query)
 				QC.stop(pid)
 			:release->
 				_=API.get("conn")
+				API.remove({"times", query})
 				API.remove("conn")
-				API.remove(it1)
+				API.remove(query)
 				QC.stop(pid)
 		end
 	end

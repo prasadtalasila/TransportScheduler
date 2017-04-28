@@ -1,30 +1,51 @@
-defmodule Mix.Tasks.AsyncBm do
+defmodule Mix.Tasks.AsyncBenchmark do
 	@moduledoc """
-	Helper module to run asynchronous benchmarking.
+	Helper module to run asynchronous benchmark to test multiple, concurrent queries.
 	"""
 	use Mix.Task
 
 	@doc """
-	Runs the AsyncBm task with the given args.
-
+	Runs the Async Benchmark task with the given args.
 	
 	### Parameters
-	arg   
+	`arg`   
+	
+	### Return values
+	If the task was not yet invoked, it runs the task and returns the result.
+	If there is an alias with the same name, the alias will be invoked instead of the original task.
+	If the task or alias were already invoked, it does not run them again and simply aborts with :noop.  
+	"""
+	def run(_args) do
+		Mix.Task.run "app.start", []
+		f=File.open! "data/test_async.csv", [:write]
+		IO.write(f, CSVLixir.write_row(["no.of_reqs", "async_qpt"]))
+		File.close(f)
+		setup()
+		for x<-[1, 2] do
+			async_result=process_requests(x)
+			IO.puts "#{async_result} ms"
+			f=File.open!("data/test_async.csv", [:append])
+			IO.write(f, CSVLixir.write_row([x, async_result]))
+			File.close(f)
+		end
+	end
+
+	@doc """
+	Processes a given number of async requests.
+	
+	### Parameters
+	`arg`
 	
 	### Return values
 	If the task was not yet invoked, it runs the task and returns the result.
 	If there is an alias with the same name, the alias will be invoked instead of the original task.
 	If the task or alias were already invoked, it does not run them again and simply aborts with :noop. 
 	"""
-	def run(arg) do
+	def process_requests(arg) do
 		arg|>issue|>process_async_requests
 	end
 
-
-	@doc """
-	Initialises the network using HHTPoison for http://localhost:8880/api.
-	"""
-	def setup do
+	defp setup do
 		:ok=:hackney_pool.start_pool(:first_pool, [timeout: 35_000,
 			max_connections: 1000])
 		HTTPoison.start
@@ -64,8 +85,8 @@ defmodule Mix.Tasks.AsyncBm do
 		Float.round(total_async_micros/1000, 4)
 	end
 
-	defp check_status_code(type, false) do
-		IO.puts "!Warning: #{Atom.to_string(type)} request, cannot find at least "<>
+	defp check_status_code(_, false) do
+		IO.puts "!Warning: async request, cannot find at least "<>
 			"1 HTTP status 200"
 	end
 

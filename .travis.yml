@@ -14,7 +14,8 @@ script:
 - mix profile
 - MIX_ENV=test mix coveralls.travis
 - MIX_ENV=test mix credo --strict || echo -e "\n\n=====Bypassing the failure of credo for now=====\n\n"
-- mix benchmark
+- mix sync_benchmark
+- mix async_benchmark
 
 after_success:
 - mix edeliver build release
