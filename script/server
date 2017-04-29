@@ -11,6 +11,8 @@
 set -e
 
 cd /home/ubuntu/ts
+cp -r data/ _build/dev/rel/ts
+cp -r data/ /home/ubuntu/test/ts
 
 # uncomment next line if you want to pull from github before server release
 #source script/update
