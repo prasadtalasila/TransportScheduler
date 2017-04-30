@@ -4,3 +4,5 @@
 erl_crash.dump
 *.ez
 .deliver/releases/
+.vagrant
+ubuntu-xenial-16.04-cloudimg-console.log

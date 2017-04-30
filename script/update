@@ -1,0 +1,17 @@
+#!/bin/bash
+########################
+# Purpose: update the project and reinstall
+# Author: Prasad Talasila
+# Date: 10-April-2017
+# Invocation: This script does not require any arguements. From the project top-level
+#             directory, invoke as follows
+#             $bash script/update
+########################
+
+set -e
+
+cd /home/ubuntu/ts
+git pull origin $(git rev-parse --abbrev-ref HEAD)
+
+source script/setup	  #run setup on the updated code base
+source script/test        #make sure all tests pass

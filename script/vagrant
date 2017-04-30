@@ -1,0 +1,29 @@
+#!/bin/bash
+########################
+# Purpose: To get up to speed in the vagrant box
+# Author: Prasad Talasila
+# Date: 10-April-2017
+# Invocation: This script does not require any arguements. From the project top-level
+#             directory, invoke as follows. ONLY INVOKE INSIDE VAGRANT ENVIRONMENT.
+#             $bash script/vagrant
+########################
+
+set -e      # bail out on failure
+
+sudo apt-get update
+sudo apt-get -y install git
+# install erlang and OTP dependencies
+sudo apt-get install -y automake autoconf libreadline-dev libncurses-dev libssl-dev libyaml-dev \
+  libxslt-dev libffi-dev libtool unixodbc-dev make zip
+
+# copy aliases for asdf, elixir and erlang
+cd /home/ubuntu/ts
+cat script/.bashrc >> /home/ubuntu/.bashrc
+
+
+#cd /home/ubuntu/ts
+#source script/bootstrap
+#source script/setup
+#source script/test
+#source script/update
+#source script/server
