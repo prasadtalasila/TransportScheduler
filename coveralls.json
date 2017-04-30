@@ -8,6 +8,8 @@
 	"lib/ts.ex",
 	"lib/ts/uqc_fsm.ex",
 	"lib/ts/station_functions.ex",
-	"lib/ts/station_struct.ex"
+	"lib/ts/station_struct.ex",
+	"lib/ts/api_supervisor.ex",
+	"lib/ts/supervisor.ex"
     ]
 }

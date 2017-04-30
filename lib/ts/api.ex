@@ -1,7 +1,10 @@
 defmodule API do
 	@moduledoc """
-	Module to define API to obtain and update station variables and find best
-	itinerary
+	Module to define RESTful API using Maru library. cURL requests can be handled
+	and appropriate	response in JSON format can be returned to the user. This API
+	is used to obtain and update station variables and find the best itinerary.
+
+	Uses Maru, GenServer.
 	"""
 	use Maru.Router, make_plug: true
 	use Maru.Type
@@ -37,42 +40,49 @@ defmodule API do
 				requires :source, type: Integer
 				requires :destination, type: Integer
 				requires :start_time, type: Integer
+				requires :end_time, type: Integer
 				requires :date, type: String
 			end
+
 			get do
 				# Obtain itinerary
 				query=%{src_station: params[:source], dst_station: params[:destination],
-				arrival_time: params[:start_time]}
+				arrival_time: params[:start_time], end_time: params[:end_time]}
 				{:ok, {_, stn}}=StationConstructor.lookup_code(StationConstructor,
 					params[:source])
 				API.put(conn, query, [])
+				API.put({"times", query}, [])
 				StationConstructor.add_query(StationConstructor, query, conn)
 				itinerary=[Map.put(query, :day, 0)]
 				{:ok, pid}=QC.start_link
 				API.put(query, {self(), pid, System.system_time(:milliseconds)})
 				StationConstructor.send_to_src(StationConstructor, stn, itinerary)
-				Process.send_after(self(), :timeout, 10_000)
+				Process.send_after(self(), :timeout, 30_000)
 				receive do
 					:timeout->
 						StationConstructor.del_query(StationConstructor, query)
 						final=conn|>API.get|>sort_list
-						conn|>put_status(200)|>json(final)
-						#if (API.member({query, "time"})) do
-							#IO.puts "#{API.get({query, "time"})}"
-							#API.remove({query, "time"})
-						#end
+						resp=final|>List.last|>List.last|>Map.get(:arrival_time)
+						days=final|>List.first|>List.first|>Map.get(:day)
+						conn|>put_status(200)|>json(days*86_400+resp)
+						f=File.open!("data/times.csv", [:append])
+						IO.write(f, CSVLixir.write_row(API.get({"times", query})))
+						File.close(f)
+						API.remove({"times", query})
 						API.remove(conn)
 						API.remove(query)
-						#IO.puts "done"
 						QC.stop(pid)
 					:release->
 						final=conn|>API.get|>sort_list
-						conn|>put_status(200)|>json(final)
-						#IO.puts "#{API.get({query, "time"})}"
-						#API.remove({query, "time"})
+						resp=final|>List.last|>List.last|>Map.get(:arrival_time)
+						days=final|>List.first|>List.first|>Map.get(:day)
+						conn|>put_status(200)|>json(days*86_400+resp)
+						f=File.open!("data/times.csv", [:append])
+						IO.write(f, CSVLixir.write_row(API.get({"times", query})))
+						File.close(f)
+						API.remove({"times", query})
 						API.remove(conn)
 						API.remove(query)
-						#IO.puts "done"
 						QC.stop(pid)
 				end
 			end
@@ -247,25 +257,45 @@ defmodule API do
 		conn|>put_status(500)|>json(%{error: "Server Error"})
 	end
 
+	@doc """
+	This function is called by Query Collector in order to add an itinerary to
+	the list of received itineraries returned from Station Constructor. In
+	`collect/2` function of QC, this function is called to add all returned
+	queries to the list as they come in.
+
+	The API function check whether the number of itineraries received is crossing
+	the limit of maximum itineraries required. If limit is reached, query is
+	deleted form the map of active queries. Otherwise, itinerary is added to the
+	list of itineraries collected for a given query.
+
+	### Parameters
+	queries - in the form of a map	`%{src_station, dst_station, arrival_time,
+	end_time}`.
+
+	itinerary - in the form of a map `%{vehicleID, src_station, dst_station,
+	dept_time, arrival_time, mode_of_transport}`.
+	
+	### Return values
+	Returns {:ok}
+	"""
 	def add_itinerary(queries, itinerary) do
 		API.start_link
 		queries=if length(Map.keys(queries))!=0 do
 			query=itinerary|>List.first|>Map.delete(:day)
 			conn=Map.get(queries, query)
 			list=API.get(conn)
+			times=API.get({"times", query})
 			bool=if list===nil do
 				false
 			else
-				(length(list)<10)
+				(length(list)<15)
 			end
 			case bool do
 				true->
 					list=list++[itinerary]
+					times=times++[System.system_time(:milliseconds)-(query|>API.get|>elem(2))]
 					API.put(conn, query, list)
-					#qpt=System.system_time(:milliseconds)-(API.get(query)|>elem(2))
-					#API.put({query, "time"}, qpt)
-					#IO.inspect query
-					#IO.puts "#{qpt}"
+					API.put({"times", query}, times)
 					queries
 				false->
 					if API.member(query) do
@@ -280,42 +310,116 @@ defmodule API do
 	end
 
 	@doc """
-	Starts a new GenServer.
+	Starts a GenServer API process linked to the current process.
+
+	This is often used to start the GenServer as part of a supervision tree.
+
+	Once the server is started, the `init/1` function of the given module is
+	called with args as its arguments to initialize the server.
+
+	Creates new ETS table.
+
+	### Parameters
+	For API, required parameters passed to GenServer function are
+	`GenServer.start_link(__MODULE__, :ok, name: UQC)`, specifying:
+
+	module_name
+
+	args
+
+	options:
+	- :name - used for name registration
+	- :timeout - if present, the server is allowed to spend the given amount
+	of milliseconds initializing or it will be terminated and the start function
+	will return {:error, :timeout}
+	- :debug - if present, the corresponding function in the :sys module is
+	invoked
+	- :spawn_opt - if present, its value is passed as options to the underlying
+	process
+	
+	### Return values
+	If the server is successfully created and initialized, this function returns
+	{:ok, pid}, where pid is the PID of the server. If a process with the specified
+	server name already exists, this function returns {:error, {:already_started,
+	pid}} with the PID of that process.
+
+	If the `init/1` callback fails with reason, this function returns {:error,
+	reason}. Otherwise, if it returns {:stop, reason} or :ignore, the process
+	is terminated and this function returns {:error, reason} or :ignore,
+	respectively.
 	"""
 	def start_link do
 		GenServer.start_link(__MODULE__, :ok, name: UQC)
 	end
 
 	@doc """
-	Gets an entry from table.
+	Gets entry from ETS table.
+
+	### Parameters
+	key
+
+	### Return values
+	If the table has an entry with the given key, returns {:reply, elem(tuple,
+	tuple_size(tuple)-1), state} otherwise {:reply, nil, state}.
 	"""
 	def get(key) do
 		GenServer.call(UQC, {:get, key})
 	end
 
 	@doc """
-	Puts a new entry/replaces entry into table.
+	Inserts {key, value} pair into ETS table.
+
+	### Parameters
+	key
+
+	value   
+
+	### Return values
+	Returns {:ok}.
 	"""
 	def put(key, value) do
 		GenServer.cast(UQC, {:put, key, value})
 	end
 
 	@doc """
-	Enters triple into table.
+	Inserts {connection, query, itineraries} triple into ETS table.
+
+	### Parameters
+	connection
+
+	query
+
+	itineraries
+
+	### Return values
+	Returns {:ok}.
 	"""
 	def put(connection, query, itineraries) do
 		GenServer.cast(UQC, {:put_entry, connection, query, itineraries})
 	end
 
 	@doc """
-	Removes entries from map.
+	Deletes {key, value} pair from ETS table.
+
+	### Parameters
+	key   
+
+	### Return values
+	Returns {:ok}.
 	"""
 	def remove(key) do
 		GenServer.cast(UQC, {:remove, key})
 	end
 
 	@doc """
-	Checks whether a key is present or not
+	Checks whether entry with given key is present in ETS table.   	
+
+	### Parameters
+	key   
+
+	### Return values
+	Returns {:reply, true, state} or {:reply, false, state}.
+
 	"""
 	def member(key) do
 		GenServer.call(UQC, {:member, key})

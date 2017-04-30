@@ -1,43 +1,173 @@
 defmodule Station do
 	@moduledoc """
-	Module to create a station process and FSM and handle local variable updates
+	Module to create a transit station node. The station process pid can be used to
+	retrieve station struct values such as local variables and schedule. It can
+	also be used to handle local variable updates.
+
+	Uses GenStateMachine.
 	"""
 	use GenStateMachine, async: true
 
+	@doc """
+	Starts a GenStateMachine Station process linked to the current process.
+
+	This is often used to start the GenStateMachine as part of a supervision tree.
+
+	Once the server is started, the `init/1` function of the given module is
+	called with args as its arguments to initialize the server.
+
+	### Parameters
+	module
+
+	args   
+	
+	### Return values
+	If the server is successfully created and initialized, this function returns
+	{:ok, pid}, where pid is the PID of the server. If a process with the
+	specified server name already exists, this function returns {:error,
+	{:already_started, pid}} with the PID of that process.
+
+	If the `init/1` callback fails with reason, this function returns
+	{:error, reason}. Otherwise, if it returns {:stop, reason} or :ignore,
+	the process is terminated and this function returns {:error, reason} or
+	:ignore, respectively.
+	"""
 	def start_link do
 		GenStateMachine.start_link(Station, {:nodata, nil})
 	end
 
 	# Client-side getter and setter functions
 
+	@doc """
+	Updates station struct values by replacing with new struct composed of the
+	new values for the station, and update the state of the station FSM.
+
+	### Parameters
+	station_pid
+
+	station_struct
+
+	### Return values
+	Returns {:next_state, next_state, new_vars}.
+	"""
 	def update(station,  %StationStruct{}=new_vars) do
 		GenStateMachine.cast(station, {:update, new_vars})
 	end
 
+	@doc """
+	Retrieves station struct local variable values given the station pid.
+
+	### Parameters
+	station_pid   
+
+	### Return values
+	{:next_state, state, vars, [{:reply, from, vars}]}.
+	"""
 	def get_vars(station) do
 		GenStateMachine.call(station, :get_vars)
 	end
 
+	@doc """
+	Retrieves station struct state value given the station pid.
+
+	### Parameters
+	station_pid   
+
+	### Return values
+	Returns {:next_state, state, vars, [{:reply, from, state}]}.
+	"""
 	def get_state(station) do
 		GenStateMachine.call(station, :get_state)
 	end
 
 	# Client-side message-passing functions
 
+	@doc """
+	Receives a query encoded in itinerary from NC at source station. The pid of
+	NC and source station must be known.
+
+	### Parameters
+	nc_pid
+
+	src_station_pid
+
+	itinerary - in the form of a map `%{vehicleID, src_station, dst_station,
+	dept_time, arrival_time, mode_of_transport}`
+
+	### Return values
+	Returns {:ok}.
+	"""
 	def receive_at_src(nc, src, itinerary) do
 		GenStateMachine.cast(src, {:receive_at_src, nc, src, itinerary})
 	end
 
+	@doc """
+	Sends query from a source station to the neighbouring station and append to
+	itinerary built upto this point, ie, upto source station. The pid of NC,
+	source station, and destination station must be known.
+
+	### Parameters
+	nc_pid
+
+	src_station_pid
+
+	dst_station_pid
+
+	itinerary - in the form of a map `%{vehicleID, src_station, dst_station,
+	dept_time, arrival_time, mode_of_transport}`
+
+	### Return values
+	Returns {:ok}
+	"""
 	def send_to_stn(nc, src, dst, itinerary) do
 		GenStateMachine.cast(dst, {:receive_at_stn, nc, src, itinerary})
 	end
 
+	@doc """
+	Checks if neighbouring station is valid, ie, that it does not result in a
+	looping itinerary. The potential new destination to be added to the itinerary
+	path is compared with all stations already in the itinerary upto this point
+	to decide whether a loop is being formed.
+
+	### Parameters   
+	dst_station_pid
+
+	itinerary - in the form of a map `%{vehicleID, src_station, dst_station,
+	dept_time, arrival_time, mode_of_transport}`
+
+	### Return values
+	Returns true or false.
+	"""
 	def check_dest(dst, itinerary) do
 		[_|tail]=itinerary
 		dest_list=Enum.map(tail, fn (x)->x[:dst_station] end)
 		!Enum.member?(dest_list, dst)
 	end
 
+	@doc """
+	Lists all valid neighbouring stations given a station and arrival time at
+	that station. This takes care of overnight journey arrival time modifications.
+	It also adds other means connections to the list of all possible connections
+	to neighbouring stations. If a neighbour is valid based on `check_dest/2`,
+	it is added to the list.
+
+	### Parameters   
+	schedule - in the form of a list of maps `%{vehicleID, src_station,
+	dst_station, dept_time,	arrival_time, mode_of_transport}`
+
+	other_means - in the form of a similar list with
+	mode_of_transport: "Other Means"
+
+	time - time of arrival at station
+
+	itinerary - in the form of list of maps `%{vehicleID, src_station,
+	dst_station, dept_time, arrival_time, mode_of_transport}`
+
+	### Return values
+	Returns list of connections to valid neighbouring stations, each in the form
+	of a map `%{vehicleID, src_station, dst_station, dept_time, arrival_time,
+	mode_of_transport}`.
+	"""
 	def check_neighbours(schedule, other_means, time, itinerary) do
 		# schedule is filtered to reject neighbours with departure time earlier
 		# than arrival time at the station for the current itinerary
@@ -46,8 +176,10 @@ defmodule Station do
 		else
 			time
 		end
+		[query]=Enum.take(itinerary, 1)
 		neighbour_list=Enum.filter(schedule, fn(x)->x.dept_time>time&&
-			check_dest(x.dst_station, itinerary) end)
+			check_dest(x.dst_station, itinerary)&&(query.day*86_400+x.arrival_time)<=
+			query.end_time end)
 		possible_walks=Enum.filter(other_means,
 			fn(x)->check_dest(x.dst_station, itinerary) end)
 		list=for x<-possible_walks do
@@ -55,9 +187,34 @@ defmodule Station do
 			x.dst_station, dept_time: time, arrival_time: time+x.travel_time,
 			mode_of_transport: "Other Means"}
 		end
+		list=Enum.filter(list, fn(x)->(query.day*86_400+x.arrival_time)<=
+			query.end_time end)
 		List.flatten(list, neighbour_list)
 	end
 
+	@doc """
+	This function passes queries through the network to build the final itinerary.
+	The connection that is required from the schedule list to reach this station
+	from the source station is added to the	itinerary path. This resulting
+	itinerary is passed along itinerary to neighbouring stations from a given
+	source station. If the neighbouring station happens to be the destination
+	station required in the query, then the function passes the final itinerary
+	directly to the Query Collector and the search is terminated.
+
+	### Parameters
+	nc_pid
+
+	src_station_pid
+
+	itinerary - in the form of a map `%{vehicleID, src_station, dst_station,
+	dept_time, arrival_time, mode_of_transport}`
+
+	dst_schedule - in the form of a list of maps `%{vehicleID, src_station,
+	dst_station, dept_time, arrival_time, mode_of_transport}`
+
+	### Return values
+	Returns {:ok}.
+	"""
 	def function(nc, src, itinerary, dest_schedule) do
 		# schedule to reach this destination station is added to itinerary
 		new_itinerary=List.flatten([itinerary|[dest_schedule]])

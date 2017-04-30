@@ -1,0 +1,508 @@
+    <!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="ExDoc v0.15.0">
+    <title>API – TransportScheduler v0.1.0</title>
+    <link rel="stylesheet" href="dist/app-f7824c48e6.css" />
+    
+    <script src="dist/sidebar_items-93390bdd36.js"></script>
+  </head>
+  <body data-type="modules">
+    <script>if(localStorage.getItem('night-mode')) document.body.className += ' night-mode';</script>
+
+    <div class="main">
+<button class="sidebar-toggle">
+  <i class="icon-menu"></i>
+</button>
+<section class="sidebar">
+
+  
+  <a href="TS.html" class="sidebar-projectLink">
+    <div class="sidebar-projectDetails">
+      <h1 class="sidebar-projectName">
+        TransportScheduler
+      </h1>
+      <h2 class="sidebar-projectVersion">
+        v0.1.0
+      </h2>
+    </div>
+    
+  </a>
+
+  <div class="sidebar-search">
+    <i class="icon-search"></i>
+    <input type="text" class="sidebar-searchInput" placeholder="search" autocomplete="off" />
+  </div>
+
+  <ul class="sidebar-listNav">
+    <li><a id="extras-list" href="#full-list">Pages</a></li>
+
+    
+      <li><a id="modules-list" href="#full-list">Modules</a></li>
+    
+
+    
+
+    
+  </ul>
+  <div class="gradient"></div>
+  <ul id="full-list" class="sidebar-fullList"></ul>
+</section>
+
+<section class="content">
+  <div class="content-outer">
+    <div id="content" class="content-inner">
+
+
+      <h1>
+        <small class="visible-xs">TransportScheduler v0.1.0</small>
+        API
+        
+        
+          <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/api.ex#L1" title="View Source" class="view-source" rel="help">
+            <i class="icon-code"></i>
+          </a>
+        
+      </h1>
+
+      
+        <section id="moduledoc">
+          <p>Module to define RESTful API using Maru library. cURL requests can be handled and appropriate 
+response in JSON format can be returned to the user. This API is used to obtain and update 
+station variables and find the best itinerary.</p>
+<p>Uses Maru, GenServer.</p>
+
+        </section>
+      
+
+      
+        <section id="summary" class="details-list">
+          <h1 class="section-heading">
+            <a class="hover-link" href="#summary">
+              <i class="icon-link"></i>
+            </a>
+            Summary
+          </h1>
+          
+
+          
+  <div class="summary-functions summary">
+    <h2>
+      <a href="#functions">Functions</a>
+    </h2>
+    <div class="summary-row">
+  <div class="summary-signature">
+    <a href="#add_itinerary/2">add_itinerary(queries, itinerary)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>This function is called by Query Collector in order to add an itinerary to the list of received 
+itineraries returned from Station Constructor. In <code class="inline">collect/2</code> function of QC, this function is
+called to add all returned queries to the list as they come in</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#arguments/0">arguments()</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#call/2">call(conn, )</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#endpoint/2">endpoint(arg, int)</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#get/1">get(key)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Gets entry from ETS table</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#member/1">member(key)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Checks whether entry with given key is present in ETS table</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#parse/2">parse(input, )</a>
+  </div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#put/2">put(key, value)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Inserts {key, value} pair into ETS table</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#put/3">put(connection, query, itineraries)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Inserts {connection, query, itineraries} triple into ETS table</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#remove/1">remove(key)</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Deletes {key, value} pair from ETS table</p>
+</div>
+  
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#start_link/0">start_link()</a>
+  </div>
+  
+    <div class="summary-synopsis"><p>Starts a GenServer API process linked to the current process</p>
+</div>
+  
+</div>
+
+  </div>
+
+
+          
+
+        </section>
+      
+
+      
+
+      
+        <section id="functions" class="details-list">
+          <h1 class="section-heading">
+            <a class="hover-link" href="#functions">
+              <i class="icon-link"></i>
+            </a>
+            Functions
+          </h1>
+          <div class="detail" id="add_itinerary/2">
+  
+  <div class="detail-header">
+    <a href="#add_itinerary/2" class="detail-link" title="Link to this function">
+      <i class="icon-link"></i>
+    </a>
+    <span class="signature">add_itinerary(queries, itinerary)</span>
+    
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/api.ex#L265" class="view-source" rel="help" title="View Source">
+       <i class="icon-code"></i>
+     </a>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    <p>This function is called by Query Collector in order to add an itinerary to the list of received 
+itineraries returned from Station Constructor. In <code class="inline">collect/2</code> function of QC, this function is
+called to add all returned queries to the list as they come in.</p>
+<p>The API function check whether the number of itineraries received is crossing the limit of
+maximum itineraries required. If limit is reached, query is deleted form the map of active
+queries. Otherwise, itinerary is added to the list of itineraries collected for a given query.</p>
+<h3>Parameters</h3>
+<p>queries - in the form of a map  <code class="inline">%{src_station, dst_station, arrival_time, end_time}</code>.</p>
+<p>itinerary - in the form of a map <code class="inline">%{vehicleID, src_station, dst_station, dept_time, 
+arrival_time, mode_of_transport}</code>.</p>
+<h3>Return values</h3>
+<p>Returns {:ok}</p>
+
+  </section>
+</div>
+<div class="detail" id="arguments/0">
+  
+  <div class="detail-header">
+    <a href="#arguments/0" class="detail-link" title="Link to this function">
+      <i class="icon-link"></i>
+    </a>
+    <span class="signature">arguments()</span>
+    
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/api.ex#L10" class="view-source" rel="help" title="View Source">
+       <i class="icon-code"></i>
+     </a>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="call/2">
+  
+  <div class="detail-header">
+    <a href="#call/2" class="detail-link" title="Link to this function">
+      <i class="icon-link"></i>
+    </a>
+    <span class="signature">call(conn, )</span>
+    
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/api.ex#L1" class="view-source" rel="help" title="View Source">
+       <i class="icon-code"></i>
+     </a>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="endpoint/2">
+  
+  <div class="detail-header">
+    <a href="#endpoint/2" class="detail-link" title="Link to this function">
+      <i class="icon-link"></i>
+    </a>
+    <span class="signature">endpoint(arg, int)</span>
+    
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/api.ex#L1" class="view-source" rel="help" title="View Source">
+       <i class="icon-code"></i>
+     </a>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="get/1">
+  
+  <div class="detail-header">
+    <a href="#get/1" class="detail-link" title="Link to this function">
+      <i class="icon-link"></i>
+    </a>
+    <span class="signature">get(key)</span>
+    
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/api.ex#L345" class="view-source" rel="help" title="View Source">
+       <i class="icon-code"></i>
+     </a>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    <p>Gets entry from ETS table.</p>
+<h3>Parameters</h3>
+<p>key</p>
+<h3>Return values</h3>
+<p>If the table has an entry with the given key, returns {:reply, elem(tuple, tuple_size(tuple)-1), state}
+otherwise {:reply, nil, state}.</p>
+
+  </section>
+</div>
+<div class="detail" id="member/1">
+  
+  <div class="detail-header">
+    <a href="#member/1" class="detail-link" title="Link to this function">
+      <i class="icon-link"></i>
+    </a>
+    <span class="signature">member(key)</span>
+    
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/api.ex#L404" class="view-source" rel="help" title="View Source">
+       <i class="icon-code"></i>
+     </a>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    <p>Checks whether entry with given key is present in ETS table.    </p>
+<h3>Parameters</h3>
+<p>key   </p>
+<h3>Return values</h3>
+<p>Returns {:reply, true, state} or {:reply, false, state}.</p>
+
+  </section>
+</div>
+<div class="detail" id="parse/2">
+  
+  <div class="detail-header">
+    <a href="#parse/2" class="detail-link" title="Link to this function">
+      <i class="icon-link"></i>
+    </a>
+    <span class="signature">parse(input, )</span>
+    
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/api.ex#L10" class="view-source" rel="help" title="View Source">
+       <i class="icon-code"></i>
+     </a>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    
+  </section>
+</div>
+<div class="detail" id="put/2">
+  
+  <div class="detail-header">
+    <a href="#put/2" class="detail-link" title="Link to this function">
+      <i class="icon-link"></i>
+    </a>
+    <span class="signature">put(key, value)</span>
+    
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/api.ex#L360" class="view-source" rel="help" title="View Source">
+       <i class="icon-code"></i>
+     </a>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    <p>Inserts {key, value} pair into ETS table.</p>
+<h3>Parameters</h3>
+<p>key</p>
+<p>value   </p>
+<h3>Return values</h3>
+<p>Returns {:ok}.</p>
+
+  </section>
+</div>
+<div class="detail" id="put/3">
+  
+  <div class="detail-header">
+    <a href="#put/3" class="detail-link" title="Link to this function">
+      <i class="icon-link"></i>
+    </a>
+    <span class="signature">put(connection, query, itineraries)</span>
+    
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/api.ex#L377" class="view-source" rel="help" title="View Source">
+       <i class="icon-code"></i>
+     </a>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    <p>Inserts {connection, query, itineraries} triple into ETS table.</p>
+<h3>Parameters</h3>
+<p>connection</p>
+<p>query</p>
+<p>itineraries</p>
+<h3>Return values</h3>
+<p>Returns {:ok}.</p>
+
+  </section>
+</div>
+<div class="detail" id="remove/1">
+  
+  <div class="detail-header">
+    <a href="#remove/1" class="detail-link" title="Link to this function">
+      <i class="icon-link"></i>
+    </a>
+    <span class="signature">remove(key)</span>
+    
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/api.ex#L390" class="view-source" rel="help" title="View Source">
+       <i class="icon-code"></i>
+     </a>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    <p>Deletes {key, value} pair from ETS table.</p>
+<h3>Parameters</h3>
+<p>key   </p>
+<h3>Return values</h3>
+<p>Returns {:ok}.</p>
+
+  </section>
+</div>
+<div class="detail" id="start_link/0">
+  
+  <div class="detail-header">
+    <a href="#start_link/0" class="detail-link" title="Link to this function">
+      <i class="icon-link"></i>
+    </a>
+    <span class="signature">start_link()</span>
+    
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/api.ex#L331" class="view-source" rel="help" title="View Source">
+       <i class="icon-code"></i>
+     </a>
+    
+    
+    
+  </div>
+  <section class="docstring">
+    <p>Starts a GenServer API process linked to the current process.</p>
+<p>This is often used to start the GenServer as part of a supervision tree.</p>
+<p>Once the server is started, the <code class="inline">init/1</code> function of the given module is called with args as its 
+arguments to initialize the server.</p>
+<p>Creates new ETS table.</p>
+<h3>Parameters</h3>
+<p>For API, required parameters passed to GenServer function are <code class="inline">GenServer.start_link(__MODULE__,
+:ok, name: UQC)</code>, specifying:</p>
+<p>module_name</p>
+<p>args</p>
+<p>options:</p>
+<ul>
+<li>:name - used for name registration
+</li>
+<li>:timeout - if present, the server is allowed to spend the given amount of milliseconds initializing
+or it will be terminated and the start function will return {:error, :timeout}
+</li>
+<li>:debug - if present, the corresponding function in the :sys module is invoked
+</li>
+<li>:spawn_opt - if present, its value is passed as options to the underlying process
+</li>
+</ul>
+<h3>Return values</h3>
+<p>If the server is successfully created and initialized, this function returns {:ok, pid}, where pid 
+is the PID of the server. If a process with the specified server name already exists, this function 
+returns {:error, {:already_started, pid}} with the PID of that process.</p>
+<p>If the <code class="inline">init/1</code> callback fails with reason, this function returns {:error, reason}. Otherwise, if it
+returns {:stop, reason} or :ignore, the process is terminated and this function returns {:error, reason}
+or :ignore, respectively.</p>
+
+  </section>
+</div>
+
+        </section>
+      
+
+      
+          <footer class="footer">
+        <p>
+          <span class="line">
+            Built using
+            <a href="https://github.com/elixir-lang/ex_doc" title="ExDoc" rel="help" target="_blank">ExDoc</a> (v0.15.0),
+          </span>
+          <span class="line">
+            designed by
+            <a href="https://twitter.com/dignifiedquire" target="_blank" title="@dignifiedquire">Friedel Ziegelmayer</a>.
+            </span>
+        </p>
+        <button class="night-mode-toggle" />
+      </footer>
+    </div>
+  </div>
+</section>
+</div>
+  <script src="dist/app-372682077e.js"></script>
+  </body>
+</html>
+
