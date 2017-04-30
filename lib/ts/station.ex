@@ -19,8 +19,8 @@ defmodule Station do
 	### Parameters
 	module
 
-	args   
-	
+	args
+
 	### Return values
 	If the server is successfully created and initialized, this function returns
 	{:ok, pid}, where pid is the PID of the server. If a process with the
@@ -58,7 +58,7 @@ defmodule Station do
 	Retrieves station struct local variable values given the station pid.
 
 	### Parameters
-	station_pid   
+	station_pid
 
 	### Return values
 	{:next_state, state, vars, [{:reply, from, vars}]}.
@@ -71,7 +71,7 @@ defmodule Station do
 	Retrieves station struct state value given the station pid.
 
 	### Parameters
-	station_pid   
+	station_pid
 
 	### Return values
 	Returns {:next_state, state, vars, [{:reply, from, state}]}.
@@ -129,7 +129,7 @@ defmodule Station do
 	path is compared with all stations already in the itinerary upto this point
 	to decide whether a loop is being formed.
 
-	### Parameters   
+	### Parameters
 	dst_station_pid
 
 	itinerary - in the form of a map `%{vehicleID, src_station, dst_station,
@@ -151,7 +151,7 @@ defmodule Station do
 	to neighbouring stations. If a neighbour is valid based on `check_dest/2`,
 	it is added to the list.
 
-	### Parameters   
+	### Parameters
 	schedule - in the form of a list of maps `%{vehicleID, src_station,
 	dst_station, dept_time,	arrival_time, mode_of_transport}`
 

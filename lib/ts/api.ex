@@ -274,7 +274,7 @@ defmodule API do
 
 	itinerary - in the form of a map `%{vehicleID, src_station, dst_station,
 	dept_time, arrival_time, mode_of_transport}`.
-	
+
 	### Return values
 	Returns {:ok}
 	"""
@@ -336,7 +336,7 @@ defmodule API do
 	invoked
 	- :spawn_opt - if present, its value is passed as options to the underlying
 	process
-	
+
 	### Return values
 	If the server is successfully created and initialized, this function returns
 	{:ok, pid}, where pid is the PID of the server. If a process with the specified
@@ -372,7 +372,7 @@ defmodule API do
 	### Parameters
 	key
 
-	value   
+	value
 
 	### Return values
 	Returns {:ok}.
@@ -402,7 +402,7 @@ defmodule API do
 	Deletes {key, value} pair from ETS table.
 
 	### Parameters
-	key   
+	key
 
 	### Return values
 	Returns {:ok}.
@@ -412,10 +412,10 @@ defmodule API do
 	end
 
 	@doc """
-	Checks whether entry with given key is present in ETS table.   	
+	Checks whether entry with given key is present in ETS table.
 
 	### Parameters
-	key   
+	key
 
 	### Return values
 	Returns {:reply, true, state} or {:reply, false, state}.

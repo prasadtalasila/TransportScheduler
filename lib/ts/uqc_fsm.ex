@@ -20,8 +20,8 @@ defmodule UQCFSM do
 	### Parameters
 	module
 
-	args   
-	
+	args
+
 	### Return values
 	If the server is successfully created and initialized, this function returns
 	{:ok, pid}, where pid is the PID of the server. If a process with the specified
@@ -41,7 +41,7 @@ defmodule UQCFSM do
 	Updates the state of the UQC FSM.
 
 	### Parameters
-	pid   
+	pid
 
 	### Return values
 	Returns {:next_state, next_state, nil}.

@@ -37,7 +37,7 @@ defmodule TS.Station.Supervisor do
 	is invoked
 	- :spawn_opt - if present, its value is passed as options to the
 	underlying process
-	
+
 	### Strategies
 	Supervisors support different supervision strategies (through the
 	:strategy option):

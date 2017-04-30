@@ -57,7 +57,7 @@ defmodule QC do
 	end
 
 	@doc """
-	Stops the QC process with the given reason.   
+	Stops the QC process with the given reason.
 
 	### Parameters
 	qc_pid

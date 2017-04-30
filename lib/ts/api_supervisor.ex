@@ -35,7 +35,7 @@ defmodule TS.API.Supervisor do
 	invoked
 	- :spawn_opt - if present, its value is passed as options to the underlying
 	process
-	
+
 	### Strategies
 	Supervisors support different supervision strategies (through the :strategy
 	option):
@@ -67,7 +67,8 @@ defmodule TS.API.Supervisor do
 	If the `init/1` callback returns :ignore, this function returns :ignore as
 	well and the supervisor terminates with reason :normal. If it fails or returns
 	an incorrect value, this function returns {:error, term} where term is a term
-	with information about the error, and the supervisor terminates with reason term.
+	with information about the error, and the supervisor terminates with reason
+	term.
 	"""
 	def start_link do
 		Supervisor.start_link(__MODULE__, :ok, name: @name)

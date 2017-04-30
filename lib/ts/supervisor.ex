@@ -25,7 +25,7 @@ defmodule TS.Supervisor do
 	module_name
 
 	args
-	
+
 	### Strategies
 	Supervisors support different supervision strategies (through the
 	:strategy option):

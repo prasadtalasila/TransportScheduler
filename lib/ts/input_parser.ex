@@ -22,7 +22,7 @@ defmodule InputParser do
 	### Parameters
 	module
 
-	args   
+	args
 
 	### Return values
 	If the server is successfully created and initialized, this function returns
@@ -153,7 +153,7 @@ defmodule InputParser do
 	end
 
 	@doc """
-	Stops the InputParser process with the given reason.   
+	Stops the InputParser process with the given reason.
 
 	### Parameters
 	ip_pid

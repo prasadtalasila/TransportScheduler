@@ -83,13 +83,17 @@ defmodule StationConstructor do
 	@doc """
 	Starts a GenServer StationConstructor process linked to the current
 	process.
-	This is often used to start the GenServer as part of a supervision tree.   
+
+	This is often used to start the GenServer as part of a supervision tree.
+
 	Once the server is started, the `init/1` function of the given module
 	is called with args as its arguments to initialize the server.
 
 	### Parameters
-	module   
-	args   
+	module
+
+	args
+
 	options:
 	- :name - used for name registration
 	- :timeout - if present, the server is allowed to spend the given
@@ -99,7 +103,7 @@ defmodule StationConstructor do
 	is invoked
 	- :spawn_opt - if present, its value is passed as options to the
 	underlying process
-	
+
 	### Return values
 	If the server is successfully created and initialized, this function
 	returns {:ok, pid}, where pid is the PID of the server. If a process with
@@ -136,7 +140,7 @@ defmodule StationConstructor do
 	end
 
 	@doc """
-	Stops the NC process with the given reason.   
+	Stops the NC process with the given reason.
 
 	### Parameters
 	nc_pid
@@ -188,7 +192,7 @@ defmodule StationConstructor do
 	Sends a query encoded in itinerary from NC to the source station using
 	`receive_at_src/3` of Station module. The pid of NC and source station
 	must be known.
-	
+
 	### Parameters
 	nc_pid
 
