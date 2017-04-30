@@ -22,7 +22,8 @@ defmodule TS.Mixfile do
 	#
 	# Type "mix help compile.app" for more information
 	def application do
-		[applications: [:gen_state_machine, :logger, :maru, :edeliver, :httpoison],
+		[applications: [:gen_state_machine, :logger, :maru, :edeliver, :httpoison,
+			:csvlixir, :exactor, :exprof],
 		mod: {TS, []}
 		]
 	end

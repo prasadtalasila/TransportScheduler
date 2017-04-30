@@ -13,7 +13,9 @@ ExProf for profiling.
 Credo for code quality.   
 
 
-## Usage
+# Usage
+
+## Setup
 
 Run the following commands to compile:
 ```bash
@@ -23,9 +25,10 @@ mix compile
 mix test
 ```
 
-Run the following command to build a release:
+Run the following command to build a release, and copy data directory into build path:
 ```bash
 mix release
+cp -r data/ _build/dev/rel/ts
 ```
 
 Run the following command to run the application interactively:
@@ -33,10 +36,17 @@ Run the following command to run the application interactively:
 _build/dev/rel/ts/bin/ts console
 ```
 
+To stop the Erlang runtime and exit the TS console:
+```elixir
+System.halt
+```
+
 Issue the following cURL command for initialisation of the network:
 ```bash
 curl http://localhost:8880/api
 ```
+
+# Testing
 
 For testing the API, following cURL commands are issued to:
 
@@ -52,6 +62,14 @@ curl -X GET 'http://localhost:8880/api/station/state?station_code=%STATION_CODE%
 ```  
 where `%STATION_CODE%` is a positive integer indicating the required station code.
 
+3. Obtain Travel Itinerary:
+```bash
+curl -X GET 'http://localhost:8880/api/search?source=%SOURCE%&destination=%DESTINATION%&start_time=%START_TIME%&end_time=%END_TIME%&date=%DATE%'
+```
+where `%SOURCE%` and `%DESTINATION%` are positive integers indicating the station codes of the source and destination respectively, `%START_TIME%` and `%END_TIME%` are non-negative integers indicating start and end times of the itinerary in seconds from 12 am, and `%DATE%` is the date of travel in the format 'dd-mm-yyyy'.
+
+# Deployment
+
 Run the following commands to deploy (currently server and user are localhost): **UNTESTED**    
 ```bash
 mix edeliver build release
@@ -61,6 +79,7 @@ mix edeliver deploy release
 Run the following command to start application: **UNTESTED**   
 ```bash
 mix edeliver start
+cp -r data/ /home/$USER/test/ts
 ```
 
 ## Benchmark Tests
