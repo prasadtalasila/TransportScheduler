@@ -15,8 +15,8 @@ defmodule UQCFSM do
 	This is often used to start the GenStateMachine as part of a supervision tree.
 
 	Once the server is started, the `init/1` function of the given module is called
-	with args as its arguments to initialize the server.   
-	
+	with args as its arguments to initialize the server.
+
 	### Parameters
 	module
 
