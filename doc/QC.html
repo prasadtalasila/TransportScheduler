@@ -4,14 +4,14 @@
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="generator" content="ExDoc v0.15.0">
+    <meta name="generator" content="ExDoc v0.15.1">
     <title>QC – TransportScheduler v0.1.0</title>
-    <link rel="stylesheet" href="dist/app-f7824c48e6.css" />
+    <link rel="stylesheet" href="dist/app-af302bfcc4.css" />
     
-    <script src="dist/sidebar_items-93390bdd36.js"></script>
+    <script src="dist/sidebar_items-7722b556df.js"></script>
   </head>
   <body data-type="modules">
-    <script>if(localStorage.getItem('night-mode')) document.body.className += ' night-mode';</script>
+    <script>try { if(localStorage.getItem('night-mode')) document.body.className += ' night-mode'; } catch (e) { }</script>
 
     <div class="main">
 <button class="sidebar-toggle">
@@ -70,8 +70,8 @@
 
       
         <section id="moduledoc">
-          <p>Module to abstract the final query collector, ie, for concurrent functionality, a separate process
-collects itineraries of a given query.</p>
+          <p>Module to abstract the final query collector, ie, for concurrent functionality,
+a separate process collects itineraries of a given query.</p>
 <p>Uses GenServer.</p>
 
         </section>
@@ -97,9 +97,9 @@ collects itineraries of a given query.</p>
     <a href="#collect/2">collect(server, itinerary)</a>
   </div>
   
-    <div class="summary-synopsis"><p>Collects the list of itineraries for the query by appending given itinerary to exisiting list after
-checking whether query is active and limit of collected responses is not reached, using API function
-<code class="inline">add_itinerary/2</code></p>
+    <div class="summary-synopsis"><p>Collects the list of itineraries for the query by appending given itinerary
+to exisiting list after checking whether query is active and limit of
+collected responses is not reached, using API function <code class="inline">add_itinerary/2</code></p>
 </div>
   
 </div>
@@ -148,7 +148,7 @@ checking whether query is active and limit of collected responses is not reached
     </a>
     <span class="signature">collect(server, itinerary)</span>
     
-      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/qc.ex#L54" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/qc.ex#L55" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -156,13 +156,13 @@ checking whether query is active and limit of collected responses is not reached
     
   </div>
   <section class="docstring">
-    <p>Collects the list of itineraries for the query by appending given itinerary to exisiting list after
-checking whether query is active and limit of collected responses is not reached, using API function
-<code class="inline">add_itinerary/2</code>.</p>
+    <p>Collects the list of itineraries for the query by appending given itinerary
+to exisiting list after checking whether query is active and limit of
+collected responses is not reached, using API function <code class="inline">add_itinerary/2</code>.</p>
 <h3>Parameters</h3>
 <p>qc_pid</p>
-<p>itinerary - in the form of a map <code class="inline">%{vehicleID, src_station, dst_station, dept_time, 
-arrival_time, mode_of_transport}</code>.</p>
+<p>itinerary - in the form of a map <code class="inline">%{vehicleID, src_station, dst_station,
+dept_time, arrival_time, mode_of_transport}</code>.</p>
 <h3>Return values</h3>
 <p>Returns {:ok}.</p>
 
@@ -176,7 +176,7 @@ arrival_time, mode_of_transport}</code>.</p>
     </a>
     <span class="signature">start_link()</span>
     
-      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/qc.ex#L36" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/qc.ex#L37" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -186,18 +186,20 @@ arrival_time, mode_of_transport}</code>.</p>
   <section class="docstring">
     <p>Starts a GenServer QC process linked to the current process.</p>
 <p>This is often used to start the GenServer as part of a supervision tree.</p>
-<p>Once the server is started, the <code class="inline">init/1</code> function of the given module is called with args as its 
-arguments to initialize the server.</p>
+<p>Once the server is started, the <code class="inline">init/1</code> function of the given module is
+called with args as its arguments to initialize the server.</p>
 <h3>Parameters</h3>
 <p>module</p>
 <p>args</p>
 <h3>Return values</h3>
-<p>If the server is successfully created and initialized, this function returns {:ok, pid}, where pid
-is the PID of the server. If a process with the specified server name already exists, this function 
-returns {:error, {:already_started, pid}} with the PID of that process.</p>
-<p>If the <code class="inline">init/1</code> callback fails with reason, this function returns {:error, reason}. Otherwise, if
-it returns {:stop, reason} or :ignore, the process is terminated and this function returns
-{:error, reason} or :ignore, respectively.</p>
+<p>If the server is successfully created and initialized, this function returns
+{:ok, pid}, where pid is the PID of the server. If a process with the
+specified server name already exists, this function returns {:error,
+{:already_started, pid}} with the PID of that process.</p>
+<p>If the <code class="inline">init/1</code> callback fails with reason, this function returns
+{:error, reason}. Otherwise, if it returns {:stop, reason} or :ignore, the
+process is terminated and this function returns {:error, reason} or :ignore,
+respectively.</p>
 
   </section>
 </div>
@@ -217,13 +219,13 @@ it returns {:stop, reason} or :ignore, the process is terminated and this functi
     
   </div>
   <section class="docstring">
-    <p>Stops the QC process with the given reason.   </p>
+    <p>Stops the QC process with the given reason.</p>
 <h3>Parameters</h3>
 <p>qc_pid</p>
 <h3>Return values</h3>
-<p>The <code class="inline">terminate/2</code> callback of the given server will be invoked before exiting. This function returns
-:ok if the server terminates with the given reason; if it terminates with another reason, the 
-call exits.</p>
+<p>The <code class="inline">terminate/2</code> callback of the given server will be invoked before
+exiting. This function returns :ok if the server terminates with the
+given reason; if it terminates with another reason, the call exits.</p>
 
   </section>
 </div>
@@ -236,7 +238,7 @@ call exits.</p>
         <p>
           <span class="line">
             Built using
-            <a href="https://github.com/elixir-lang/ex_doc" title="ExDoc" rel="help" target="_blank">ExDoc</a> (v0.15.0),
+            <a href="https://github.com/elixir-lang/ex_doc" title="ExDoc" rel="help" target="_blank">ExDoc</a> (v0.15.1),
           </span>
           <span class="line">
             designed by
@@ -249,7 +251,7 @@ call exits.</p>
   </div>
 </section>
 </div>
-  <script src="dist/app-372682077e.js"></script>
+  <script src="dist/app-e9767fa739.js"></script>
   </body>
 </html>
 

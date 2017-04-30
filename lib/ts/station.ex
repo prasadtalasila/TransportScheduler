@@ -219,7 +219,7 @@ defmodule Station do
 		# schedule to reach this destination station is added to itinerary
 		new_itinerary=List.flatten([itinerary|[dest_schedule]])
 		[query]=Enum.take(new_itinerary, 1)
-		{:ok, {_, dst}}=StationConstructor.lookup_code(nc, dest_schedule.dst_station)
+		{:ok, {_, dst}}=NetworkConstructor.lookup_code(nc, dest_schedule.dst_station)
 		# new_itinerary is either returned to NC or sent on to next station to
 		# continue additions
 		if dest_schedule.dst_station==query.dst_station do
@@ -311,7 +311,7 @@ defmodule Station do
 			{itinerary, query}
 		end
 		# check if query active
-		_=if StationConstructor.check_active(nc, Map.delete(query, :day))===true do
+		_=if NetworkConstructor.check_active(nc, Map.delete(query, :day))===true do
 			neighbour_list=Station.check_neighbours(vars.schedule, vars.other_means,
 				prev_stn.arrival_time, itinerary)
 			# for each neighbouring station, function is called to determine new

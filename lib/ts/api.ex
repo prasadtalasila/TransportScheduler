@@ -19,15 +19,15 @@ defmodule API do
 
 	namespace :api do
 		get do
-			StationConstructor.start_link(:NC)
+			NetworkConstructor.start_link(:NC)
 			API.start_link
 			{:ok, pid}=InputParser.start_link
 			stn_map=InputParser.get_station_map(pid)
 			for stn_key<-Map.keys(stn_map) do
 				stn_code=Map.get(stn_map, stn_key)
 				stn_struct=InputParser.get_station_struct(pid, stn_key)
-				StationConstructor.create(StationConstructor, stn_key, stn_code)
-				{:ok, {_, station}}=StationConstructor.lookup_name(StationConstructor,
+				NetworkConstructor.create(NetworkConstructor, stn_key, stn_code)
+				{:ok, {_, station}}=NetworkConstructor.lookup_name(NetworkConstructor,
 					stn_key)
 				Station.update(station, stn_struct)
 			end
@@ -48,19 +48,19 @@ defmodule API do
 				# Obtain itinerary
 				query=%{src_station: params[:source], dst_station: params[:destination],
 				arrival_time: params[:start_time], end_time: params[:end_time]}
-				{:ok, {_, stn}}=StationConstructor.lookup_code(StationConstructor,
+				{:ok, {_, stn}}=NetworkConstructor.lookup_code(NetworkConstructor,
 					params[:source])
 				API.put(conn, query, [])
 				API.put({"times", query}, [])
-				StationConstructor.add_query(StationConstructor, query, conn)
+				NetworkConstructor.add_query(NetworkConstructor, query, conn)
 				itinerary=[Map.put(query, :day, 0)]
 				{:ok, pid}=QC.start_link
 				API.put(query, {self(), pid, System.system_time(:milliseconds)})
-				StationConstructor.send_to_src(StationConstructor, stn, itinerary)
+				NetworkConstructor.send_to_src(NetworkConstructor, stn, itinerary)
 				Process.send_after(self(), :timeout, 30_000)
 				receive do
 					:timeout->
-						StationConstructor.del_query(StationConstructor, query)
+						NetworkConstructor.del_query(NetworkConstructor, query)
 						final=conn|>API.get|>sort_list
 						resp=final|>List.last|>List.last|>Map.get(:arrival_time)
 						days=final|>List.first|>List.first|>Map.get(:day)
@@ -98,7 +98,7 @@ defmodule API do
 
 				get do
 					# Get schedule
-					{:ok, {_, station}}=StationConstructor.lookup_code(StationConstructor,
+					{:ok, {_, station}}=NetworkConstructor.lookup_code(NetworkConstructor,
 					params[:station_code])
 					st_str=Station.get_vars(station)
 					res=Map.fetch!(st_str, :schedule)
@@ -121,8 +121,8 @@ defmodule API do
 					post do
 						# Add New Schedule
 						entry_map=params[:entry]
-						{:ok, {_, station}}=StationConstructor.
-						lookup_code(StationConstructor, entry_map.src_station)
+						{:ok, {_, station}}=NetworkConstructor.
+						lookup_code(NetworkConstructor, entry_map.src_station)
 						st_str=Station.get_vars(station)
 						stn_sched=List.insert_at(st_str.schedule, 0, entry_map)
 						st_str=%{st_str|schedule: stn_sched}
@@ -147,8 +147,8 @@ defmodule API do
 					put do
 						# Update Schedule
 						entry_map=params[:entry]
-						{:ok, {_, station}}=StationConstructor.
-						lookup_code(StationConstructor, entry_map.src_station)
+						{:ok, {_, station}}=NetworkConstructor.
+						lookup_code(NetworkConstructor, entry_map.src_station)
 						st_str=Station.get_vars(station)
 						stn_sched=update_list(st_str.schedule, [], entry_map.vehicleID,
 							entry_map, length(st_str.schedule))
@@ -166,7 +166,7 @@ defmodule API do
 				end
 				get do
 					# Get state vars of that station
-					{:ok, {_, station}}=StationConstructor.lookup_code(StationConstructor,
+					{:ok, {_, station}}=NetworkConstructor.lookup_code(NetworkConstructor,
 					params[:station_code])
 					st_str=Station.get_vars(station)
 					conn|>put_status(200)|>json(st_str.loc_vars)
@@ -186,8 +186,8 @@ defmodule API do
 					end
 					put do
 						# Update state vars of that station
-						{:ok, {_, station}}=StationConstructor.
-						lookup_code(StationConstructor, params[:station_code])
+						{:ok, {_, station}}=NetworkConstructor.
+						lookup_code(NetworkConstructor, params[:station_code])
 						st_str=Station.get_vars(station)
 						loc_var_map=Map.put(params[:local_vars], :congestion_delay, nil)
 						st_str=%{st_str|loc_vars: loc_var_map}
@@ -222,9 +222,9 @@ defmodule API do
 
 				post do
 					# Add new station's details
-					StationConstructor.create(StationConstructor, params[:station_name],
+					NetworkConstructor.create(NetworkConstructor, params[:station_name],
 						params[:station_code])
-					{:ok, {_, station}}=StationConstructor.lookup_code(StationConstructor,
+					{:ok, {_, station}}=NetworkConstructor.lookup_code(NetworkConstructor,
 					params[:station_code])
 					loc_var_map=Map.put(params[:local_vars], :congestion_delay, nil)
 					stn_str=%StationStruct{loc_vars: loc_var_map, schedule:
@@ -306,7 +306,7 @@ defmodule API do
 		else
 			queries
 		end
-		StationConstructor.put_queries(StationConstructor, queries)
+		NetworkConstructor.put_queries(NetworkConstructor, queries)
 	end
 
 	@doc """

@@ -66,7 +66,7 @@ defmodule TS.Supervisor do
 
 	def init(:ok) do
 		children=[
-			worker(StationConstructor, [StationConstructor]),
+			worker(NetworkConstructor, [NetworkConstructor]),
 			supervisor(TS.API.Supervisor, []),
 			supervisor(TS.Station.Supervisor, [])
 		]

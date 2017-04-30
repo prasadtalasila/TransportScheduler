@@ -1,4 +1,4 @@
-defmodule StationConstructor do
+defmodule NetworkConstructor do
 	@moduledoc """
 	Module to create registry process for monitoring all station processes and
 	queries using a Network Constructor. The NC process can be used to add or
@@ -81,7 +81,7 @@ defmodule StationConstructor do
 	# Client-side NC management functions
 
 	@doc """
-	Starts a GenServer StationConstructor process linked to the current
+	Starts a GenServer NetworkConstructor process linked to the current
 	process.
 
 	This is often used to start the GenServer as part of a supervision tree.
@@ -274,7 +274,7 @@ defmodule StationConstructor do
 		{{name, code}, refs}=Map.pop(refs, ref)
 		names=Map.delete(names, name)
 		codes=Map.delete(codes, code)
-		StationConstructor.create(StationConstructor, name, code)
+		NetworkConstructor.create(NetworkConstructor, name, code)
 		{:noreply, {names, codes, refs, queries}}
 	end
 
