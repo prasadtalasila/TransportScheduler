@@ -6,14 +6,15 @@ defmodule Mix.Tasks.AsyncBenchmark do
 
 	@doc """
 	Runs the Async Benchmark task with the given args.
-	
+
 	### Parameters
-	`arg`   
-	
+	`arg`
+
 	### Return values
 	If the task was not yet invoked, it runs the task and returns the result.
-	If there is an alias with the same name, the alias will be invoked instead of the original task.
-	If the task or alias were already invoked, it does not run them again and simply aborts with :noop.  
+	If there is an alias with the same name, the alias will be invoked instead
+	of the original task. If the task or alias were already invoked, it does not
+	run them again and simply aborts with :noop.
 	"""
 	def run(_args) do
 		Mix.Task.run "app.start", []
@@ -32,14 +33,15 @@ defmodule Mix.Tasks.AsyncBenchmark do
 
 	@doc """
 	Processes a given number of async requests.
-	
+
 	### Parameters
 	`arg`
-	
+
 	### Return values
 	If the task was not yet invoked, it runs the task and returns the result.
-	If there is an alias with the same name, the alias will be invoked instead of the original task.
-	If the task or alias were already invoked, it does not run them again and simply aborts with :noop. 
+	If there is an alias with the same name, the alias will be invoked instead
+	of the original task. If the task or alias were already invoked, it does not
+	run them again and simply aborts with :noop.
 	"""
 	def process_requests(arg) do
 		arg|>issue|>process_async_requests
@@ -69,16 +71,16 @@ defmodule Mix.Tasks.AsyncBenchmark do
 	defp process_async_requests(urls) do
 		{total_async_micros, has_status_200}=:timer.tc(fn->
 			Enum.reduce(1..1, false, fn(_x, acc)->
-				urls|>Enum.map(fn(url)->Task.async(fn->HTTPoison.get(url, %{},
-					[recv_timeout: 30_500]) end) end)
-					|>Enum.map(&Task.await(&1, 31_000))|>Enum.map(fn({status, result})->
-						if status==:ok do
-							result.status_code
-						else
-							result.reason
-						end
-					end)
-					|>Enum.reduce(false, fn(x, acc)->x==200||acc end)|>Kernel.||(acc)
+			urls|>Enum.map(fn(url)->Task.async(fn->HTTPoison.get(url, %{},
+			[recv_timeout: 30_500]) end) end)
+			|>Enum.map(&Task.await(&1, 31_000))|>Enum.map(fn({status, result})->
+				if status==:ok do
+					result.status_code
+				else
+					result.reason
+				end
+			end)
+			|>Enum.reduce(false, fn(x, acc)->x==200||acc end)|>Kernel.||(acc)
 			end)
 		end)
 		check_status_code(:async, has_status_200)

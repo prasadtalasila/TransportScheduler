@@ -10,8 +10,9 @@ defmodule Mix.Tasks.Profile do
 
 	### Return values
 	If the task was not yet invoked, it runs the task and returns the result.
-	If there is an alias with the same name, the alias will be invoked instead of the original task.
-	If the task or alias were already invoked, it does not run them again and simply aborts with :noop.  
+	If there is an alias with the same name, the alias will be invoked instead
+	of the original task. If the task or alias were already invoked, it does not
+	run them again and simply aborts with :noop.
 	"""
 	def do_analyze do
 		TS.Supervisor.start_link
@@ -61,7 +62,7 @@ defmodule Mix.Tasks.Profile do
 	end
 
 	@doc """
-	Prints analysis results. 
+	Prints analysis results.
 	"""
 	def run(_mix_args) do
 		records=do_analyze()

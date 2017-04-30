@@ -14,8 +14,8 @@ defmodule UQCFSM do
 
 	This is often used to start the GenStateMachine as part of a supervision tree.
 
-	Once the server is started, the `init/1` function of the given module is called with args as its
-	arguments to initialize the server.   
+	Once the server is started, the `init/1` function of the given module is called
+	with args as its arguments to initialize the server.   
 	
 	### Parameters
 	module
@@ -23,20 +23,22 @@ defmodule UQCFSM do
 	args   
 	
 	### Return values
-	If the server is successfully created and initialized, this function returns {:ok, pid}, where pid 
-	is the PID of the server. If a process with the specified server name already exists, this function 
-	returns {:error, {:already_started, pid}} with the PID of that process.
+	If the server is successfully created and initialized, this function returns
+	{:ok, pid}, where pid is the PID of the server. If a process with the specified
+	server name already exists, this function returns {:error, {:already_started,
+	pid}} with the PID of that process.
 
-	If the `init/1` callback fails with reason, this function returns {:error, reason}. Otherwise, if it
-	returns {:stop, reason} or :ignore, the process is terminated and this function returns 
-	{:error, reason} or :ignore, respectively.
+	If the `init/1` callback fails with reason, this function returns
+	{:error, reason}. Otherwise, if it returns {:stop, reason} or :ignore, the
+	process is terminated and this function returns {:error, reason} or
+	:ignore, respectively.
 	"""
 	def start_link do
 		GenStateMachine.start_link(UQCFSM, {:raw, nil})
 	end
 
 	@doc """
-	Update the state of the UQC FSM.
+	Updates the state of the UQC FSM.
 
 	### Parameters
 	pid   
@@ -66,7 +68,7 @@ defmodule UQCFSM do
 	end
 
 	@doc """
-	Checks if a particular itinerary has only flight as a mode of transport
+	Checks if a particular itinerary has only bus as a mode of transport.
 	"""
 	def check_bus([head|tail]) do
 		case check_trans(head) do
@@ -83,7 +85,7 @@ defmodule UQCFSM do
 	end
 
 	@doc """
-	#Check if a particular itinerary has only flight as a mode of transport
+	Checks if a particular itinerary has only flight as a mode of transport.
 	"""
 	def check_flight([head|tail]) do
 		case check_trans(head) do
@@ -128,7 +130,7 @@ defmodule UQCFSM do
 	end
 
 	@doc """
-	Check list if preferred mode of transport is bus 
+	Checks list if preferred mode of transport is bus.
 	"""
 	def update_bus([head|tail]) do
 		if check_bus(head)==:true do
@@ -143,7 +145,7 @@ defmodule UQCFSM do
 	end
 
 	@doc """
-	Checks list if preferred mode of transport is flight
+	Checks list if preferred mode of transport is flight.
 	"""
 	def update_flight([head|tail]) do
 		if check_flight(head)==:true do
@@ -158,7 +160,7 @@ defmodule UQCFSM do
 	end
 
 	@doc """
-	Checks list if preferred mode of transport is train
+	Checks list if preferred mode of transport is train.
 	"""
 	def update_train([head|tail]) do
 		if check_train(head)==:true do
@@ -173,7 +175,7 @@ defmodule UQCFSM do
 	end
 
 	@doc """
-	Takes in the list of itineraries and preference of the user
+	Takes in the list of itineraries and preference of the user.
 	"""
 	def find_transport(itinerary, preference) when is_list(itinerary) do
 		case preference do
@@ -185,7 +187,7 @@ defmodule UQCFSM do
 	end
 
 	@doc """
-	Printing the required lists
+	Prints the required lists.
 	"""
 	#If empty list is returned
 	def print_pref([]) do

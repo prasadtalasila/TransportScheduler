@@ -1,7 +1,7 @@
 defmodule QC do
 	@moduledoc """
-	Module to abstract the final query collector, ie, for concurrent functionality, a separate process
-	collects itineraries of a given query.
+	Module to abstract the final query collector, ie, for concurrent functionality,
+	a separate process collects itineraries of a given query.
 
 	Uses GenServer.
 	"""
@@ -14,22 +14,24 @@ defmodule QC do
 
 	This is often used to start the GenServer as part of a supervision tree.
 
-	Once the server is started, the `init/1` function of the given module is called with args as its 
-	arguments to initialize the server.
-	
+	Once the server is started, the `init/1` function of the given module is
+	called with args as its arguments to initialize the server.
+
 	### Parameters
 	module
 
 	args
 
 	### Return values
-	If the server is successfully created and initialized, this function returns {:ok, pid}, where pid
-	is the PID of the server. If a process with the specified server name already exists, this function 
-	returns {:error, {:already_started, pid}} with the PID of that process.
+	If the server is successfully created and initialized, this function returns
+	{:ok, pid}, where pid is the PID of the server. If a process with the
+	specified server name already exists, this function returns {:error,
+	{:already_started, pid}} with the PID of that process.
 
-	If the `init/1` callback fails with reason, this function returns {:error, reason}. Otherwise, if
-	it returns {:stop, reason} or :ignore, the process is terminated and this function returns
-	{:error, reason} or :ignore, respectively.
+	If the `init/1` callback fails with reason, this function returns
+	{:error, reason}. Otherwise, if it returns {:stop, reason} or :ignore, the
+	process is terminated and this function returns {:error, reason} or :ignore,
+	respectively.
 
 	"""
 	def start_link do
@@ -37,15 +39,15 @@ defmodule QC do
 	end
 
 	@doc """
-	Collects the list of itineraries for the query by appending given itinerary to exisiting list after
-	checking whether query is active and limit of collected responses is not reached, using API function
-	`add_itinerary/2`.
+	Collects the list of itineraries for the query by appending given itinerary
+	to exisiting list after checking whether query is active and limit of
+	collected responses is not reached, using API function `add_itinerary/2`.
 
 	### Parameters
 	qc_pid
 
-	itinerary - in the form of a map `%{vehicleID, src_station, dst_station, dept_time, 
-	arrival_time, mode_of_transport}`.
+	itinerary - in the form of a map `%{vehicleID, src_station, dst_station,
+	dept_time, arrival_time, mode_of_transport}`.
 
 	### Return values
 	Returns {:ok}.
@@ -61,9 +63,9 @@ defmodule QC do
 	qc_pid
 
 	### Return values
-	The `terminate/2` callback of the given server will be invoked before exiting. This function returns
-	:ok if the server terminates with the given reason; if it terminates with another reason, the 
-	call exits.
+	The `terminate/2` callback of the given server will be invoked before
+	exiting. This function returns :ok if the server terminates with the
+	given reason; if it terminates with another reason, the call exits.
 	"""
 	def stop(server) do
 		GenServer.stop(server)

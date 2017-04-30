@@ -1,8 +1,9 @@
 defmodule InputParser do
 	@moduledoc """
-	Module to store data from input files in the defined station structure. Files stations.txt,
-	schedule.txt, OMT.txt, local_variables.txt store data of transit stations and connections. 
-	These are read into appropriate maps for storing in corresponding Station processes.
+	Module to store data from input files in the defined station structure.
+	Files stations.txt, schedule.txt, OMT.txt, local_variables.txt store data
+	of transit stations and connections. These are read into appropriate maps
+	for storing in corresponding Station processes.
 
 	Uses GenServer.
 	"""
@@ -15,45 +16,46 @@ defmodule InputParser do
 
 	This is often used to start the GenServer as part of a supervision tree.
 
-	Once the server is started, the `init/1` function of the given module is called with args as its
-	arguments to initialize the server.   
-	
+	Once the server is started, the `init/1` function of the given module is
+	called with args as its	arguments to initialize the server.
+
 	### Parameters
 	module
 
 	args   
-	
-	### Return values
-	If the server is successfully created and initialized, this function returns {:ok, pid}, where pid
-	is the PID of the server. If a process with the specified server name already exists, this function 
-	returns {:error, {:already_started, pid}} with the PID of that process.
 
-	If the `init/1` callback fails with reason, this function returns {:error, reason}. Otherwise, if
-	it returns {:stop, reason} or :ignore, the process is terminated and this function returns
-	{:error, reason} or :ignore, respectively.
+	### Return values
+	If the server is successfully created and initialized, this function returns
+	{:ok, pid}, where pid is the PID of the server. If a process with the specified
+	server name already exists, this function returns {:error, {:already_started,
+	pid}} with the PID of that process.
+
+	If the `init/1` callback fails with reason, this function returns {:error,
+	reason}. Otherwise, if it returns {:stop, reason} or :ignore, the process is
+	terminated and this function returns {:error, reason} or :ignore, respectively.
 	"""
 	def start_link do
 		GenServer.start_link(__MODULE__, :ok)
 	end
 
 	@doc """
-	Returns map of station cities to station codes, taken from InputParser process when its pid is known.
-	
+	Returns map of station cities to station codes, taken from InputParser process
+	when its pid is known.
+
 	### Parameters
 	ip_pid
 
 	### Return values
 	Returns {:reply, station_map, state}.
-
 	"""
 	def get_station_map(pid) do
 		GenServer.call(pid, :get_station_map)
 	end
 
 	@doc """
-	Returns map of source station codes to schedule list of vehicles from that source station, taken from
-	InputParser process when its pid is known.
-	
+	Returns map of source station codes to schedule list of vehicles from that
+	source station, taken from InputParser process when its pid is known.
+
 	### Parameters
 	ip_pid
 
@@ -65,9 +67,9 @@ defmodule InputParser do
 	end
 
 	@doc """
-	Return schedule list of vehicles from source station having given code, taken from InputParser process
-	when its pid is known.
-	
+	Return schedule list of vehicles from source station having given code, taken
+	from InputParser process when its pid is known.
+
 	### Parameters
 	ip_pid
 
@@ -81,9 +83,9 @@ defmodule InputParser do
 	end
 
 	@doc """
-	Returns schedule list of other means connections from source station having given code, taken from
-	InputParser process when its pid is known.
-	
+	Returns schedule list of other means connections from source station having
+	given code, taken from InputParser process when its pid is known.
+
 	### Parameters
 	ip_pid
 
@@ -97,9 +99,9 @@ defmodule InputParser do
 	end
 
 	@doc """
-	Return map of local variables from source station having given code, taken from InputParser process
-	when its pid is known.
-	
+	Return map of local variables from source station having given code, taken
+	from InputParser process when its pid is known.
+
 	### Parameters
 	ip_pid
 
@@ -113,9 +115,9 @@ defmodule InputParser do
 	end
 
 	@doc """
-	Returns station code from map using station city as key, taken from InputParser process when its pid
-	is known.
-	
+	Returns station code from map using station city as key, taken from
+	InputParser process when its pid is known.
+
 	### Parameters
 	ip_pid
 
@@ -129,17 +131,17 @@ defmodule InputParser do
 	end
 
 	@doc """
-	Return Station struct having local variable and schedule information for a given station city, taken
-	from InputParser process when its pid is known.
-	
+	Return Station struct having local variable and schedule information for
+	a given station city, taken from InputParser process when its pid is known.
+
 	### Parameters
 	ip_pid
 
 	station_name
 
 	### Return values
-	Returns station struct of the form `%{loc_vars_map, schedule_list, other_means_list, station_code,
-	station_city}`.
+	Returns station struct of the form `%{loc_vars_map, schedule_list,
+	other_means_list, station_code, station_city}`.
 	"""
 	def get_station_struct(pid, city) do
 		stn_struct=%StationStruct{}
@@ -157,9 +159,9 @@ defmodule InputParser do
 	ip_pid
 
 	### Return values
-	The `terminate/2` callback of the given server will be invoked before exiting. This function returns
-	:ok if the server terminates with the given reason; if it terminates with another reason,
-	the call exits.
+	The `terminate/2` callback of the given server will be invoked before
+	exiting. This function returns :ok if the server terminates with the
+	given reason; if it terminates with another reason, the call exits.
 	"""
 	def stop(pid) do
 		GenServer.stop(pid, :normal, 100)

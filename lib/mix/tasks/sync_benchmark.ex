@@ -1,16 +1,17 @@
 defmodule Mix.Tasks.SyncBenchmark do
 	@moduledoc """
-	Helper module to run asynchronous benchmark
+	Helper module to run asynchronous benchmark.
 	"""
 	use Mix.Task
 
 	@doc """
-	Runs the Synchronous Benchmark task for a single query.   
-	
+	Runs the Synchronous Benchmark task for a single query.
+
 	### Return values
 	If the task was not yet invoked, it runs the task and returns the result.
-	If there is an alias with the same name, the alias will be invoked instead of the original task.
-	If the task or alias were already invoked, it does not run them again and simply aborts with :noop.  
+	If there is an alias with the same name, the alias will be invoked instead
+	of the original task. If the task or alias were already invoked, it does not
+	run them again and simply aborts with :noop.
 	"""
 	def run(_args) do
 		Mix.Task.run "app.start", []
@@ -31,11 +32,12 @@ defmodule Mix.Tasks.SyncBenchmark do
 
 	@doc """
 	Processes a single synchronous request.
-	
+
 	### Return values
 	If the task was not yet invoked, it runs the task and returns the result.
-	If there is an alias with the same name, the alias will be invoked instead of the original task.
-	If the task or alias were already invoked, it does not run them again and simply aborts with :noop. 
+	If there is an alias with the same name, the alias will be invoked instead
+	of the original task. If the task or alias were already invoked, it does not
+	run them again and simply aborts with :noop.
 	"""
 	def process_request do
 		issue()|>process_sync_request()

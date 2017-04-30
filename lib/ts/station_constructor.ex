@@ -1,9 +1,10 @@
 defmodule StationConstructor do
 	@moduledoc """
-	Module to create registry process for monitoring all station processes and queries using a 
-	Network Constructor. The NC process can be used to add or remove queries from the active query
-	list and check if a query is active. It can also be used to maintain a map of station pids,
-	station codes, and station city names for convenient retrieval.
+	Module to create registry process for monitoring all station processes and
+	queries using a Network Constructor. The NC process can be used to add or
+	remove queries from the active query list and check if a query is active.
+	It can also be used to maintain a map of station pids, station codes, and
+	station city names for convenient retrieval.
 
 	Uses GenServer.
 	"""
@@ -11,11 +12,12 @@ defmodule StationConstructor do
 
 	@doc """
 	Adds a query to active list maintained at NC.
-	
+
 	### Parameters
 	nc_pid
 
-	query - in the form of a map %{src_station, dst_station, arrival_time, end_time}
+	query - in the form of a map %{src_station, dst_station, arrival_time,
+	end_time}
 
 	conn
 
@@ -28,11 +30,12 @@ defmodule StationConstructor do
 
 	@doc """
 	Removes a query from active list maintained at NC.
-	
+
 	### Parameters
 	nc_pid
 
-	query - in the form of a map %{src_station, dst_station, arrival_time, end_time}
+	query - in the form of a map %{src_station, dst_station, arrival_time,
+	end_time}
 
 	### Return values
 	Returns {:ok}.
@@ -43,11 +46,12 @@ defmodule StationConstructor do
 
 	@doc """
 	Checks if a query is currently in active list maintained at NC.
-	
+
 	### Parameters
 	nc_pid
 
-	query - in the form of a map %{src_station, dst_station, arrival_time, end_time}
+	query - in the form of a map %{src_station, dst_station, arrival_time,
+	end_time}
 
 	### Return values
 	Returns {:ok}.
@@ -58,7 +62,7 @@ defmodule StationConstructor do
 
 	@doc """
 	Returns active query list maintained at NC.
-	
+
 	### Parameters
 	nc_pid
 
@@ -77,29 +81,35 @@ defmodule StationConstructor do
 	# Client-side NC management functions
 
 	@doc """
-	Starts a GenServer StationConstructor process linked to the current process.   
+	Starts a GenServer StationConstructor process linked to the current
+	process.
 	This is often used to start the GenServer as part of a supervision tree.   
-	Once the server is started, the `init/1` function of the given module is called with args as
-	its arguments to initialize the server.
-	
+	Once the server is started, the `init/1` function of the given module
+	is called with args as its arguments to initialize the server.
+
 	### Parameters
 	module   
 	args   
 	options:
 	- :name - used for name registration
-	- :timeout - if present, the server is allowed to spend the given amount of milliseconds initializing 
-	or it will be terminated and the start function will return {:error, :timeout}
-	- :debug - if present, the corresponding function in the :sys module is invoked
-	- :spawn_opt - if present, its value is passed as options to the underlying process
+	- :timeout - if present, the server is allowed to spend the given
+	amount of milliseconds initializing or it will be terminated and the
+	start function will return {:error, :timeout}
+	- :debug - if present, the corresponding function in the :sys module
+	is invoked
+	- :spawn_opt - if present, its value is passed as options to the
+	underlying process
 	
 	### Return values
-	If the server is successfully created and initialized, this function returns {:ok, pid}, where pid is
-	the PID of the server. If a process with the specified server name already exists, this function
-	returns {:error, {:already_started, pid}} with the PID of that process.
+	If the server is successfully created and initialized, this function
+	returns {:ok, pid}, where pid is the PID of the server. If a process with
+	the specified server name already exists, this function returns {:error,
+	{:already_started, pid}} with the PID of that process.
 
-	If the `init/1` callback fails with reason, this function returns {:error, reason}. Otherwise, if it
-	returns {:stop, reason} or :ignore, the process is terminated and this function returns
-	{:error, reason} or :ignore, respectively.
+	If the `init/1` callback fails with reason, this function returns
+	{:error, reason}. Otherwise, if it returns {:stop, reason} or :ignore,
+	the process is terminated and this function returns {:error, reason}
+	or :ignore, respectively.
 
 	"""
 	def start_link(name) do
@@ -107,8 +117,9 @@ defmodule StationConstructor do
 	end
 
 	@doc """
-	Starts a new Station process and adds new pid to registry map using supervisor. Supervisor is also 
-	used to restart crashed process and update registry map with new pid.
+	Starts a new Station process and adds new pid to registry map using
+	supervisor. Supervisor is also used to restart crashed process and
+	update registry map with new pid.
 
 	### Parameters
 	nc_pid
@@ -131,8 +142,9 @@ defmodule StationConstructor do
 	nc_pid
 
 	### Return values
-	The `terminate/2` callback of the given server will be invoked before exiting. This function returns 
-	:ok if the server terminates with the given reason; if it terminates with another reason, the call exits.
+	The `terminate/2` callback of the given server will be invoked before
+	exiting. This function returns :ok if the server terminates with the
+	given reason; if it terminates with another reason, the call exits.
 	"""
 	def stop(server) do
 		GenServer.stop(server, :normal)
@@ -173,16 +185,17 @@ defmodule StationConstructor do
 	# Client-side message-passing functions
 
 	@doc """
-	Sends a query encoded in itinerary from NC to the source station using `receive_at_src/3` of Station
-	module. The pid of NC and source station must be known.
+	Sends a query encoded in itinerary from NC to the source station using
+	`receive_at_src/3` of Station module. The pid of NC and source station
+	must be known.
 	
 	### Parameters
 	nc_pid
 
 	src_stn_pid
 
-	itinerary - in the form of a map %{vehicleID, src_station, dst_station, dept_time, arrival_time, 
-	mode_of_transport}
+	itinerary - in the form of a map %{vehicleID, src_station, dst_station,
+	dept_time, arrival_time, mode_of_transport}
 
 	### Return values
 	Returns {:ok}

@@ -1,13 +1,15 @@
 defmodule StationStruct do
 	@moduledoc """
-	Module defining the data structure used to describe a station, with local variables, schedule, 
-	other means, and additional information fields such as station code, station city name, 
-	station process pid.
+	Module defining the data structure used to describe a station, with local
+	variables, schedule, other means, and additional information fields such
+	as station code, station city name, station process pid.
 
 	The structure looks as follows:
 
-	`%StationStruct{loc_vars: %{delay, congestion_delay, congestion, disturbance}, 
-	schedule: [%{vehicleID, src_station, dst_station, dept_time, arrival_time, mode_of_transport}],
+	`%StationStruct{loc_vars: %{delay, congestion_delay, congestion,
+	disturbance},
+	schedule: [%{vehicleID, src_station, dst_station, dept_time, arrival_time,
+	mode_of_transport}],
 	other_means,
 	station_number,
 	station_name,
@@ -24,8 +26,9 @@ defmodule StationStruct do
 	- congestion : "none", "low", or "high"
 	- disturbance : "yes" or "no"
 
-	schedule - holds a list of maps of connections to neighbouring stations given this source station, 
-	with each map `%{vehicleID, src_station, dst_station, dept_time, arrival_time, mode_of_transport}`
+	schedule - holds a list of maps of connections to neighbouring stations
+	given this source station, with each map `%{vehicleID, src_station,
+	dst_station, dept_time, arrival_time, mode_of_transport}`
 	having:
 	- vehicleID : string vehicle ID
 	- src_station : source station code
@@ -34,8 +37,9 @@ defmodule StationStruct do
 	- arrival_time : tim of arrival at destination
 	- mode_of_transport : "train" or "bus" or "flight"
 
-	other_means - holds a list of maps of connections to neighbouring stations given this source station,
-	with each map `%{vehicleID, src_station, dst_station, dept_time, arrival_time, mode_of_transport}`
+	other_means - holds a list of maps of connections to neighbouring stations
+	given this source station, with each map `%{vehicleID, src_station,
+	dst_station, dept_time, arrival_time, mode_of_transport}`
 	having:
 	- vehicleID : string vehicle ID
 	- src_station : source station code
@@ -54,7 +58,8 @@ defmodule StationStruct do
 
 	congestion_high - factor value if congestion is high
 
-	choose_fn - value (currently 1, 2, or 3)  to decide choice of function to compute final congestion delay
+	choose_fn - value (currently 1, 2, or 3)  to decide choice of function
+	to compute final congestion delay
 	"""
 	defstruct loc_vars: %{delay: nil, congestion_delay: nil, congestion: nil,
 	disturbance: nil}, schedule: [%{vehicleID: nil, src_station: nil, dst_station:

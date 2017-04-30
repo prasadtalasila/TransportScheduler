@@ -1,15 +1,16 @@
 defmodule StationFunctions do
 	@moduledoc """
-	Module listing possible functions to use to compute congestion_delay value based on delay and 
-	some factor for multiplication. Based on the choice of function when Station local variables 
-	are being updated, a different mathematical formula gives the final congestion delay value from
-	the original base delay value and the factor value.
+	Module listing possible functions to use to compute congestion_delay value
+	based on delay and some factor for multiplication. Based on the choice of
+	function when Station local variables are being updated, a different
+	mathematical formula gives the final congestion delay value from the original
+	base delay value and the factor value.
 	"""
 
 	@doc """
 	Congestion computation function 1.
 	Computes congestion_delay=delay*factor.
-	
+
 	### Parameters
 	delay
 
@@ -25,7 +26,7 @@ defmodule StationFunctions do
 	@doc """
 	Congestion computation function 2.
 	Computes congestion_delay=delay*factor+0.2.
-	
+
 	### Parameters
 	delay
 
@@ -41,7 +42,7 @@ defmodule StationFunctions do
 	@doc """
 	Congestion computation function 3.
 	Computes congestion_delay=delay*factor*factor.
-	
+
 	### Parameters
 	delay
 
@@ -55,8 +56,8 @@ defmodule StationFunctions do
 	end
 
 	@doc """
-	Chooses congestion computation function
-	
+	Chooses congestion computation function.
+
 	### Parameters
 	choose_fn
 
