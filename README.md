@@ -13,9 +13,9 @@ ExProf for profiling.
 Credo for code quality.   
 
 
-# Usage
+## Usage
 
-## Setup
+### Setup
 
 Run the following commands to compile:
 ```bash
@@ -36,17 +36,18 @@ Run the following command to run the application interactively:
 _build/dev/rel/ts/bin/ts console
 ```
 
+Issue the following cURL command (in a separate terminal) for initialisation of the network:
+```bash
+curl http://localhost:8880/api
+```
+Other cURL commands to query the network (as mentioned in 'Testing') can now be issued.
+
 To stop the Erlang runtime and exit the TS console:
 ```elixir
 System.halt
 ```
 
-Issue the following cURL command for initialisation of the network:
-```bash
-curl http://localhost:8880/api
-```
-
-# Testing
+### Testing
 
 For testing the API, following cURL commands are issued to:
 
@@ -68,7 +69,7 @@ curl -X GET 'http://localhost:8880/api/search?source=%SOURCE%&destination=%DESTI
 ```
 where `%SOURCE%` and `%DESTINATION%` are positive integers indicating the station codes of the source and destination respectively, `%START_TIME%` and `%END_TIME%` are non-negative integers indicating start and end times of the itinerary in seconds from 12 am, and `%DATE%` is the date of travel in the format 'dd-mm-yyyy'.
 
-# Deployment
+### Deployment
 
 Run the following commands to deploy (currently server and user are localhost): **UNTESTED**    
 ```bash
@@ -82,7 +83,7 @@ mix edeliver start
 cp -r data/ /home/$USER/test/ts
 ```
 
-## Benchmark Tests
+### Benchmark Tests
 
 For running the respective benchmarks (async/synchronous), use
 ```bash
