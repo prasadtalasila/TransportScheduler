@@ -63,11 +63,11 @@ defmodule TS.Supervisor do
 	def start_link do
 		Supervisor.start_link(__MODULE__, :ok)
 	end
-
+ 
 	def init(:ok) do
 		children=[
 			worker(NetworkConstructor, [NetworkConstructor]),
-			supervisor(TS.API.Supervisor, []),
+			worker(API, [], restart: :temporary),
 			supervisor(TS.Station.Supervisor, [])
 		]
 		supervise(children, strategy: :rest_for_one)
