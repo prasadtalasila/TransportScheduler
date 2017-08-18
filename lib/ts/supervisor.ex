@@ -26,6 +26,12 @@ defmodule TS.Supervisor do
 
 	args
 
+	###Function of Supervisor
+	The module TS.Supervisor is the top level supervisor for the project. The 
+	children of a Supervisor can be workers or supervisors. TS.Supervisor spawns
+	three children, the Network Constructor (worker), the API (worker)
+	and a Station Supervisor (Supervisor). 
+
 	### Strategies
 	Supervisors support different supervision strategies (through the
 	:strategy option):
@@ -67,7 +73,7 @@ defmodule TS.Supervisor do
 	def init(:ok) do
 		children=[
 			worker(NetworkConstructor, [NetworkConstructor]),
-			worker(API, [], restart: :temporary),
+			worker(API, []),
 			supervisor(TS.Station.Supervisor, [])
 		]
 		supervise(children, strategy: :rest_for_one)
