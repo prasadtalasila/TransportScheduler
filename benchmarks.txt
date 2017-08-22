@@ -1,0 +1,31 @@
+For message sizes of 0
+n : Compiling 1 file (.ex)
+For message sizes of 0
+1 : 
+1000 : 
+2000 : 
+10000 : 
+For message sizes of 0
+1 : 
+1000 : 
+For message sizes of 0
+For message sizes of 1
+1 : for 1 processes sending messages of size 1 : 14312076
+1000 : for 1000 processes sending messages of size 1 : 14744749
+2000 : for 2000 processes sending messages of size 1 : 12073071
+10000 : for 10000 processes sending messages of size 1 : 10938000
+For message sizes of 100
+1 : for 1 processes sending messages of size 100 : 14935120
+1000 : for 1000 processes sending messages of size 100 : 14364395
+2000 : for 2000 processes sending messages of size 100 : 11811121
+10000 : for 10000 processes sending messages of size 100 : 11364701
+For message sizes of 1000
+1 : for 1 processes sending messages of size 1000 : 14449290
+1000 : for 1000 processes sending messages of size 1000 : 14427389
+2000 : for 2000 processes sending messages of size 1000 : 12508351
+10000 : for 10000 processes sending messages of size 1000 : 10983298
+For message sizes of 8000
+1 : for 1 processes sending messages of size 8000 : 14257596
+1000 : for 1000 processes sending messages of size 8000 : 14252970
+2000 : for 2000 processes sending messages of size 8000 : 12252687
+10000 : for 10000 processes sending messages of size 8000 : 10359615
