@@ -17,6 +17,8 @@ The Results obtained are as follows:
 
 
 ## Installation
+sudo apt-get install pwgen //To install pwgen random string generator.
+
 
 If [available in Hex](https://hex.pm/docs/publish), the package can be installed
 by adding `server_benchmark` to your list of dependencies in `mix.exs`:
@@ -37,4 +39,8 @@ be found at [https://hexdocs.pm/server_benchmark](https://hexdocs.pm/server_benc
 
 
 
+## Running Benchmark
+From Project root run
+./benchmark.sh
 
+The results are written into benchmarks.txt
