@@ -1,0 +1,44 @@
+#!/bin/bash
+########################
+# Purpose: install the necessary project dependencies and create working environment
+# Author: Prasad Talasila
+# Date: 10-April-2017
+# Invocation: This script does not require any arguements. From the project top-level
+#             directory, invoke as follows
+#             $bash script/bootstrap
+########################
+
+set -e      # bail out on failure
+
+if [ -f /home/ubuntu/.asdf/completions/asdf.bash ]
+then
+    echo "asdf already installed"
+else
+    git clone https://github.com/asdf-vm/asdf.git /home/ubuntu/.asdf --branch v0.3.0
+    . /home/ubuntu/.asdf/asdf.sh
+    . /home/ubuntu/.asdf/completions/asdf.bash
+fi
+
+if [ -f /home/ubuntu/.asdf/installs/erlang/19.0/bin/erl ]
+then
+    echo "erlang already installed"
+else
+    asdf plugin-add erlang https://github.com/asdf-vm/asdf-erlang.git
+    asdf list-all erlang
+    asdf install erlang 19.0
+    asdf list erlang
+    asdf global erlang 19.0
+fi
+asdf global erlang 19.0
+
+if [ -f /home/vagrant/.asdf/installs/elixir/1.3.4/bin/elixir ]
+then
+    echo "elixir already installed"
+else
+    asdf plugin-add elixir https://github.com/asdf-vm/asdf-elixir.git
+    asdf list-all elixir
+    asdf install elixir 1.3.4
+    asdf list elixir
+    asdf global elixir 1.3.4
+fi
+asdf global elixir 1.3.4

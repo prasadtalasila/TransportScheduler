@@ -1,0 +1,13 @@
+#!/bin/bash
+########################
+# Purpose: To perform CI on travis-ci.org
+# Author: Prasad Talasila
+# Date: 10-April-2017
+# Invocation: This script does not require any arguements. From the project top-level
+#             directory, invoke as follows. ONLY INVOKE INSIDE TRAVIS-CI ENVIRONMENT.
+#             $bash script/travis
+########################
+
+set -e
+
+source ~/.bashrc

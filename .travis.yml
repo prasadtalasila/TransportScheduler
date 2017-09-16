@@ -1,0 +1,14 @@
+language: elixir
+elixir:
+- 1.5.1
+otp_release:
+- 20.0
+
+install:
+- bash script/travis-install
+
+script:
+- bash script/travis-script
+
+after_success:
+- bash script/travis-after-success
