@@ -7,10 +7,11 @@
 #             directory, invoke as follows
 #             $bash script/update
 ########################
+CONFIG_FILE=./home.conf 
 
 set -e
 
-cd /home/ubuntu/ts
+cd $HOME/ts
 
 # uncomment next line if you want to pull from github before server release
 #source script/update
@@ -27,4 +28,4 @@ cp -r data/ _build/dev/rel/ts
 #mix edeliver start
 
 #copy data directory into build path
-#cp -r data/ /home/ubuntu/test/ts
+#cp -r data/ $HOME/test/ts

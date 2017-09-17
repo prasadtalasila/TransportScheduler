@@ -7,19 +7,20 @@
 #             directory, invoke as follows
 #             $bash script/bootstrap
 ########################
+CONFIG_FILE=./home.conf
 
 set -e      # bail out on failure
 
-if [ -f /home/ubuntu/.asdf/completions/asdf.bash ]
+if [ -f $HOME/.asdf/completions/asdf.bash ]
 then
     echo "asdf already installed"
 else
-    git clone https://github.com/asdf-vm/asdf.git /home/ubuntu/.asdf --branch v0.3.0
-    . /home/ubuntu/.asdf/asdf.sh
-    . /home/ubuntu/.asdf/completions/asdf.bash
+    git clone https://github.com/asdf-vm/asdf.git $HOME/.asdf --branch v0.3.0
+    . $HOME/.asdf/asdf.sh
+    . $HOME/.asdf/completions/asdf.bash
 fi
 
-if [ -f /home/ubuntu/.asdf/installs/erlang/20.0/bin/erl ]
+if [ -f $HOME/.asdf/installs/erlang/20.0/bin/erl ]
 then
     echo "erlang already installed"
 else

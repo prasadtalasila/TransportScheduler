@@ -7,10 +7,11 @@
 #             directory, invoke as follows
 #             $bash script/update
 ########################
+CONFIG_FILE=./home.conf 
 
 set -e
 
-cd /home/ubuntu/ts
+cd $HOME/ts
 git pull origin $(git rev-parse --abbrev-ref HEAD)
 
 source script/setup	  #run setup on the updated code base

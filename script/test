@@ -7,8 +7,9 @@
 #             directory, invoke as follows
 #             $bash script/test
 ########################
+CONFIG_FILE=./home.conf 
 
 set -e
 
-cd /home/ubuntu/ts
+cd $HOME/ts
 mix test
