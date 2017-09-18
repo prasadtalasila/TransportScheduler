@@ -11,5 +11,5 @@ CONFIG_FILE=./home.conf
 
 set -e
 
-cd $HOME/ts
+cd $HOME
 mix test

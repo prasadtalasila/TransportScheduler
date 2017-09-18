@@ -9,7 +9,7 @@ CONFIG_FILE=./home.conf
 vagrant up      # launches a new VM and install dependencies;
                 # requires to download a vagrant box of 275MB and dependencies of 140MB
 vagrant ssh
-cd $HOME/ts
+cd $HOME
 bash script/bootstrap
 source ~/.bashrc
 ```
@@ -18,7 +18,7 @@ source ~/.bashrc
 The correct order for invocation of the scripts is:    
 ```shell
 CONFIG_FILE=./home.conf
-cd $HOME/ts
+cd $HOME
 bash script/setup     #download project dependencies
 bash script/test      #run tests on the project
 bash script/update    #pull from github repository and run setup, test tasks

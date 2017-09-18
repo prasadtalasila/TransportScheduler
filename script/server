@@ -11,7 +11,7 @@ CONFIG_FILE=./home.conf
 
 set -e
 
-cd $HOME/ts
+cd $HOME
 
 # uncomment next line if you want to pull from github before server release
 #source script/update

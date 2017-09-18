@@ -11,16 +11,16 @@ CONFIG_FILE=./home.conf
 
 set -e      # bail out on failure
 
-if [ -f $HOME/.asdf/completions/asdf.bash ]
+if [ -f $PARENT/.asdf/completions/asdf.bash ]
 then
     echo "asdf already installed"
 else
-    git clone https://github.com/asdf-vm/asdf.git $HOME/.asdf --branch v0.3.0
-    . $HOME/.asdf/asdf.sh
-    . $HOME/.asdf/completions/asdf.bash
+    git clone https://github.com/asdf-vm/asdf.git $PARENT/.asdf --branch v0.3.0
+    . $PARENT/.asdf/asdf.sh
+    . $PARENT/.asdf/completions/asdf.bash
 fi
 
-if [ -f $HOME/.asdf/installs/erlang/20.0/bin/erl ]
+if [ -f $PARENT/.asdf/installs/erlang/20.0/bin/erl ]
 then
     echo "erlang already installed"
 else

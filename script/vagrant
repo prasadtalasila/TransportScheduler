@@ -18,11 +18,11 @@ sudo apt-get install -y automake autoconf libreadline-dev libncurses-dev libssl-
   libxslt-dev libffi-dev libtool unixodbc-dev make zip
 
 # copy aliases for asdf, elixir and erlang
-cd $HOME/ts
-cat script/.bashrc >> $HOME.bashrc
+cd $HOME
+cat script/.bashrc >> $PARENT.bashrc
 
 
-#cd $HOMEts
+#cd $HOME
 #source script/bootstrap
 #source script/setup
 #source script/test

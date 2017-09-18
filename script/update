@@ -11,7 +11,7 @@ CONFIG_FILE=./home.conf
 
 set -e
 
-cd $HOME/ts
+cd $HOME
 git pull origin $(git rev-parse --abbrev-ref HEAD)
 
 source script/setup	  #run setup on the updated code base
