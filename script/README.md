@@ -3,8 +3,7 @@ The contents of this directory are inspired by GitHub's [scripts-to-rule-them-al
 
 These scripts have been written to be invoked inside the vagrant machine host OS environment. The instructions to prepare the vagrant host OS environment are:
 ```shell
-
-CONFIG_FILE=./home.conf
+CONFIG_FILE=./home.conf    # Sets home.conf as the config file.
 # go to top-level project directory
 vagrant up      # launches a new VM and install dependencies;
                 # requires to download a vagrant box of 275MB and dependencies of 140MB
@@ -17,7 +16,8 @@ source ~/.bashrc
 
 The correct order for invocation of the scripts is:    
 ```shell
-CONFIG_FILE=./home.conf
+CONFIG_FILE=./home.conf 	#Sets home.conf as config file
+
 cd $HOME
 bash script/setup     #download project dependencies
 bash script/test      #run tests on the project

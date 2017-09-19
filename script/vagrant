@@ -9,6 +9,11 @@
 ########################
 CONFIG_FILE=./home.conf
 
+if [ -f $CONFIG_FILE ];
+then
+  # shellcheck disable=SC1090
+  . "$CONFIG_FILE"
+fi
 set -e      # bail out on failure
 
 sudo apt-get update
@@ -18,11 +23,11 @@ sudo apt-get install -y automake autoconf libreadline-dev libncurses-dev libssl-
   libxslt-dev libffi-dev libtool unixodbc-dev make zip
 
 # copy aliases for asdf, elixir and erlang
-cd $HOME
-cat script/.bashrc >> $PARENT.bashrc
+cd $TS_HOME
+cat script/.bashrc >> $USER_HOME.bashrc
 
 
-#cd $HOME
+#cd $TS_HOME
 #source script/bootstrap
 #source script/setup
 #source script/test

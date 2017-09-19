@@ -7,11 +7,16 @@
 #             directory, invoke as follows
 #             $bash script/update
 ########################
-CONFIG_FILE=./home.conf 
+CONFIG_FILE=./home.conf
 
+if [ -f $CONFIG_FILE ];
+then
+  # shellcheck disable=SC1090
+  . "$CONFIG_FILE"
+fi
 set -e
 
-cd $HOME
+cd $TS_HOME
 
 # uncomment next line if you want to pull from github before server release
 #source script/update
@@ -28,4 +33,4 @@ cp -r data/ _build/dev/rel/ts
 #mix edeliver start
 
 #copy data directory into build path
-#cp -r data/ $HOME/test/ts
+#cp -r data/ $TS_HOME/test/ts

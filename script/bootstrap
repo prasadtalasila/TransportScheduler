@@ -9,18 +9,24 @@
 ########################
 CONFIG_FILE=./home.conf
 
+if [ -f $CONFIG_FILE ];
+then
+  # shellcheck disable=SC1090
+  . "$CONFIG_FILE"
+fi
+
 set -e      # bail out on failure
 
-if [ -f $PARENT/.asdf/completions/asdf.bash ]
+if [ -f $USER_HOME/.asdf/completions/asdf.bash ]
 then
     echo "asdf already installed"
 else
-    git clone https://github.com/asdf-vm/asdf.git $PARENT/.asdf --branch v0.3.0
-    . $PARENT/.asdf/asdf.sh
-    . $PARENT/.asdf/completions/asdf.bash
+    git clone https://github.com/asdf-vm/asdf.git $USER_HOME/.asdf --branch v0.3.0
+    . $USER_HOME/.asdf/asdf.sh
+    . $USER_HOME/.asdf/completions/asdf.bash
 fi
 
-if [ -f $PARENT/.asdf/installs/erlang/20.0/bin/erl ]
+if [ -f $USER_HOME/.asdf/installs/erlang/20.0/bin/erl ]
 then
     echo "erlang already installed"
 else
