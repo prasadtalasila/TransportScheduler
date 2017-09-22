@@ -7,13 +7,6 @@
 #             directory, invoke as follows
 #             $bash script/update
 ########################
-CONFIG_FILE=./home.conf
-
-if [ -f $CONFIG_FILE ];
-then
-  # shellcheck disable=SC1090
-  . "$CONFIG_FILE"
-fi 
 
 set -e
 

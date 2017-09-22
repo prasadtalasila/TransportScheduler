@@ -7,19 +7,20 @@
 # Dependencies: No dependencies
 ################################ 
 
-# Alternate way to initialise Home variables
+CONFIG_FILE=./home.conf
 
-# DIRECTORY="/home/ubuntu"
-# if [ -d "$DIRECTORY" ]; then
-#     TS_HOME="/home/ubuntu/ts"
-#     USER_HOME="/home/ubuntu"
-# else
-#     TS_HOME="/home/transportscheduler/project/TransportScheduler"
-#     USER_HOME="home/transportscheduler"
-# fi
+if [ -f $CONFIG_FILE ];
+then
+  # shellcheck disable=SC1090
+  . "$CONFIG_FILE"
+fi 
 
-ts_home="$( git rev-parse --show-toplevel )"
-user_home="$( echo $HOME )"
+if [ ! -d "$TS_HOME" ]; then
+    exit 1
+fi
 
-SPACE=" "
-echo $ts_home$SPACE$user_home 
+if [ ! -d "$ASDF_HOME" ]; then
+    exit 1
+fi
+
+echo "1"

@@ -3,33 +3,41 @@
 ###################################
 # Purpose: Call check_conf.sh and store Home variables in home.conf
 # Date: 19-Sept-2017
-# Invocation: This script has to be run independently and the 
-#  			  home variables are then stored in home.conf.
-# 			  These are then used in the other scripts in the folder.
-# Dependencies: check_conf.sh
+# Invocation: This script has to be run independently.
+# Command-line options: '-f' -> will force values on home variables
+#								and store them in $HOME/.bashrc
+# Dependencies: check_conf.sh, home.conf
 ###################################
 
-# Iterate through the output of check_conf.sh
-# and store the individual values in TS_HOME and USER_HOME. 
-conf="$( sh check_conf.sh )"
-i=0
-for word in $conf
-do
-	if [ "$i" -eq "0" ]; then
-		TS_HOME=$word
-	else
-		USER_HOME=$word
-	fi
-	i=$((i+1))
+CONFIG_FILE=./home.conf  
+
+if [ -f $CONFIG_FILE ];
+then
+  # shellcheck disable=SC1090
+  . "$CONFIG_FILE"
+fi
+
+# For the command-line option '-f'. 
+# This will force the values on the variables 
+# and store them in $HOME/.bashrc  
+while getopts ":f" opt; do
+	case ${opt} in
+		f ) echo "export TS_HOME="$( git rev-parse --show-toplevel )"" >> $HOME/.bashrc
+			echo "export ASDF_HOME="$( echo $HOME )"" >> $HOME/.bashrc
+			# Exit in case '-f' is used  
+			exit 0
+			;;
+		\? ) echo "Invalid option."
+			# Exit in case '-f' is used 
+			exit 1
+			;;
+	esac
 done
 
-# Display values of TS_HOME and USER_HOME
-echo "Home of project: "$TS_HOME""
-echo "Home of user: "$USER_HOME""
-
-# Overwrite contents of home.conf or create a file if not present
-> home.conf
-
-# Write into the config file
-echo "TS_HOME="$TS_HOME"" >> home.conf
-echo "USER_HOME="$USER_HOME"" >> home.conf
+# If the directories mentioned by user exist, 
+# then write to $HOME/.bashrc
+conf="$( sh check_conf.sh )"
+if [ "$conf" -eq "1" ]; then
+	echo "export TS_HOME=$TS_HOME" >> $HOME/.bashrc 
+	echo "export ASDF_HOME=$ASDF_HOME" >> $HOME/.bashrc 
+fi

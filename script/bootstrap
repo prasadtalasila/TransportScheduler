@@ -7,26 +7,19 @@
 #             directory, invoke as follows
 #             $bash script/bootstrap
 ########################
-CONFIG_FILE=./home.conf
-
-if [ -f $CONFIG_FILE ];
-then
-  # shellcheck disable=SC1090
-  . "$CONFIG_FILE"
-fi
 
 set -e      # bail out on failure
 
-if [ -f $USER_HOME/.asdf/completions/asdf.bash ]
+if [ -f $ASDF_HOME/.asdf/completions/asdf.bash ]
 then
     echo "asdf already installed"
 else
-    git clone https://github.com/asdf-vm/asdf.git $USER_HOME/.asdf --branch v0.3.0
-    . $USER_HOME/.asdf/asdf.sh
-    . $USER_HOME/.asdf/completions/asdf.bash
+    git clone https://github.com/asdf-vm/asdf.git $ASDF_HOME/.asdf --branch v0.3.0
+    . $ASDF_HOME/.asdf/asdf.sh
+    . $ASDF_HOME/.asdf/completions/asdf.bash
 fi
 
-if [ -f $USER_HOME/.asdf/installs/erlang/20.0/bin/erl ]
+if [ -f $ASDF_HOME/.asdf/installs/erlang/20.0/bin/erl ]
 then
     echo "erlang already installed"
 else

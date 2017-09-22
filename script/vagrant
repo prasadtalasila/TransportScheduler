@@ -7,7 +7,6 @@
 #             directory, invoke as follows. ONLY INVOKE INSIDE VAGRANT ENVIRONMENT.
 #             $bash script/vagrant
 ########################
-CONFIG_FILE=./home.conf
 
 if [ -f $CONFIG_FILE ];
 then
@@ -24,7 +23,7 @@ sudo apt-get install -y automake autoconf libreadline-dev libncurses-dev libssl-
 
 # copy aliases for asdf, elixir and erlang
 cd $TS_HOME
-cat script/.bashrc >> $USER_HOME.bashrc
+cat script/.bashrc >> $ASDF_HOME.bashrc
 
 
 #cd $TS_HOME

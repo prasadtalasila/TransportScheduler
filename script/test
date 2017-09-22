@@ -7,9 +7,8 @@
 #             directory, invoke as follows
 #             $bash script/test
 ########################
-CONFIG_FILE=./home.conf 
 
 set -e
 
-cd $HOME
+cd $TS_HOME
 mix test
