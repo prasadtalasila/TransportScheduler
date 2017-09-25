@@ -36,8 +36,9 @@ done
 
 # If the directories mentioned by user exist, 
 # then write to $HOME/.bashrc
-conf="$( sh check_conf.sh )"
-if [ "$conf" -eq "1" ]; then
+bash check_conf.sh 
+status=$?
+if [ "$status" ]; then
 	echo "export TS_HOME=$TS_HOME" >> $HOME/.bashrc 
 	echo "export ASDF_HOME=$ASDF_HOME" >> $HOME/.bashrc 
 fi
