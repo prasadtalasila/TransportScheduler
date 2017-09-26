@@ -7,7 +7,7 @@
 # Dependencies: home.conf
 ################################ 
 
-CONFIG_FILE=.script/home.conf
+CONFIG_FILE=./script/home.conf
 
 if [ -f $CONFIG_FILE ];
 then

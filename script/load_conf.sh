@@ -9,7 +9,7 @@
 # Dependencies: check_conf.sh, home.conf
 ###################################
 
-CONFIG_FILE=.script/home.conf  
+CONFIG_FILE=./script/home.conf  
 
 if [ -f $CONFIG_FILE ];
 then
@@ -36,7 +36,7 @@ done
 
 # If the directories mentioned by user exist, 
 # then write to $HOME/.bashrc
-bash check_conf.sh 
+bash ./script/check_conf.sh 
 status=$?
 if [ "$status" ]; then
 	echo "export TS_HOME=$TS_HOME" >> $HOME/.bashrc 
