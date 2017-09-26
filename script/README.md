@@ -8,7 +8,7 @@ vagrant up     		# launches a new VM and install dependencies;
                 	# requires to download a vagrant box of 275MB and dependencies of 140MB
 vagrant ssh
 bash script/load_conf
-bash script/bootstrap	
+bash script/bootstrap
 source ~/.bashrc
 ```
 

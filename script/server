@@ -10,7 +10,7 @@
 
 set -e
 
-cd $TS_HOME
+cd "$TS_HOME"
 
 # uncomment next line if you want to pull from github before server release
 #source script/update

@@ -5,7 +5,7 @@
 # Date: 19-Sept-2017
 # Invocation: This script is invoked from load_conf.sh
 # Dependencies: home.conf
-################################ 
+################################
 
 CONFIG_FILE=./script/home.conf
 
@@ -13,7 +13,7 @@ if [ -f $CONFIG_FILE ];
 then
   # shellcheck disable=SC1090
   . "$CONFIG_FILE"
-fi 
+fi
 
 # Check if $TS_HOME exists
 if [ ! -d "$TS_HOME" ]; then

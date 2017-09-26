@@ -9,7 +9,7 @@
 # Dependencies: check_conf.sh, home.conf
 ###################################
 
-CONFIG_FILE=./script/home.conf  
+CONFIG_FILE=./script/home.conf
 
 if [ -f $CONFIG_FILE ];
 then
@@ -17,28 +17,30 @@ then
   . "$CONFIG_FILE"
 fi
 
-# For the command-line option '-f'. 
-# This will force the values on the variables 
-# and store them in $HOME/.bashrc  
+# For the command-line option '-f'.
+# This will force the values on the variables
+# and store them in $HOME/.bashrc
 while getopts ":f" opt; do
 	case ${opt} in
-		f ) echo "export TS_HOME="$( git rev-parse --show-toplevel )"" >> $HOME/.bashrc
-			echo "export ASDF_HOME="$( echo $HOME )"" >> $HOME/.bashrc
-			# Exit in case '-f' is used  
+		f ) echo "export TS_HOME=$( git rev-parse --show-toplevel )" >> "$HOME/.bashrc"
+			echo "export ASDF_HOME=$HOME" >> "$HOME/.bashrc"
+      source "$HOME/.bashrc"
+			# Exit in case '-f' is used
 			exit 0
 			;;
 		\? ) echo "Invalid option."
-			# Exit in case some other option is used 
+			# Exit in case some other option is used
 			exit 1
 			;;
 	esac
 done
 
-# If the directories mentioned by user exist, 
+# If the directories mentioned by user exist,
 # then write to $HOME/.bashrc
-bash ./script/check_conf.sh 
+bash ./script/check_conf.sh
 status=$?
 if [ "$status" ]; then
-	echo "export TS_HOME=$TS_HOME" >> $HOME/.bashrc 
-	echo "export ASDF_HOME=$ASDF_HOME" >> $HOME/.bashrc 
+	echo "export TS_HOME=$TS_HOME" >> "$HOME/.bashrc"
+	echo "export ASDF_HOME=$ASDF_HOME" >> "$HOME/.bashrc"
+  source "$HOME/.bashrc"
 fi

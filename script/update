@@ -10,8 +10,8 @@
 
 set -e
 
-cd $TS_HOME
-git pull origin $(git rev-parse --abbrev-ref HEAD)
+cd "$TS_HOME"
+git pull origin "$(git rev-parse --abbrev-ref HEAD)"
 
 source script/setup	  #run setup on the updated code base
 source script/test        #make sure all tests pass

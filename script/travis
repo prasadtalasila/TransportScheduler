@@ -10,7 +10,7 @@
 
 set -e
 
-source /home/vagrant/.bashrc
+source "$HOME/.bashrc"
 mix local.rebar --force
 mix local.hex --force
 mix deps.get
