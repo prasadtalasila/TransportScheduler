@@ -9,7 +9,7 @@
 # Dependencies: check_conf.sh, home.conf
 ###################################
 
-CONFIG_FILE=./home.conf  
+CONFIG_FILE=.script/home.conf  
 
 if [ -f $CONFIG_FILE ];
 then
@@ -28,7 +28,7 @@ while getopts ":f" opt; do
 			exit 0
 			;;
 		\? ) echo "Invalid option."
-			# Exit in case '-f' is used 
+			# Exit in case some other option is used 
 			exit 1
 			;;
 	esac

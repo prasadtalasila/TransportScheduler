@@ -7,7 +7,7 @@
 # Dependencies: home.conf
 ################################ 
 
-CONFIG_FILE=./home.conf
+CONFIG_FILE=.script/home.conf
 
 if [ -f $CONFIG_FILE ];
 then
@@ -15,7 +15,7 @@ then
   . "$CONFIG_FILE"
 fi 
 
-# Check if TS_HOME exists
+# Check if $TS_HOME exists
 if [ ! -d "$TS_HOME" ]; then
     exit 1
 fi
