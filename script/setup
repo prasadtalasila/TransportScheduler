@@ -10,7 +10,7 @@
 
 set -e
 
-cd /home/ubuntu/ts
+cd "$TS_HOME"
 mix local.rebar --force
 mix local.hex --force
 mix deps.get

@@ -10,5 +10,5 @@
 
 set -e
 
-cd /home/ubuntu/ts
+cd "$TS_HOME"
 mix test
