@@ -9,7 +9,6 @@ defmodule StationTest do
 
 	#The test values for the station states and itineraries are as of yet unassigned
 
-
 	use ExUnit.Case, async: false
 	import Mox
 
@@ -19,17 +18,82 @@ defmodule StationTest do
 		:ok
 	end
 
+	# Test to see if the given state is stored by updating 
+	# some variables
+	test "stores the given state" do
+		# Start the server
+		{:ok, station} = Station.start_link
+
+		# Update variables in station
+		Station.update(station, %StationStruct{loc_vars: %{"delay": 0.38,
+			"congestion": "low", "disturbance": "no"},
+			schedule: [], congestion_low: 4, choose_fn: 1})
+
+		# Verify values from StationStruct
+		assert Station.get_vars(station).loc_vars.delay == 0.38
+		assert Station.get_vars(station).loc_vars.congestion_delay == 0.38 * 4
+		assert Station.get_state(station) == :delay
+	end
+
+	# Test to see if data can be retrieved from the station correctly
+	test "retrieving the given state" do
+		# Start the server
+		{:ok, station} = Station.start_link
+
+		# Update variables in station
+		Station.update(station, %StationStruct{loc_vars: %{"delay": 0.12,
+			"congestion": "low", "disturbance": "no"},
+			schedule: [], station_number: 1710, 
+			station_name: "Mumbai", congestion_low: 3, choose_fn: 2})
+
+		# Retrieve values from loc_vars
+		assert Station.get_vars(station).loc_vars.delay == 0.12l
+		assert Station.get_vars(station).loc_vars.congestion == "low"
+		assert Station.get_vars(station).loc_vars.disturbance == "no"
+
+		# Retrieve other values from StationStruct
+		assert Station.get_vars(station).station_number == 1710
+		assert Station.get_vars(station).station_name == "Mumbai"
+		assert Station.get_vars(station).congestion_delay == 0.12 * 3 + 0.2
+	end
+
+	# Test to see if the state gets updated once new variable 
+	# values are given
+	test "updating the given state" do
+		# Start the server
+		{:ok, station} = Station.start_link
+
+		# Update variables in station
+		Station.update(station, %StationStruct{loc_vars: %{"delay": 0.38,
+			"congestion": "low", "disturbance": "no"},
+			schedule: [], congestion_low: 4, choose_fn: 1})
+
+		# Check to see if change has taken place
+		assert Station.get_vars(station).loc_vars.congestion_delay == 0.38 * 4
+
+		# Update state again
+		Station.update(station, %StationStruct{loc_vars: %{"delay": 0.0,
+			"congestion": "none", "disturbance": "no"},
+			schedule: [], station_name: "Panjim", choose_fn: 1})
+
+		# Check to see if update has taken place
+		assert Station.get_vars(station).loc_vars.disturbance == "no"
+		assert Station.get_vars(station).loc_vars.congestion_delay == 0.0
+		assert Station.get_vars(station).station_name == "Panjim"
+	end
+
 	test "Receive a itinerary search query" do
 
-		#set function parameters to arbitrary values
-		#Any errors due to invalid values do not matter as they will come into
-		#effect only after the station has received the query.
+		# Set function parameters to arbitrary values.
+		# Any errors due to invalid values do not matter as they will come into
+		# effect only after the station has received the query.
 		query=:unassigned
 		stationState=:unassigned
 		test_proc=self()
 
 		#start station
-		{:ok,pid}=start_supervised(Station,[stationState, MockRegister, MockCollector])
+		{:ok,pid}=start_supervised(Station,[stationState, 
+			MockRegister, MockCollector])
 
 		MockRegister
 		|> expect(:check_active,
@@ -43,7 +107,7 @@ defmodule StationTest do
 		#assert that the station has received a message :query_received
 		assert_receive(:query_received)
 
-    #IO.inspect(some_var)
+    	#IO.inspect(some_var)
 
 	end
 
@@ -53,8 +117,10 @@ defmodule StationTest do
 		itinerary=:unassigned
 		test_proc=self()
 
-		{:ok,pid}=start_supervised(Station,[stationState, MockRegister, MockCollector])
-		{:ok,neighbour}=start_supervised(Station,[neighbourState, MockRegister, MockCollector])
+		{:ok,pid}=start_supervised(Station,[stationState, 
+			MockRegister, MockCollector])
+		{:ok,neighbour}=start_supervised(Station,[neighbourState, 
+			MockRegister, MockCollector])
 
 		MockRegister
 		|> expect(:lookup_code, fn(_) -> neighbour end)
@@ -77,8 +143,10 @@ defmodule StationTest do
 		itinerary=:unassigned
 		test_proc=self()
 
-		{:ok,pid}=start_supervised(Station,[stationState, MockRegister, MockCollector])
-		{:ok,neighbour}=start_supervised(Station,[neighbourState, MockRegister, MockCollector])
+		{:ok,pid}=start_supervised(Station,[stationState, 
+			MockRegister, MockCollector])
+		{:ok,neighbour}=start_supervised(Station,[neighbourState, 
+			MockRegister, MockCollector])
 
 		MockRegister
 		|> expect(:lookup_code, fn(_) -> neighbour end)
@@ -90,7 +158,7 @@ defmodule StationTest do
 
 		Station.send_to_stn(self() , pid, itinerary)
 
-		#Query should not be forwarded to neighbour
+		# Query should not be forwarded to neighbour
 		refute_receive(:query_with_selfloop_forwarded)
 
 	end
@@ -101,8 +169,10 @@ defmodule StationTest do
 		itinerary=:unassigned
 		test_proc=self()
 
-		{:ok,pid}=start_supervised(Station,[stationState, MockRegister, MockCollector])
-		{:ok,neighbour}=start_supervised(Station,[neighbourState, MockRegister, MockCollector])
+		{:ok,pid}=start_supervised(Station,[stationState, 
+			MockRegister, MockCollector])
+		{:ok,neighbour}=start_supervised(Station,[neighbourState, 
+			MockRegister, MockCollector])
 
 		MockRegister
 		|> expect(:lookup_code, fn(_) -> neighbour end)
@@ -114,12 +184,11 @@ defmodule StationTest do
 
 		Station.send_to_stn(self() , pid, itinerary)
 
-		#query should not be forwarded to neighbour
+		# Query should not be forwarded to neighbour
 		refute_receive(:stale_query_forwarded)
 
 
 	end
-
 
 	test "Incorrectly received queries are discarded" do
 		stationState=:unassigned
@@ -127,8 +196,10 @@ defmodule StationTest do
 		itinerary=:unassigned
 		test_proc=self()
 
-		{:ok,pid}=start_supervised(Station,[stationState, MockRegister, MockCollector])
-		{:ok,neighbour}=start_supervised(Station,[neighbourState, MockRegister, MockCollector])
+		{:ok,pid}=start_supervised(Station,[stationState, 
+			MockRegister, MockCollector])
+		{:ok,neighbour}=start_supervised(Station,[neighbourState, 
+			MockRegister, MockCollector])
 
 		MockRegister
 		|> expect(:lookup_code, fn(_) -> neighbour end)
@@ -140,20 +211,22 @@ defmodule StationTest do
 
 		Station.send_to_stn(self() , pid, itinerary)
 
-		#query should not be forwarded to neighbour
+		# Query should not be forwarded to neighbour
 		refute_receive(:incorrect_query_forwarded)
 
 
 	end
 
-	test "The correct itinerary is forwarded to the nex station" do
+	test "The correct itinerary is forwarded to the next station" do
 		stationState=:unassigned
 		neighbourState=:unassigned
 		itinerary=:unassigned
 
 
-		{:ok,pid}=start_supervised(Station,[stationState, MockRegister, MockCollector])
-		{:ok,neighbour}=start_supervised(Station,[neighbourState, MockRegister, MockCollector])
+		{:ok,pid}=start_supervised(Station,[stationState, 
+			MockRegister, MockCollector])
+		{:ok,neighbour}=start_supervised(Station,[neighbourState, 
+			MockRegister, MockCollector])
 
 		MockRegister
 		|> expect(:lookup_code, fn(_) -> neighbour end)
@@ -162,7 +235,7 @@ defmodule StationTest do
 		:erlang.trace(neighbour, true, [:receive])
 		Station.send_to_stn(self() , pid, itinerary)
 
-		#query should not be forwarded to neighbour
+		# Query should not be forwarded to neighbour
 		assert_receive({:trace, ^neighbour, :receive, :unassigned_correct_itinerary})
 
 
@@ -177,12 +250,70 @@ defmodule StationTest do
 		|> expect(:check_active, fn(_) -> true end)
 
 		MockCollector
-		|> expect(:collect, fn(_) -> send(test_proc, {:query_received, :proper_itinerary}) end)
+		|> expect(:collect, fn(_) -> send(test_proc, 
+			{:query_received, :proper_itinerary}) end)
 
-		{:ok,pid}=start_supervised(Station,[stationState, MockRegister, MockCollector])
+		{:ok,pid}=start_supervised(Station,[stationState, 
+			MockRegister, MockCollector])
 		Station.send_to_stn(self() , pid, itinerary)
 
 		assert_receive({:query_received, :proper_itinerary} )
 	end
 
+	# Test to check if the station consumes a given number of
+	# streams within a stipulated amount of time.
+	test "Consumes rapid stream of mixed input queries" do
+		query = :unassigned
+		stationState = :unassigned
+		test_proc = self()
+
+		# Start station
+		{:ok, pid} = start_supervised(Station,[stationState, 
+			MockRegister, MockCollector])
+
+		MockRegister
+		|> expect(:check_active,
+			fn(_) -> send(test_proc, :query_received)
+			false
+			end)
+
+		# Send 1000 queries
+		send_message(query, 1000, pid)
+
+		# Sleep for 1000 milliseconds
+		:timer.sleep(1000)
+
+		# Check if length of message queue is 0
+		{:message_queue_len, queue_len} = :erlang.process_info(test_proc, 
+			:message_queue_len)
+		assert queue_len == 0
+
+		# Send 10000 queries
+		send_message(query, 10000, pid)
+
+		:timer.sleep(1000)
+
+		{:message_queue_len, queue_len} = :erlang.process_info(test_proc, 
+			:message_queue_len)
+		assert queue_len == 0
+
+		# Send 1000000 queries
+		send_message(query, 1000000, pid)
+
+		:timer.sleep(1000)
+
+		{:message_queue_len, queue_len} = :erlang.process_info(test_proc, 
+			:message_queue_len)
+		assert queue_len == 0		
+	end
+
+	# A function to send 'n' number of messages to given pid 
+	def send_message(msg, n, pid) do
+		send(pid, msg)
+		send_message(msg, n-1, pid)
+	end
+
+	def send_message(msg, 1, pid) do
+		send(pid, msg)
+	end
 end
