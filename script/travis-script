@@ -10,4 +10,5 @@
 
 set -e
 
-echo "Hello World"
+mix test
+
