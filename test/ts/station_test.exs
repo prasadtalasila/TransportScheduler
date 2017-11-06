@@ -31,9 +31,6 @@ defmodule StationTest do
 		{:ok, station} = start_supervised(Station,[stationState,
 			MockRegister, MockCollector])
 
-		# Update variables in station
-
-
 		# Verify values from StationStruct
 		assert Station.get_vars(station).loc_vars.delay == 0.38
 		assert Station.get_vars(station).loc_vars.congestion_delay == 0.38 * 4
@@ -50,13 +47,9 @@ defmodule StationTest do
 			schedule: [], station_number: 1710,
 			station_name: "Mumbai", congestion_low: 3, choose_fn: 2}
 
-
 		# Start the server
 		{:ok, station} = start_supervised(Station,[stationState,
 			MockRegister, MockCollector])
-
-
-
 
 		# Retrieve values from loc_vars
 		assert Station.get_vars(station).loc_vars.delay == 0.12
@@ -79,13 +72,9 @@ defmodule StationTest do
 			"congestion": "low", "disturbance": "no"},
 			schedule: [], congestion_low: 4, choose_fn: 1}
 
-
 		# Start the server
 		{:ok, station} = start_supervised(Station,[stationState,
 			MockRegister, MockCollector])
-
-
-
 
 		# Check to see if change has taken place
 		assert Station.get_vars(station).loc_vars.congestion_delay == 0.38 * 4
@@ -108,7 +97,7 @@ defmodule StationTest do
 		# Set function parameters to arbitrary values.
 		# Any errors due to invalid values do not matter as they will come into
 		# effect only after the station has received the query.
-		query = [%{src_station: 0, dst_station: 3, day: 0, arrival_time: 0}]
+		query = [%{qid: "0300", src_station: 0, dst_station: 3, day: 0, arrival_time: 0}]
 
 		stationState = %StationStruct{loc_vars: %{"delay": 0.38,
 			"congestion": "low", "disturbance": "no"},
@@ -151,7 +140,7 @@ defmodule StationTest do
 			"congestion": "low", "disturbance": "no"},
 			schedule: [], congestion_low: 4, choose_fn: 1}
 
-		itinerary = [%{src_station: 0, dst_station: 3, day: 0, arrival_time: 0},
+		itinerary = [%{qid: "0300", src_station: 0, dst_station: 3, day: 0, arrival_time: 0},
 		%{vehicleID: "99", src_station: 0, mode_of_transport: "train",
 		dst_station: 1, dept_time: 10000, arrival_time: 20000}]
 
@@ -190,7 +179,7 @@ defmodule StationTest do
 			"congestion": "low", "disturbance": "no"},
 			schedule: [], congestion_low: 4, choose_fn: 1}
 
-		itinerary = [%{src_station: 0, dst_station: 3, day: 0, arrival_time: 0},
+		itinerary = [%{qid: "0300", src_station: 0, dst_station: 3, day: 0, arrival_time: 0},
 			%{vehicleID: "99", src_station: 0, mode_of_transport: "train",
 			dst_station: 1, dept_time: 10000, arrival_time: 20000}]
 
@@ -229,7 +218,7 @@ defmodule StationTest do
 			"congestion": "low", "disturbance": "no"},
 			schedule: [], congestion_low: 4, choose_fn: 1}
 
-		itinerary = [%{src_station: 0, dst_station: 3, day: 0, arrival_time: 0},
+		itinerary = [%{qid: "0300", src_station: 0, dst_station: 3, day: 0, arrival_time: 0},
 			%{vehicleID: "99", src_station: 0, mode_of_transport: "train",
 			dst_station: 1, dept_time: 10000, arrival_time: 20000}]
 
@@ -269,7 +258,7 @@ defmodule StationTest do
 			"congestion": "low", "disturbance": "no"},
 			schedule: [], congestion_low: 4, choose_fn: 1}
 
-		itinerary = [%{src_station: 0, dst_station: 3, day: 0, arrival_time: 0},
+		itinerary = [%{qid: "0300", src_station: 0, dst_station: 3, day: 0, arrival_time: 0},
 			%{vehicleID: "99", src_station: 0, mode_of_transport: "train",
 			dst_station: 5, dept_time: 10000, arrival_time: 20000}]
 
@@ -307,12 +296,14 @@ defmodule StationTest do
 			"congestion": "low", "disturbance": "no"},
 			schedule: [], congestion_low: 4, choose_fn: 1}
 
-		itinerary = [%{src_station: 0, dst_station: 3, day: 0, arrival_time: 0},
+		itinerary = [%{qid: "0300", src_station: 0, dst_station: 3, day: 0, arrival_time: 0},
 			%{vehicleID: "99", src_station: 0, mode_of_transport: "train",
 			dst_station: 1, dept_time: 10000, arrival_time: 20000}]
-		proper_itinerary = [%{src_station: 0, dst_station: 3, day: 0, arrival_time: 0},
+
+		proper_itinerary = [%{qid: "0301", src_station: 0, dst_station: 3, day: 0, arrival_time: 0},
 				%{vehicleID: "99", src_station: 0, mode_of_transport: "train",
-				dst_station: 1, dept_time: 10000, arrival_time: 20000},%{vehicleID: "100", src_station: 1, mode_of_transport: "bus",
+				dst_station: 1, dept_time: 10000, arrival_time: 20000},
+				%{vehicleID: "100", src_station: 1, mode_of_transport: "bus",
 				dst_station: 2, dept_time: 25000, arrival_time: 35000}]
 
 			test_proc=self()
@@ -343,11 +334,11 @@ defmodule StationTest do
 			dst_station: 2, dept_time: 25000, arrival_time: 35000}],
 			congestion_low: 4, choose_fn: 1}
 
-		itinerary = [%{src_station: 0, dst_station: 1, day: 0, arrival_time: 0},
+		itinerary = [%{qid: "0100", src_station: 0, dst_station: 1, day: 0, arrival_time: 0},
 			%{vehicleID: "99", src_station: 0, mode_of_transport: "train",
 			dst_station: 1, dept_time: 10000, arrival_time: 20000}]
 
-		proper_itinerary=[%{src_station: 0, dst_station: 1, day: 0, arrival_time: 0},
+		proper_itinerary=[%{qid: "0101", src_station: 0, dst_station: 1, day: 0, arrival_time: 0},
 			%{vehicleID: "99", src_station: 0, mode_of_transport: "train",
 			dst_station: 1, dept_time: 10000, arrival_time: 20000},
 			%{vehicleID: "100", src_station: 1, mode_of_transport: "bus",
@@ -374,7 +365,7 @@ defmodule StationTest do
 	# Test to check if the station consumes a given number of
 	# streams within a stipulated amount of time.
 	test "Consumes rapid stream of mixed input queries" do
-		query = [%{src_station: 0, dst_station: 1, day: 0, arrival_time: 0}]
+		query = [%{qid: "0100", src_station: 0, dst_station: 1, day: 0, arrival_time: 0}]
 
 		stationState = %StationStruct{loc_vars: %{"delay": 0.38,
 			"congestion": "low", "disturbance": "no"},
