@@ -10,4 +10,18 @@
 
 set -e
 
-echo "Hello World"
+source "$HOME/.bashrc"
+
+mix test
+mix profile
+
+# report test coverage to coveralls.io
+# shellcheck disable=SC2037
+MIX_ENV=test mix coveralls.travis
+
+# lint code using credo
+# shellcheck disable=SC2037
+MIX_ENV=test mix credo --strict
+
+mix test
+
