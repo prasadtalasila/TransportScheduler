@@ -187,7 +187,7 @@ defmodule StationTest do
 			dst_station: 1, dept_time: 10000, arrival_time: 20000}]
 
 		test_proc=self()
-		mock_send_to_stn = { fn(_,_) -> send(test_proc, :query_with_selfloop_forwarded
+		mock_send_to_stn = { fn(_,_) -> send(test_proc, :query_with_selfloop_forwarded)
 		end}
 
 		{:ok,pid}=start_supervised(Station,[stationState,
