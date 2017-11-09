@@ -15,6 +15,10 @@ source "$HOME/.bashrc"
 mix test
 mix profile
 
+mix local.rebar --force
+mix local.hex --force
+mix deps.get --force
+
 # report test coverage to coveralls.io
 # shellcheck disable=SC2037
 MIX_ENV=test mix coveralls.travis
