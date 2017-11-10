@@ -106,16 +106,19 @@ defmodule StationTest do
 			congestion_low: 4, choose_fn: 1}
 
 		test_proc=self()
+		mock_send_to_stn = { fn(_,_) -> false end}
 
 		#start station
 		{:ok,pid}=start_supervised(Station,[stationState,
 			MockRegister, MockCollector])
+		{:ok,neighbour}=start_supervised(MockStation,mock_send_to_stn)
 
 		MockRegister
 		|> expect(:check_active,
 			fn(_) -> send(test_proc, :query_received)
 			false
 			end)
+		|> expect(:lookup_code, fn(_) -> neighbour end)
 
 		#Send query to station
 		Station.receive_at_src(pid, query)
@@ -145,19 +148,19 @@ defmodule StationTest do
 		dst_station: 1, dept_time: 10000, arrival_time: 20000}]
 
 		test_proc=self()
+		mock_send_to_stn = { fn(_,_) -> send(test_proc, :query_received)
+			end }
+
 
 		{:ok,pid}=start_supervised(Station,[stationState,
 			MockRegister, MockCollector])
-		{:ok,neighbour}=start_supervised(Station,[neighbourState,
-			MockRegister, MockCollector])
+		{:ok,neighbour}=start_supervised(MockStation,mock_send_to_stn)
+
 
 		MockRegister
 		|> expect(:lookup_code, fn(_) -> neighbour end)
 		|> expect(:check_active, fn(_) -> true end)
-		|> expect(:check_active,
-			fn(_) -> send(test_proc, :query_received)
-			false
-			end)
+
 
 		Station.send_to_stn(self(), pid, itinerary)
 
@@ -184,19 +187,17 @@ defmodule StationTest do
 			dst_station: 1, dept_time: 10000, arrival_time: 20000}]
 
 		test_proc=self()
+		mock_send_to_stn = { fn(_,_) -> send(test_proc, :query_with_selfloop_forwarded)
+		end}
 
 		{:ok,pid}=start_supervised(Station,[stationState,
 			MockRegister, MockCollector])
-		{:ok,neighbour}=start_supervised(Station,[neighbourState,
-			MockRegister, MockCollector])
+		{:ok,neighbour}=start_supervised(MockStation,mock_send_to_stn)
 
 		MockRegister
 		|> expect(:lookup_code, fn(_) -> neighbour end)
 		|> expect(:check_active, fn(_) -> true end)
-		|> expect(:check_active,
-			fn(_) -> send(test_proc, :query_with_selfloop_forwarded)
-			false
-			end)
+
 
 		Station.send_to_stn(self() , pid, itinerary)
 
@@ -223,19 +224,17 @@ defmodule StationTest do
 			dst_station: 1, dept_time: 10000, arrival_time: 20000}]
 
 		test_proc=self()
+		mock_send_to_stn ={ fn(_,_) -> send(test_proc, :stale_query_forwarded)
+		end }
 
 		{:ok,pid}=start_supervised(Station,[stationState,
 			MockRegister, MockCollector])
-		{:ok,neighbour}=start_supervised(Station,[neighbourState,
-			MockRegister, MockCollector])
+		{:ok,neighbour}=start_supervised(MockStation,mock_send_to_stn)
 
 		MockRegister
 		|> expect(:lookup_code, fn(_) -> neighbour end)
 		|> expect(:check_active, fn(_) -> false end)
-		|> expect(:check_active,
-			fn(_) -> send(test_proc, :stale_query_forwarded)
-			false
-			end)
+
 
 		Station.send_to_stn(self() , pid, itinerary)
 
@@ -263,21 +262,20 @@ defmodule StationTest do
 			dst_station: 5, dept_time: 10000, arrival_time: 20000}]
 
 		test_proc=self()
+		mock_send_to_stn = { fn(_,_) ->
+			send(test_proc, :incorrect_query_forwarded)
+		end }
 
 		{:ok,pid}=start_supervised(Station,[stationState,
 			MockRegister, MockCollector])
-		{:ok,neighbour}=start_supervised(Station,[neighbourState,
-			MockRegister, MockCollector])
+		{:ok,neighbour}=start_supervised(MockStation,mock_send_to_stn)
 
 		MockRegister
 		|> expect(:lookup_code, fn(_) -> neighbour end)
 		|> expect(:check_active, fn(_) -> true end)
-		|> expect(:check_active,
-			fn(_) -> send(test_proc, :incorrect_query_forwarded)
-			false
-			end)
 
-		Station.send_to_stn(self() , pid, itinerary)
+
+		Station.send_to_stn(pid, itinerary)
 
 		# Query should not be forwarded to neighbour
 		refute_receive(:incorrect_query_forwarded)
@@ -306,9 +304,9 @@ defmodule StationTest do
 				%{vehicleID: "100", src_station: 1, mode_of_transport: "bus",
 				dst_station: 2, dept_time: 25000, arrival_time: 35000}]
 
-			test_proc=self()
+		test_proc=self()
 
-		mock_receive_at_stn= fn(a) -> send(test_proc,{:itinerary_received,a}) end
+		mock_receive_at_stn= { fn(x, y) -> send(test_proc,{:itinerary_received,y}) end }
 
 		{:ok,pid}=start_supervised(Station,[stationState,
 			MockRegister, MockCollector])
@@ -319,7 +317,7 @@ defmodule StationTest do
 		|> expect(:check_active, fn(_) -> true end)
 
 
-		Station.send_to_stn(self() , pid, itinerary)
+		Station.send_to_stn(pid, itinerary)
 
 		# Query should not be forwarded to neighbour
 		assert_receive({:itinerary_received,^proper_itinerary})
@@ -347,7 +345,7 @@ defmodule StationTest do
 		test_proc=self()
 
 		MockRegister
-		|> expect(:check_active, fn(_) -> true end)
+		|> expect(:check_active, fn(_,_) -> true end)
 
 		MockCollector
 		|> expect(:collect, fn(_,itinerary) -> send(test_proc,
@@ -355,7 +353,7 @@ defmodule StationTest do
 
 		{:ok,pid}=start_supervised(Station,[stationState,
 			MockRegister, MockCollector])
-		Station.send_to_stn(self() , pid, itinerary)
+		Station.send_to_stn(pid, itinerary)
 
 		assert_receive({:query_received, ^proper_itinerary} )
 	end
@@ -375,7 +373,7 @@ defmodule StationTest do
 
 		test_proc = self()
 
-		mock_receive_at_stn= fn(a) -> false end
+		mock_receive_at_stn= {fn(_,_) -> false end}
 
 		# Start station
 		{:ok, pid} = start_supervised(Station,[stationState,
