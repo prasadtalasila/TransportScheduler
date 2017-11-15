@@ -26,7 +26,7 @@ defmodule TransportScheduler.Mixfile do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:mox, "~> 0.2.0", only: :test},
+      {:mox, "~> 0.3.0", only: :test},
       {:excoveralls, "~> 0.7", only: :test},
       {:credo, "~> 0.8", only: [:dev, :test], runtime: false}
       # {:dep_from_hexpm, "~> 0.3.0"},

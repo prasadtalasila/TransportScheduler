@@ -126,7 +126,6 @@ defmodule StationTest do
 		#assert that the station has received a message :query_received
 		assert_receive(:query_received)
 
-    	#IO.inspect(some_var)
 
 	end
 
@@ -139,9 +138,9 @@ defmodule StationTest do
 			dst_station: 2, dept_time: 25000, arrival_time: 35000}],
 			congestion_low: 4, choose_fn: 1}
 
-		neighbourState = %StationStruct{loc_vars: %{"delay": 0.38,
-			"congestion": "low", "disturbance": "no"},
-			schedule: [], congestion_low: 4, choose_fn: 1}
+		# Station state of Neighbour : %StationStruct{loc_vars: %{"delay": 0.38,
+		# 	"congestion": "low", "disturbance": "no"},
+		# 	schedule: [], congestion_low: 4, choose_fn: 1}
 
 		itinerary = [%{qid: "0300", src_station: 0, dst_station: 3, day: 0, arrival_time: 0},
 		%{vehicleID: "99", src_station: 0, mode_of_transport: "train",
@@ -165,7 +164,7 @@ defmodule StationTest do
 		Station.send_to_stn(self(), pid, itinerary)
 
 		assert_receive :query_received
-		#IO.inspect(some_var)
+
 
 	end
 
@@ -178,9 +177,9 @@ defmodule StationTest do
 			dst_station: 0, dept_time: 25000, arrival_time: 35000}],
 			congestion_low: 4, choose_fn: 1}
 
-		neighbourState = %StationStruct{loc_vars: %{"delay": 0.38,
-			"congestion": "low", "disturbance": "no"},
-			schedule: [], congestion_low: 4, choose_fn: 1}
+		# Station state of Neighbour : %StationStruct{loc_vars: %{"delay": 0.38,
+		# 	"congestion": "low", "disturbance": "no"},
+		# 	schedule: [], congestion_low: 4, choose_fn: 1}
 
 		itinerary = [%{qid: "0300", src_station: 0, dst_station: 3, day: 0, arrival_time: 0},
 			%{vehicleID: "99", src_station: 0, mode_of_transport: "train",
@@ -215,9 +214,9 @@ defmodule StationTest do
 			dst_station: 2, dept_time: 25000, arrival_time: 35000}],
 			congestion_low: 4, choose_fn: 1}
 
-		neighbourState = %StationStruct{loc_vars: %{"delay": 0.38,
-			"congestion": "low", "disturbance": "no"},
-			schedule: [], congestion_low: 4, choose_fn: 1}
+		# Station state of Neighbour : %StationStruct{loc_vars: %{"delay": 0.38,
+		# 	"congestion": "low", "disturbance": "no"},
+		# 	schedule: [], congestion_low: 4, choose_fn: 1}
 
 		itinerary = [%{qid: "0300", src_station: 0, dst_station: 3, day: 0, arrival_time: 0},
 			%{vehicleID: "99", src_station: 0, mode_of_transport: "train",
@@ -253,9 +252,9 @@ defmodule StationTest do
 			dst_station: 2, dept_time: 25000, arrival_time: 35000}],
 			congestion_low: 4, choose_fn: 1}
 
-		neighbourState = %StationStruct{loc_vars: %{"delay": 0.38,
-			"congestion": "low", "disturbance": "no"},
-			schedule: [], congestion_low: 4, choose_fn: 1}
+		# Station state of Neighbour : %StationStruct{loc_vars: %{"delay": 0.38,
+		# 	"congestion": "low", "disturbance": "no"},
+		# 	schedule: [], congestion_low: 4, choose_fn: 1}
 
 		itinerary = [%{qid: "0300", src_station: 0, dst_station: 3, day: 0, arrival_time: 0},
 			%{vehicleID: "99", src_station: 0, mode_of_transport: "train",
@@ -290,9 +289,9 @@ defmodule StationTest do
 			dst_station: 2, dept_time: 25000, arrival_time: 35000}],
 			congestion_low: 4, choose_fn: 1}
 
-		neighbourState = %StationStruct{loc_vars: %{"delay": 0.38,
-			"congestion": "low", "disturbance": "no"},
-			schedule: [], congestion_low: 4, choose_fn: 1}
+		# Station state of Neighbour : %StationStruct{loc_vars: %{"delay": 0.38,
+		# 	"congestion": "low", "disturbance": "no"},
+		# 	schedule: [], congestion_low: 4, choose_fn: 1}
 
 		itinerary = [%{qid: "0300", src_station: 0, dst_station: 3, day: 0, arrival_time: 0},
 			%{vehicleID: "99", src_station: 0, mode_of_transport: "train",
@@ -306,7 +305,7 @@ defmodule StationTest do
 
 		test_proc=self()
 
-		mock_receive_at_stn= { fn(x, y) -> send(test_proc,{:itinerary_received,y}) end }
+		mock_receive_at_stn= { fn(_, y) -> send(test_proc,{:itinerary_received,y}) end }
 
 		{:ok,pid}=start_supervised(Station,[stationState,
 			MockRegister, MockCollector])
@@ -371,7 +370,6 @@ defmodule StationTest do
 			dst_station: 2, dept_time: 25000, arrival_time: 35000}],
 			congestion_low: 4, choose_fn: 1}
 
-		test_proc = self()
 
 		mock_receive_at_stn= {fn(_,_) -> false end}
 
@@ -416,13 +414,13 @@ defmodule StationTest do
 		assert queue_len == 0
 	end
 
+	def send_message(msg, 1, pid) do
+		Station.receive_at_src(pid, msg)
+	end
+
 	# A function to send 'n' number of messages to given pid
 	def send_message(msg, n, pid) do
 		Station.receive_at_src(pid, msg)
 		send_message(msg, n-1, pid)
-	end
-
-	def send_message(msg, 1, pid) do
-		Station.receive_at_src(pid, msg)
 	end
 end

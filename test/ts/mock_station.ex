@@ -14,6 +14,3 @@ defmodule MockStation do
 
 
 end
-
-    © 2017 GitHub, Inc.
-    Terms
