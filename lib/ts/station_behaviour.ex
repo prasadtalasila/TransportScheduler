@@ -4,5 +4,4 @@ defmodule StationBehaviour do
 	@callback update(pid, struct) :: {:next_state, term, term} 
 	@callback receive_at_src(pid, pid, list) :: {:ok}
 	@callback send_to_stn(pid, pid, pid) :: {:ok}
-	@callback check_neighbours(list, list, number, list) :: list
 end
