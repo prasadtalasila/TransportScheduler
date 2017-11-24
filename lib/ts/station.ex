@@ -2,6 +2,80 @@ defmodule Station do
 	
 	use Fsm, initial_state: :start, initial_data: []
 
+	defmacro while(expression, do: block) do
+	    quote do
+	      	try do 
+	      	# Surround whole for loop with try, 
+	      	# so that we can catch when they want to break out
+	        	for _ <- Stream.cycle([:ok]) do 
+	        	# Stream.cycle will create an infinite list to loop through
+	          		if unquote(expression) do 
+	          		# Whenever this is true we want to execute the block code
+	            		unquote(block)
+	          		else
+	            		throw :break
+	          		end
+	        	end
+	      	catch
+	        	:break -> :ok 
+	        	# We only catch the value `:break` 
+	        	# if it was thrown, all else is ignored
+	      	end
+	    end
+	end
+
+	# Function definitions
+
+	# Check if the query is valid / completed / invalid
+	def query_status(registry, itinerary) do
+		# check for self loops
+		# timeout check
+		# check other parameters (dst_station)
+		:valid
+	end
+
+	# Send the itinerary to the qc if completed
+	def send_to_qc(qc, itinerary) do
+		# send itinerary to qc
+	end
+
+	# Initialise neighbours_fulfilment array
+	def init_neighbors() do
+		# Find all possible neighbors of station
+		# Append them to a list with value of each neighbour = 0
+		[]
+	end
+
+	def replace_neighbors() do
+		[]
+	end
+
+	# Check if all connections have been used
+	def stop_fn(neighbours) do
+		# If value of every key in neighbours is 1, return :true
+		# Else return false
+		:false
+	end
+
+	# Check if connection is feasible
+	def feasibility_check(conn) do
+		:true
+	end
+
+	# Check if preferences match
+	def pref_check(conn) do
+		# Invoke UQCFSM and check for preferences
+		:true
+	end
+
+	def send_to_neighbour(itinerary) do
+		#
+	end 
+
+	def update_query(conn, itinerary) do
+		[]
+	end
+
 	# State definitions
 
 	# start state
@@ -33,7 +107,7 @@ defmodule Station do
 
 		# When an itinerary is passed to the station
 		defevent query_input(itinerary), data: vars do
-			# Give itinerary as part of query
+			# Give itinerary as part of queryit 
 			vars = vars.append(itinerary)
 			next_state(:query_rcvd, vars)
 		end
@@ -87,77 +161,40 @@ defmodule Station do
 
 	defstate compute_itinerary do
 		defevent compute_connections, data: vars = [station_vars, registry, qc, itinerary] do
-			other_means = station_vars.other_means
+			om = station_vars.other_means
 			# Iterate over list Other means, for each element in Other means, 
+			while Enum.count(om) != 0 do
+				head = Enum.at(om, 0)
+				if (feasibility_check(head) == :true && pref_check(head) == :true) do
+						# Update the query, DO HERE
+					itinerary = update_query(head, itinerary) 
+						# Send the query to neighbour, DO HERE
+					send_to_neighbour(itinerary) 
+					next_state(:query_fulfilment_check)
+				end
+				List.delete_at(om, 0)
+			end
 
-			#if (feasibility_check(head) == :true && pref_check(head) == :true) do
-			#		# Update the query, DO HERE
-			#	update_query(c[i], query) 
-			#		# Send the query to neighbour, DO HERE
-			#	send_to_neighbour(query) 
-			#	next_state(:query_fulfilment_check)
-			#end
-
-			schedule = station_vars.schedule
+			sched = station_vars.schedule
 			# Iterate over list schedule, for each element in schedule, 
-
-			#if (feasibility_check(head) == :true && pref_check(head) == :true) do
-			#		# Update the query, DO HERE
-			#	update_query(c[i], query) 
-			#		# Send the query to neighbour, DO HERE
-			#	send_to_neighbour(query) 
-			#	next_state(:query_fulfilment_check)
-			#end
+			while Enum.count(sched) != 0 do
+				head = Enum.at(sched, 0)
+				if (feasibility_check(head) == :true && pref_check(head) == :true) do
+						# Update the query, DO HERE
+					itinerary = update_query(head, itinerary) 
+						# Send the query to neighbour, DO HERE
+					send_to_neighbour(itinerary) 
+					next_state(:query_fulfilment_check)
+				end
+				List.delete_at(sched, 0)
+			end
 		end
 	end
 
 	# Global events
 
 	# Stay in the same state and do nothing if undefined event
-	defevent _ do:
+	defevent _ do
 
-	# Function definitions
-
-	# Check if the query is valid / completed / invalid
-	def query_status(registry, itinerary) do
-		# check for self loops
-		# timeout check
-		# check other parameters (dst_station)
-		:valid
 	end
-
-	# Send the itinerary to the qc if completed
-	def send_to_qc(qc, itinerary) do
-		# send itinerary to qc
-	end
-
-	# Initialise neighbours_fulfilment array
-	def init_neighbors() do
-		# Find all possible neighbors of station
-		# Append them to a map with value of each neighbour = 0
-		%{}
-	end
-
-	def replace_neighbors() do
-		[]
-	end
-
-	# Check if all connections have been used
-	def stop_fn(neighbours) do
-		# If value of every key in neighbours is 1, return :true
-		# Else return false
-		:false
-	end
-
-	# Check if connection is feasible
-	def feasibility_check() do
-		:true
-	end
-
-	# Check if preferences match
-	def pref_check() do
-		# Invoke UQCFSM and check for preferences
-		:true
-	end
-
 end
