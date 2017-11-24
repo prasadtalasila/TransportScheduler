@@ -2,28 +2,6 @@ defmodule Station do
 	
 	use Fsm, initial_state: :start, initial_data: []
 
-	defmacro while(expression, do: block) do
-	    quote do
-	      	try do 
-	      	# Surround whole for loop with try, 
-	      	# so that we can catch when they want to break out
-	        	for _ <- Stream.cycle([:ok]) do 
-	        	# Stream.cycle will create an infinite list to loop through
-	          		if unquote(expression) do 
-	          		# Whenever this is true we want to execute the block code
-	            		unquote(block)
-	          		else
-	            		throw :break
-	          		end
-	        	end
-	      	catch
-	        	:break -> :ok 
-	        	# We only catch the value `:break` 
-	        	# if it was thrown, all else is ignored
-	      	end
-	    end
-	end
-
 	# Function definitions
 
 	# Check if the query is valid / completed / invalid
@@ -71,7 +49,9 @@ defmodule Station do
 	def send_to_neighbour(head, itinerary) do
 		#
 	end 
-
+	
+	# conn - map -> %{vehicleID: "100", src_station: 1, mode_of_transport: "bus",
+	#		dst_station: 2, dept_time: 25000, arrival_time: 35000}
 	def update_query(conn, itinerary) do
 		[]
 	end
@@ -163,31 +143,23 @@ defmodule Station do
 	defstate compute_itinerary do
 		defevent compute_connections, data: [station_vars, _, _, itinerary] do
 			om = station_vars.other_means
-			# Iterate over list Other means, for each element in Other means, 
-			while Enum.count(om) != 0 do
-				head = Enum.at(om, 0)
-				if (feasibility_check(head) == :true && pref_check(head) == :true) do
-						# Update the query, DO HERE
-					itinerary = update_query(head, itinerary) 
-						# Send the query to neighbour, DO HERE
-					send_to_neighbour(head, itinerary) 
+			# Iterate over list other_means
+			for conn <- om do
+				if (feasibility_check(conn) == :true && pref_check(conn) == :true) do
+					itinerary = update_query(conn, itinerary)
+					send_to_neighbour(conn, itinerary)
 					next_state(:query_fulfilment_check)
 				end
-				List.delete_at(om, 0)
 			end
 
 			sched = station_vars.schedule
-			# Iterate over list schedule, for each element in schedule, 
-			while Enum.count(sched) != 0 do
-				head = Enum.at(sched, 0)
-				if (feasibility_check(head) == :true && pref_check(head) == :true) do
-						# Update the query, DO HERE
-					itinerary = update_query(head, itinerary) 
-						# Send the query to neighbour, DO HERE
-					send_to_neighbour(head, itinerary) 
+			# Iterate over list schedule
+			for conn <- sched do
+				if (feasibility_check(conn) == :true && pref_check(conn) == :true) do
+					itinerary = update_query(conn, itinerary)
+					send_to_neighbour(conn, itinerary)
 					next_state(:query_fulfilment_check)
 				end
-				List.delete_at(sched, 0)
 			end
 		end
 	end
