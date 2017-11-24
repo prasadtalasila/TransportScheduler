@@ -46,7 +46,7 @@ defmodule Station do
 		[]
 	end
 
-	def replace_neighbors() do
+	def replace_neighbors(neighbors, vars) do
 		[]
 	end
 
@@ -68,7 +68,7 @@ defmodule Station do
 		:true
 	end
 
-	def send_to_neighbour(itinerary) do
+	def send_to_neighbour(head, itinerary) do
 		#
 	end 
 
@@ -115,11 +115,10 @@ defmodule Station do
 
 	# query_rcvd state
 	defstate query_rcvd do
-		defevent check_query_status, data: vars = [station_vars, registry, qc, itinerary] do
+		defevent check_query_status, data: vars = [_, registry, qc, itinerary] do
 			# Check status of query
-			# q_stat = query_status(registry, itinerary)
+			q_stat = query_status(registry, itinerary)
 
-			q_stat = :valid
 			case q_stat do
 				:invalid ->
 					# If invalid query, remove itinerary
@@ -142,13 +141,14 @@ defmodule Station do
 		defevent initialize, data: vars do
 			neighbors = init_neighbors() # Find all neighbors
 			# DO HERE
-			vars = replace_neighbors() # Replace neighbors in vars
+			vars = replace_neighbors(neighbors, vars) # Replace neighbors in vars
 			next_state(:query_fulfilment_check, vars)
 		end
 	end
 
+	# query_fulfilment_check state
 	defstate query_fulfilment_check do
-		defevent check_stop, data: vars = [station_vars, registry, qc, itinerary] do
+		defevent check_stop, data: vars = [station_vars, _, _, _] do
 			should_stop = stop_fn(station_vars.neighbours) # Find out if stop or not
 			if should_stop == :true do
 				vars = List.delete_at(vars, 3)
@@ -159,8 +159,9 @@ defmodule Station do
 		end
 	end
 
+	# compute_itinerary state
 	defstate compute_itinerary do
-		defevent compute_connections, data: vars = [station_vars, registry, qc, itinerary] do
+		defevent compute_connections, data: [station_vars, _, _, itinerary] do
 			om = station_vars.other_means
 			# Iterate over list Other means, for each element in Other means, 
 			while Enum.count(om) != 0 do
@@ -169,7 +170,7 @@ defmodule Station do
 						# Update the query, DO HERE
 					itinerary = update_query(head, itinerary) 
 						# Send the query to neighbour, DO HERE
-					send_to_neighbour(itinerary) 
+					send_to_neighbour(head, itinerary) 
 					next_state(:query_fulfilment_check)
 				end
 				List.delete_at(om, 0)
@@ -183,7 +184,7 @@ defmodule Station do
 						# Update the query, DO HERE
 					itinerary = update_query(head, itinerary) 
 						# Send the query to neighbour, DO HERE
-					send_to_neighbour(itinerary) 
+					send_to_neighbour(head, itinerary) 
 					next_state(:query_fulfilment_check)
 				end
 				List.delete_at(sched, 0)
