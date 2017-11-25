@@ -2,59 +2,120 @@ defmodule Station do
 	
 	use Fsm, initial_state: :start, initial_data: []
 
+	############################################################################
+
 	# Function definitions
 
 	# Check if the query is valid / completed / invalid
-	def query_status(registry, itinerary) do
-		# check for self loops
-		# timeout check
-		# check other parameters (dst_station)
+	def query_status(station_vars, registry, itinerary) do
+		[query] = Enum.take(itinerary, 1)
+		[last] = Enum.take(itinerary, -1)
+		self = station_vars.station_number
+
+		# Checking for validity
+		# Check for timeout, loops and receiving of a wrong query
+		# i.e. having a different dst_station than the current station
+		[_| tail] = Enum.reverse(itinerary)
+		except_last = Enum.reverse(tail)
+		
+		# This would return a list having 3 elements,
+		# [qid, active, qc_pid] and active would indicate if query
+		# is currently active or not
+		# timeout = :collect or :timeout
+		query_stat = registry.get(query.qid)
+
+		if Enum.at(query_stat, 1) == :timeout || check_dest(self, except_last) 
+			|| last.dst_station != self do
+			:invalid
+		end
+
+		if query.dst_station == last.dst_station do
+			:collect
+		end
+
 		:valid
 	end
 
-	# Send the itinerary to the qc if completed
-	def send_to_qc(qc, itinerary) do
-		# send itinerary to qc
-	end
-
 	# Initialise neighbours_fulfilment array
-	def init_neighbors() do
+	def init_neighbours(schedule, other_means) do
 		# Find all possible neighbors of station
 		# Append them to a list with value of each neighbour = 0
-		[]
-	end
+		nbrs = %{}
 
-	def replace_neighbors(neighbors, vars) do
-		[]
+		# Add neighbours from schedule
+		for x <- schedule do
+			Map.put(nbrs, x.dst_station, 0)
+		end
+
+		# Add neighbours in other_means
+		for x <- other_means do
+			Map.put(nbrs, x.dst_station, 0)
+		end
 	end
 
 	# Check if all connections have been used
 	def stop_fn(neighbours) do
 		# If value of every key in neighbours is 1, return :true
 		# Else return false
-		:false
-	end
+		for {_, v} <- neighbours do
+			if v == 0 do
+				:false
+			end
+		end
 
-	# Check if connection is feasible
-	def feasibility_check(conn) do
 		:true
 	end
 
+	# Check if connection is feasible
+	def feasibility_check(conn, itinerary, sch_om) do
+		[query] = Enum.take(itinerary, 1)
+		time = query.arrival_time
+
+		# Time adjustment
+		time = if time > 86_400 do
+			time - 86_400
+		else
+			time
+		end
+
+		# If connection is in schedule
+		if sch_om == :schedule do
+			if conn.dept_time > time && check_dest(conn.dst_station, itinerary) &&
+			(query.day * 86_400 + conn.arrival_time <= query.end_time) do
+				:true
+			end
+		end
+
+		# If connection is in other_means
+		if sch_om == :other_means do
+			if check_dest(conn.dst_station, itinerary) do
+				:true
+			end
+		end
+
+		:false
+	end
+
+	# Check if there exists a potential loop for the next
+	# station given the schedule of the current station
+	def check_dest(dst, itinerary) do
+		[_| tail] = itinerary
+		dest_list = Enum.map(tail, fn (x) -> x[:dst_station] end)
+		!Enum.member?(dest_list, dst)
+	end
+
 	# Check if preferences match
-	def pref_check(conn) do
+	def pref_check(_conn, _itinerary) do
 		# Invoke UQCFSM and check for preferences
 		:true
 	end
 
-	def send_to_neighbour(head, itinerary) do
-		#
+	# Send the new itinerary to the neighbour
+	def send_to_neighbour(_conn, _itinerary) do
+		# send itinerary to neighbour
 	end 
-	
-	# conn - map -> %{vehicleID: "100", src_station: 1, mode_of_transport: "bus",
-	#		dst_station: 2, dept_time: 25000, arrival_time: 35000}
-	def update_query(conn, itinerary) do
-		[]
-	end
+
+	###############################################################################
 
 	# State definitions
 
@@ -87,7 +148,7 @@ defmodule Station do
 
 		# When an itinerary is passed to the station
 		defevent query_input(itinerary), data: vars do
-			# Give itinerary as part of queryit 
+			# Give itinerary as part of query
 			vars = vars.append(itinerary)
 			next_state(:query_rcvd, vars)
 		end
@@ -95,9 +156,9 @@ defmodule Station do
 
 	# query_rcvd state
 	defstate query_rcvd do
-		defevent check_query_status, data: vars = [_, registry, qc, itinerary] do
+		defevent check_query_status, data: vars = [station_vars, registry, qc, itinerary] do
 			# Check status of query
-			q_stat = query_status(registry, itinerary)
+			q_stat = query_status(station_vars, registry, itinerary)
 
 			case q_stat do
 				:invalid ->
@@ -106,7 +167,7 @@ defmodule Station do
 					next_state(:ready, vars)
 				:collect ->
 					# If completed query, send to qc
-					send_to_qc(qc, itinerary)
+					qc.collect(itinerary)
 					vars = List.delete_at(vars, 3)
 					next_state(:ready, vars)
 				:valid ->
@@ -118,10 +179,12 @@ defmodule Station do
 
 	# query_init state
 	defstate query_init do
-		defevent initialize, data: vars do
-			neighbors = init_neighbors() # Find all neighbors
-			# DO HERE
-			vars = replace_neighbors(neighbors, vars) # Replace neighbors in vars
+		defevent initialize, data: [station_vars, registry, qc, itinerary] do
+			# Find all neighbors
+			nbrs = init_neighbours(station_vars.schedule, station_vars.other_means)
+			# Replace neighbours keyword-list in struct 
+			new_station_vars = %{station_vars | neighbours: nbrs}
+			vars = [new_station_vars, registry, qc, itinerary]
 			next_state(:query_fulfilment_check, vars)
 		end
 	end
@@ -144,9 +207,11 @@ defmodule Station do
 		defevent compute_connections, data: [station_vars, _, _, itinerary] do
 			om = station_vars.other_means
 			# Iterate over list other_means
+			sch_om = :other_means
 			for conn <- om do
-				if (feasibility_check(conn) == :true && pref_check(conn) == :true) do
-					itinerary = update_query(conn, itinerary)
+				if (feasibility_check(conn, itinerary, sch_om) == :true && 
+					pref_check(conn, itinerary) == :true) do
+					itinerary = itinerary ++ [conn]
 					send_to_neighbour(conn, itinerary)
 					next_state(:query_fulfilment_check)
 				end
@@ -154,9 +219,11 @@ defmodule Station do
 
 			sched = station_vars.schedule
 			# Iterate over list schedule
+			sch_om = :schedule
 			for conn <- sched do
-				if (feasibility_check(conn) == :true && pref_check(conn) == :true) do
-					itinerary = update_query(conn, itinerary)
+				if (feasibility_check(conn, itinerary, sch_om) == :true && 
+					pref_check(conn, itinerary) == :true) do
+					itinerary = itinerary ++ [conn]
 					send_to_neighbour(conn, itinerary)
 					next_state(:query_fulfilment_check)
 				end
