@@ -13,7 +13,7 @@ defmodule TS.Mixfile do
 		 name: "TransportScheduler",
 		 source_url: "https://github.com/prasadtalasila/TransportScheduler",
 		 docs: [main: "TS",
-			extras: ["Usage.md"]
+			extras: ["README.md"]
 		       ]
 		]
 	end

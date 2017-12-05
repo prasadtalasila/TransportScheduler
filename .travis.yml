@@ -1,14 +1,15 @@
 language: elixir
 elixir:
-- 1.4.1
+  - 1.4.1
 otp_release:
-- 19.0
+  - 19.0
 
 install:
-- bash script/travis-install
+  - bash script/travis-install
 
 script:
-- bash script/travis-script
+  - bash script/travis-script
 
 after_success:
-- bash script/travis-after-success
+  - bash script/travis-after-success
+  - bash script/travis-deploy
