@@ -12,4 +12,11 @@ script:
 
 after_success:
   - bash script/travis-after-success
-  - bash script/travis-deploy
+
+deploy:
+  skip_cleanup: true
+  provider: script
+  script: bash script/travis-deploy
+  on:
+    branch: dev
+

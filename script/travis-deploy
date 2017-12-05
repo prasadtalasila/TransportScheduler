@@ -10,6 +10,5 @@
 
 set -e
 
-#build documentation
-mix docs
-
+#build and deploy docs to gh-pages branch
+bash script/docs_auto_deploy.sh
