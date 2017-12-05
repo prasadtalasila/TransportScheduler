@@ -8,7 +8,7 @@
     <title>TS.Supervisor – TransportScheduler v0.1.0</title>
     <link rel="stylesheet" href="dist/app-af302bfcc4.css" />
     
-    <script src="dist/sidebar_items-7722b556df.js"></script>
+    <script src="dist/sidebar_items-af38e2bac4.js"></script>
   </head>
   <body data-type="modules">
     <script>try { if(localStorage.getItem('night-mode')) document.body.className += ' night-mode'; } catch (e) { }</script>
@@ -97,10 +97,13 @@ and strategies mentioned.</p>
     </h2>
     <div class="summary-row">
   <div class="summary-signature">
-    <a href="#init/1">init(atom)</a>
+    <a href="#init/1">init(arg)</a>
   </div>
   
-    <div class="summary-synopsis"><p>Callback invoked to start the supervisor and during hot code upgrades</p>
+    <div class="summary-synopsis"><p>Dynamically adds a child specification to supervisor and starts that child.
+child_spec should be a valid child specification (unless the supervisor is a
+:simple_one_for_one supervisor). The child process will be started as defined
+in the child specification</p>
 </div>
   
 </div>
@@ -138,9 +141,9 @@ and strategies mentioned.</p>
     <a href="#init/1" class="detail-link" title="Link to this function">
       <i class="icon-link"></i>
     </a>
-    <span class="signature">init(atom)</span>
+    <span class="signature">init(arg)</span>
     
-      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/supervisor.ex#L67" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/supervisor.ex#L11" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -148,8 +151,34 @@ and strategies mentioned.</p>
     
   </div>
   <section class="docstring">
-    <p>Callback invoked to start the supervisor and during hot code upgrades.</p>
-<p>Callback implementation for <a href="https://hexdocs.pm/elixir/Supervisor.html#c:init/1"><code class="inline">Supervisor.init/1</code></a>.</p>
+    <p>Dynamically adds a child specification to supervisor and starts that child.
+child_spec should be a valid child specification (unless the supervisor is a
+:simple_one_for_one supervisor). The child process will be started as defined
+in the child specification.</p>
+<p>In the case of :simple_one_for_one, the child specification defined in the
+supervisor is used and instead of a child_spec, an arbitrary list of terms is
+expected. The child process will then be started by appending the given list
+to the existing function arguments in the child specification.</p>
+<h3>Parameters</h3>
+<p>For API, required parameters passed to Supervisor function are
+<code class="inline">Supervisor.start_child(@name, [])</code>, specifying:</p>
+<p>supervisor_name</p>
+<p>child_specs_or_args</p>
+<h3>Return values</h3>
+<p>If a child specification with the specified id already exists, child_spec is
+discarded and this function returns an error with :already_started or
+:already_present if the corresponding child process is running or not,
+respectively.</p>
+<p>If the child process start function returns {:ok, child} or {:ok, child, info},
+then child specification and PID are added to the supervisor and this function
+returns the same value.</p>
+<p>If the child process start function returns :ignore, the child specification is
+added to the supervisor, the PID is set to :undefined and this function returns
+{:ok, :undefined}.</p>
+<p>If the child process start function returns an error tuple or an erroneous
+value, or if it fails, the child specification is discarded and this function
+returns {:error, error} where error is a term containing information about
+the error and child specification.</p>
 
   </section>
 </div>
@@ -161,7 +190,7 @@ and strategies mentioned.</p>
     </a>
     <span class="signature">start_link()</span>
     
-      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/supervisor.ex#L63" class="view-source" rel="help" title="View Source">
+      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/supervisor.ex#L79" class="view-source" rel="help" title="View Source">
        <i class="icon-code"></i>
      </a>
     
@@ -174,11 +203,31 @@ and strategies mentioned.</p>
 given module, with arg as its argument. The <a href="#init/1"><code class="inline">init/1</code></a> callback must return
 a supervisor specification which can be created with the help of the
 functions in the Supervisor.Spec module.</p>
+<p>###Function of Supervisor
+The module TS.Supervisor is the top level supervisor for the project. The
+children of a Supervisor can be workers or supervisors. TS.Supervisor spawns
+three children, the Network Constructor (worker), the API (worker)
+and a Station Supervisor (Supervisor).</p>
 <h3>Parameters</h3>
 <p>For TS, required parameters passed to Supervisor function are
 <code class="inline">Supervisor.start_link(__MODULE__, :ok)</code>, specifying:</p>
 <p>module_name</p>
 <p>args</p>
+<p>options:</p>
+<ul>
+<li>:name - used for name registration
+</li>
+<li>:timeout - if present, the server is allowed to spend the given amount
+of milliseconds initializing or it will be terminated and the start function
+will return {:error, :timeout}
+</li>
+<li>:debug - if present, the corresponding function in the :sys module is
+invoked
+</li>
+<li>:spawn_opt - if present, its value is passed as options to the underlying
+process
+</li>
+</ul>
 <h3>Strategies</h3>
 <p>Supervisors support different supervision strategies (through the
 :strategy option):</p>

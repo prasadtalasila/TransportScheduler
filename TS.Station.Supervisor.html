@@ -8,7 +8,7 @@
     <title>TS.Station.Supervisor – TransportScheduler v0.1.0</title>
     <link rel="stylesheet" href="dist/app-af302bfcc4.css" />
     
-    <script src="dist/sidebar_items-7722b556df.js"></script>
+    <script src="dist/sidebar_items-af38e2bac4.js"></script>
   </head>
   <body data-type="modules">
     <script>try { if(localStorage.getItem('night-mode')) document.body.className += ' night-mode'; } catch (e) { }</script>
@@ -97,15 +97,6 @@ exit reasons and strategies mentioned.</p>
     </h2>
     <div class="summary-row">
   <div class="summary-signature">
-    <a href="#init/1">init(atom)</a>
-  </div>
-  
-    <div class="summary-synopsis"><p>Callback invoked to start the supervisor and during hot code upgrades</p>
-</div>
-  
-</div>
-<div class="summary-row">
-  <div class="summary-signature">
     <a href="#start_link/0">start_link()</a>
   </div>
   
@@ -141,28 +132,7 @@ exit reasons and strategies mentioned.</p>
             </a>
             Functions
           </h1>
-          <div class="detail" id="init/1">
-  
-  <div class="detail-header">
-    <a href="#init/1" class="detail-link" title="Link to this function">
-      <i class="icon-link"></i>
-    </a>
-    <span class="signature">init(atom)</span>
-    
-      <a href="https://github.com/prasadtalasila/TransportScheduler/blob/master/lib/ts/station_supervisor.ex#L120" class="view-source" rel="help" title="View Source">
-       <i class="icon-code"></i>
-     </a>
-    
-    
-    
-  </div>
-  <section class="docstring">
-    <p>Callback invoked to start the supervisor and during hot code upgrades.</p>
-<p>Callback implementation for <a href="https://hexdocs.pm/elixir/Supervisor.html#c:init/1"><code class="inline">Supervisor.init/1</code></a>.</p>
-
-  </section>
-</div>
-<div class="detail" id="start_link/0">
+          <div class="detail" id="start_link/0">
   
   <div class="detail-header">
     <a href="#start_link/0" class="detail-link" title="Link to this function">
@@ -179,8 +149,8 @@ exit reasons and strategies mentioned.</p>
   </div>
   <section class="docstring">
     <p>Starts a station supervisor process with the given module and arg.</p>
-<p>To start the supervisor, the <a href="#init/1"><code class="inline">init/1</code></a> callback will be invoked in the
-given module, with arg as its argument. The <a href="#init/1"><code class="inline">init/1</code></a> callback must
+<p>To start the supervisor, the <code class="inline">init/1</code> callback will be invoked in the
+given module, with arg as its argument. The <code class="inline">init/1</code> callback must
 return a supervisor specification which can be created with the help of
 the functions in the Supervisor.Spec module.</p>
 <h3>Parameters</h3>
@@ -240,7 +210,7 @@ unless they’re trapping exits.
 </li>
 </ul>
 <h3>Return values</h3>
-<p>If the <a href="#init/1"><code class="inline">init/1</code></a> callback returns :ignore, this function returns :ignore as
+<p>If the <code class="inline">init/1</code> callback returns :ignore, this function returns :ignore as
 well and the supervisor terminates with reason :normal. If it fails or
 returns an incorrect value, this function returns {:error, term} where
 term is a term with information about the error, and the supervisor

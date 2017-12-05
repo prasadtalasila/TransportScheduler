@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="ExDoc v0.15.1">
+    <title>TransportScheduler – TransportScheduler v0.1.0</title>
+    <link rel="stylesheet" href="dist/app-af302bfcc4.css" />
+    
+    <script src="dist/sidebar_items-af38e2bac4.js"></script>
+  </head>
+  <body data-type="extras">
+    <script>try { if(localStorage.getItem('night-mode')) document.body.className += ' night-mode'; } catch (e) { }</script>
+
+<div class="main">
+<button class="sidebar-toggle">
+  <i class="icon-menu"></i>
+</button>
+<section class="sidebar">
+
+  
+  <a href="TS.html" class="sidebar-projectLink">
+    <div class="sidebar-projectDetails">
+      <h1 class="sidebar-projectName">
+        TransportScheduler
+      </h1>
+      <h2 class="sidebar-projectVersion">
+        v0.1.0
+      </h2>
+    </div>
+    
+  </a>
+
+  <div class="sidebar-search">
+    <i class="icon-search"></i>
+    <input type="text" class="sidebar-searchInput" placeholder="search" autocomplete="off" />
+  </div>
+
+  <ul class="sidebar-listNav">
+    <li><a id="extras-list" href="#full-list">Pages</a></li>
+
+    
+      <li><a id="modules-list" href="#full-list">Modules</a></li>
+    
+
+    
+
+    
+  </ul>
+  <div class="gradient"></div>
+  <ul id="full-list" class="sidebar-fullList"></ul>
+</section>
+
+<section class="content">
+  <div class="content-outer">
+    <div id="content" class="content-inner">
+
+
+<h1>TransportScheduler</h1>
+<p><a href="https://travis-ci.org/prasadtalasila/TransportScheduler"><img src="https://travis-ci.org/prasadtalasila/TransportScheduler.svg?branch=master" alt="Build Status"/></a> <a href="https://coveralls.io/github/prasadtalasila/TransportScheduler?branch=master"><img src="https://coveralls.io/repos/github/prasadtalasila/TransportScheduler/badge.svg?branch=master" alt="Coverage Status"/></a> <a href="https://codeclimate.com/github/prasadtalasila/TransportScheduler"><img src="https://codeclimate.com/github/prasadtalasila/TransportScheduler/badges/gpa.svg" alt="Code Climate"/></a> <a href="https://www.gnu.org/licenses/gpl-3.0"><img src="https://img.shields.io/badge/License-GPL%2520v3-blue.svg" alt="License: GPL v3"/></a></p>
+<p>TransportScheduler is an interactive journey planner service. TransportScheduler takes the timetables of public transit operators. Users can send itinirary search queries and receive a list of feasible itineraries as a response. The system has been tested on the timetables of the public transit networks of India.</p>
+<p>We summarized the theoretical techniques used for building this software in a <a href="https://www.dropbox.com/s/l6rz6ak328iehz7/ts.pdf?dl=1">technical report</a>.</p>
+<h2 id="usage" class="section-heading">
+  <a href="#usage" class="hover-link"><i class="icon-link"></i></a>
+  Usage
+</h2>
+
+<h3>Installation</h3>
+<p>Please follow the <a href="INSTALL.md">installation</a> instructions to get the required Erlang + Elixir run-time environment. We also have a Vagrant-based setup that follows GitHub’s scripting principles for its operation. Please see <a href="script/">script</a> directory for relevant information.</p>
+<h3>Application Setup</h3>
+<p>Once installation is complete, you can proceed with compilation and testing of the TransportScheduler application.</p>
+<pre><code class="bash">git clone https://github.com/prasadtalasila/TransportScheduler.git
+cd TransportScheduler
+mix deps.get
+mix compile
+mix test</code></pre>
+<p>Run the following command to build a release, and copy data directory into build path:</p>
+<pre><code class="bash">mix release
+cp -r data/ _build/dev/rel/ts</code></pre>
+<p>Run the following command to run the application interactively:</p>
+<pre><code class="bash">_build/dev/rel/ts/bin/ts console</code></pre>
+<p>Issue the following cURL command (in a separate terminal) for initialisation of the network:</p>
+<pre><code class="bash">curl http://localhost:8880/api</code></pre>
+<p>Other cURL commands to query the network (as mentioned in ‘Testing’) can now be issued.</p>
+<p>To stop the Erlang runtime and exit the TS console:</p>
+<pre><code class="elixir">System.halt</code></pre>
+<h3>Testing</h3>
+<p>For testing the API, following cURL commands are issued to:</p>
+<ol>
+<li>Obtain Schedule of a Station:  
+</li>
+</ol>
+<pre><code class="bash">curl -X GET &#39;http://localhost:8880/api/station/schedule?station_code=%STATION_CODE%&amp;date=%DATE%&#39;</code></pre>
+<p>where <code class="inline">%STATION_CODE%</code> is a positive integer indicating the station code of the source and <code class="inline">%DATE%</code> is the date of travel in the format ‘dd-mm-yyyy’.</p>
+<ol start="2">
+<li>Obtain State of a Station:  
+</li>
+</ol>
+<pre><code class="bash">curl -X GET &#39;http://localhost:8880/api/station/state?station_code=%STATION_CODE%&#39;</code></pre>
+<p>where <code class="inline">%STATION_CODE%</code> is a positive integer indicating the required station code.</p>
+<ol start="3">
+<li>Obtain Travel Itinerary:
+</li>
+</ol>
+<pre><code class="bash">curl -X GET &#39;http://localhost:8880/api/search?source=%SOURCE%&amp;destination=%DESTINATION%&amp;start_time=%START_TIME%&amp;end_time=%END_TIME%&amp;date=%DATE%&#39;</code></pre>
+<p>where <code class="inline">%SOURCE%</code> and <code class="inline">%DESTINATION%</code> are positive integers indicating the station codes of the source and destination respectively, <code class="inline">%START_TIME%</code> and <code class="inline">%END_TIME%</code> are non-negative integers indicating start and end times of the itinerary in seconds from 12 am, and <code class="inline">%DATE%</code> is the date of travel in the format ‘dd-mm-yyyy’.</p>
+<h3>Deployment</h3>
+<p>Run the following commands to deploy (currently server and user are localhost): <strong>UNTESTED</strong>    </p>
+<pre><code class="bash">mix edeliver build release
+mix edeliver deploy release</code></pre>
+<p>Run the following command to start application: <strong>UNTESTED</strong>   </p>
+<pre><code class="bash">mix edeliver start
+cp -r data/ /home/$USER/test/ts</code></pre>
+<h3>Benchmark Tests</h3>
+<p>For running the respective benchmarks (async/synchronous), use</p>
+<pre><code class="bash">mix sync_benchmark
+mix async_benchmark</code></pre>
+<p>A shell script for running the synchronous benchmark multiple times is:</p>
+<pre><code class="bash">for i in $(seq 1 $n); do mix benchmark [2&gt;/dev/null | grep -C 2 &quot;^Start time: &quot;]; done [&gt; ~/file.out]</code></pre>
+<p>where <code class="inline">$n</code> is the number of random queries over which the benchmark must be run. <code class="inline">file.out</code> is the file that will store the log thus generated by the benchmark. The portion of the command in [square brackets] is optional.</p>
+<p>Automatically, three files <code class="inline">async_test.csv</code>, <code class="inline">sync_test.csv</code> and <code class="inline">times.csv</code> are created in the <code class="inline">data/</code> directory.</p>
+
+      <footer class="footer">
+        <p>
+          <span class="line">
+            Built using
+            <a href="https://github.com/elixir-lang/ex_doc" title="ExDoc" rel="help" target="_blank">ExDoc</a> (v0.15.1),
+          </span>
+          <span class="line">
+            designed by
+            <a href="https://twitter.com/dignifiedquire" target="_blank" title="@dignifiedquire">Friedel Ziegelmayer</a>.
+            </span>
+        </p>
+        <button class="night-mode-toggle" />
+      </footer>
+    </div>
+  </div>
+</section>
+</div>
+  <script src="dist/app-e9767fa739.js"></script>
+  </body>
+</html>
+
