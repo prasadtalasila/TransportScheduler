@@ -1,24 +1,23 @@
-# TS
+# TransportScheduler #
 
-[![Build Status](https://travis-ci.org/prasadtalasila/TransportScheduler.svg?branch=master)](https://travis-ci.org/prasadtalasila/TransportScheduler) [![Coverage Status](https://coveralls.io/repos/github/prasadtalasila/TransportScheduler/badge.svg?branch=master)](https://coveralls.io/github/prasadtalasila/TransportScheduler?branch=master) [![Code Climate](https://codeclimate.com/github/prasadtalasila/TransportScheduler/badges/gpa.svg)](https://codeclimate.com/github/prasadtalasila/TransportScheduler)
+[![Build Status](https://travis-ci.org/prasadtalasila/TransportScheduler.svg?branch=master)](https://travis-ci.org/prasadtalasila/TransportScheduler) [![Coverage Status](https://coveralls.io/repos/github/prasadtalasila/TransportScheduler/badge.svg?branch=master)](https://coveralls.io/github/prasadtalasila/TransportScheduler?branch=master) [![Code Climate](https://codeclimate.com/github/prasadtalasila/TransportScheduler/badges/gpa.svg)](https://codeclimate.com/github/prasadtalasila/TransportScheduler) [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
-TransportScheduler application dependencies:   
-GenStateMachine for station FSM and GenServer for IPC.   
-Maru for RESTful API implementation.   
-Edeliver using Distillery for building releases and deployment.   
+TransportScheduler is an interactive journey planner service. TransportScheduler takes the timetables of public transit operators. Users can send itinirary search queries and receive a list of feasible itineraries as a response. The system has been tested on the timetables of the public transit networks of India.
 
-Other packages used:   
-ExCoveralls for test coverage.   
-ExProf for profiling.   
-Credo for code quality.   
-
+We summarized the theoretical techniques used for building this software in a [technical report](https://www.dropbox.com/s/l6rz6ak328iehz7/ts.pdf?dl=1).
 
 ## Usage
 
-### Setup
+### Installation
 
-Run the following commands to compile:
+Please follow the [installation](INSTALL.md) instructions to get the required Erlang + Elixir run-time environment. We also have a Vagrant-based setup that follows GitHub's scripting principles for its operation. Please see [script](script/) directory for relevant information.
+
+### Application Setup
+
+Once installation is complete, you can proceed with compilation and testing of the TransportScheduler application.
+
 ```bash
+git clone https://github.com/prasadtalasila/TransportScheduler.git
 cd TransportScheduler
 mix deps.get
 mix compile
