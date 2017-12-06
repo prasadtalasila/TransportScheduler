@@ -1,17 +1,13 @@
 defmodule MockStation do
 
-	use GenServer, async: true
+  use GenServer, async: true
 
-	def start_link(function) do
-		#
-	end
-
-	def init(function) do
+  def init(function) do
 		{:ok, function}
 	end
 
-	def handle_cast({:receive_at_stn, src, itinerary}, function) do
-		(elem(function,0)).(src, itinerary)
+  def handle_cast({:receive_at_stn, src, itinerary}, function) do
+    (elem(function,0)).(src, itinerary)
 		{:noreply, function}
 	end
 
