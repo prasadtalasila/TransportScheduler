@@ -11,7 +11,7 @@ defmodule Station do
 	# Client-Side functions
 
 	def start_link([station_vars, registry, qc]) do
-		GenServer.start_link(__MODULE__, [station_vars, registry, qc])
+		GenServer.start_link(Station, [station_vars, registry, qc])
 	end
 
 	def get_vars(stn) do
@@ -55,8 +55,7 @@ defmodule Station do
 	end
 
 	def handle_cast({:update, stn, new_vars}, {station_fsm}) do
-		# StationFsm.transition(station_fsm, :update, [new_vars])
-		# {:noreply, {station_fsm}}
+		:updated
 	end
 
 	def handle_cast({:receive_at_src, src, itinerary}, {station_fsm}) do
