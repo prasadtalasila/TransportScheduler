@@ -13,7 +13,6 @@ defmodule StationTest do
 	import Mox
 
 	setup_all do
-		set_mox_global()
 		Mox.defmock(MockCollector, for: TS.Collector)
 		Mox.defmock(MockRegister, for: TS.Registry)
 		:ok
@@ -29,14 +28,11 @@ defmodule StationTest do
 			"congestion": "low", "disturbance": "no"},
 			schedule: [], congestion_low: 4, choose_fn: 1}
 
-		# {:ok, station} = start_supervised(Station,[stationState,
-		# 	MockRegister, MockCollector])
 		{:ok, station} = Station.start_link([stationState,
 			MockRegister, MockCollector])
 
 		# Verify values from StationStruct
 		assert Station.get_vars(station).loc_vars.delay == 0.38
-		#assert Station.get_vars(station).loc_vars.congestion_delay == 0.38 * 4
 		assert Station.get_state(station) == :ready
 	end
 
@@ -51,8 +47,6 @@ defmodule StationTest do
 			station_name: "Mumbai", congestion_low: 3, choose_fn: 2}
 
 		# Start the server
-		#{:ok, station} = start_supervised(Station,[stationState,
-		#	MockRegister, MockCollector])
 
 		{:ok, station} = Station.start_link([stationState,
 			MockRegister, MockCollector])
@@ -65,7 +59,6 @@ defmodule StationTest do
 		# Retrieve other values from StationStruct
 		assert Station.get_vars(station).station_number == 1710
 		assert Station.get_vars(station).station_name == "Mumbai"
-		#assert Station.get_vars(station).congestion_delay == 0.12 * 3 + 0.2
 	end
 
 	# Test 3
@@ -79,14 +72,9 @@ defmodule StationTest do
 			schedule: [], congestion_low: 4, choose_fn: 1}
 
 		# Start the server
-		# {:ok, station} = start_supervised(Station,[stationState,
-		# 	MockRegister, MockCollector])
 
 		{:ok, station} = Station.start_link([stationState,
-			MockRegister, MockCollector])
-
-		# Check to see if change has taken place
-		# assert Station.get_vars(station).loc_vars.congestion_delay == 0.38 * 4
+			MockRegister, MockCollector]) 
 
 		# Update state again
 		Station.update(station, %StationStruct{loc_vars: %{"delay": 0.0,
@@ -95,7 +83,7 @@ defmodule StationTest do
 
 		# Check to see if update has taken place
 		assert Station.get_vars(station).loc_vars.disturbance == "no"
-		# assert Station.get_vars(station).loc_vars.congestion_delay == 0.0
 		assert Station.get_vars(station).station_name == "Panjim"
 	end
+
 end
