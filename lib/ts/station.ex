@@ -10,28 +10,28 @@ defmodule Station do
 
 	# Client-Side functions
 
+	# Starting the GenServer
+
 	def start_link([station_vars, registry, qc]) do
 		GenServer.start_link(Station, [station_vars, registry, qc])
 	end
+
+	# Getting the local variables
 
 	def get_vars(stn) do
 		GenServer.call(stn, :get_vars)
  	end
 
+ 	# Getting the current state
+
 	def get_state(stn) do
 		GenServer.call(stn, :get_state)
 	end
 
+	# Updating the current state
+
 	def update(stn, new_vars) do
 		GenServer.cast(stn, {:update, new_vars}) 
-	end
-
-	def receive_at_src(src, itinerary) do
-		GenServer.cast(src, {:receive_at_src, src, itinerary})
-	end
-
-	def send_to_stn(src, dst, itinerary) do
-		GenServer.cast(dst, {:send_to_stn, src, itinerary})
 	end
 
 	# Callbacks
@@ -49,31 +49,13 @@ defmodule Station do
 	end
 
 	def handle_call(:get_state, _from, {station_fsm}) do
-		fsm_state = station_fsm.state
+		fsm_state = StationFsm.state(station_fsm)
 		{:reply, fsm_state, {station_fsm}}
-
 	end
 
-	def handle_cast({:update, stn, new_vars}, {station_fsm}) do
-		:updated
-	end
-
-	def handle_cast({:receive_at_src, src, itinerary}, {station_fsm}) do
-		# StationFsm.transition(station_fsm, :query_input, [itinerary]) |>
-		# StationFsm.transition(:check_query_status, [])
-
-		# fsm_state = StationFsm.state(station_fsm)
-		# case fsm_state do
-		# 	:query_init ->
-		# 		StationFsm.transition(station_fsm, :initialize, [])
-		# 		# check-stop - compute-connections loop
-		# 	_ ->
-		# end 
-		# {:noreply, {station_fsm}}
-	end
-
-	def handle_cast({:send_to_stn, src, itinerary}, {station_fsm}) do
-		# StationFsm.transition(station_fsm, :send_to_stn, [itinerary])
+	def handle_cast({:update, new_vars}, {station_fsm}) do
+		station_fsm = StationFsm.update(station_fsm, new_vars)		
+		{:noreply, {station_fsm}}
 	end
 
 end

@@ -8,9 +8,9 @@ defmodule StationFsm do
 	# Check if the query is valid / completed / invalid
 
 	def query_status(station_vars, registry, itinerary) do
-		[query] = Enum.take(itinerary, 1)
-		[last] = Enum.take(itinerary, -1)
 		self = station_vars.station_number
+		[last] = Enum.take(itinerary, -1)
+		[query] = Enum.take(itinerary, 1)
 
 		# Checking for validity
 		# Check for timeout, loops and receiving of a wrong query
@@ -128,7 +128,7 @@ defmodule StationFsm do
 		# send itinerary to
 		registry.lookup_code(conn[:dst_station])
 		# next_station.query_input(itinerary)
-		# GenServer.cast(next_station_pid, itinerary)
+		# Station.send_to_stn(next_station_pid, itinerary)
 	end
 
 	def iterate_over_schedule([], itinerary, sch_om, 
