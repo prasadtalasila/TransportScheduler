@@ -11,3 +11,6 @@
 set -e
 
 echo "Hello World"
+
+# export code coverage report to codecov
+bash <(curl -s https://codecov.io/bash)

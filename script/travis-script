@@ -18,6 +18,10 @@ mix compile
 # shellcheck disable=SC2037
 MIX_ENV=test mix coveralls.travis
 
+# report test coverage to codecov
+# shellcheck disable=SC2037
+MIX_ENV=test mix do compile coveralls.json
+
 # lint code using credo
 # shellcheck disable=SC2037
 MIX_ENV=test mix credo --strict
