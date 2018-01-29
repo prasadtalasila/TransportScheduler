@@ -7,7 +7,32 @@ defmodule StationFsm do
 
 	# Function definitions
 
-	# Check if the query is valid / completed / invalid
+	def process_itinerary(station_fsm, itinerary)  do
+		station_fsm = station_fsm |>
+		StationFsm.query_input(itinerary) |>
+		StationFsm.check_query_status
+
+		station_fsm = if StationFsm.state(station_fsm) != :ready do
+			StationFsm.initialize(station_fsm)
+		else
+			station_fsm
+		end
+
+		if StationFsm.state(station_fsm) != :ready do
+			StationFsm.process_station_schedule(station_fsm)
+		else
+			station_fsm
+		end
+	end
+
+	def get_timetable(station_fsm) do
+		station_state = station_fsm
+		|> StationFsm.data
+		|> Enum.at(0)
+
+		station_state.schedule
+	end
+
 
 	def process_station_schedule(station_fsm) do
 		station_fsm = StationFsm.check_stop(station_fsm)
@@ -26,6 +51,8 @@ defmodule StationFsm do
 			[]
 		end
 	end
+
+	# Check if the query is valid / completed / invalid
 
 	def query_status(station_vars, registry, itinerary) do
 		self = station_vars.station_number
