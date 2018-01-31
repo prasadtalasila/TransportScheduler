@@ -9,6 +9,7 @@ defmodule StationTest do
 
 	#The test values for the station states and itineraries are as of yet unassigned
 
+	#set async:true in test servers for concurrent tests
 	use ExUnit.Case, async: false
 	import Mox
 
@@ -20,73 +21,64 @@ defmodule StationTest do
 
 	# Test 1
 
-	# Test to see if the given state is stored by updating
-	# some variables
-	test "stores the given state" do
-		# Start the server
-		stationState = %StationStruct{loc_vars: %{"delay": 0.38,
-			"congestion": "low", "disturbance": "no"},
-			schedule: [], congestion_low: 4, choose_fn: 1}
-
-		{:ok, station} = Station.start_link([stationState,
-			MockRegister, MockCollector])
-
-		# Verify values from StationStruct
-		assert Station.get_vars(station).loc_vars.delay == 0.38
-		assert Station.get_state(station) == :ready
-	end
-
-	# Test 2
-
 	# Test to see if data can be retrieved from the station correctly
-	test "retrieving the given state" do
+	test "retrieving the given schedule" do
 
-		stationState = %StationStruct{loc_vars: %{"delay": 0.12,
+		#Station Schedule
+		schedule = [%{vehicleID: "100", src_station: 1, mode_of_transport: "bus",
+		dst_station: 2, dept_time: 25_000, arrival_time: 35_000}]
+
+		station_state = %StationStruct{loc_vars: %{"delay": 0.12,
 			"congestion": "low", "disturbance": "no"},
-			schedule: [], station_number: 1710,
+			schedule: schedule, station_number: 1710,
 			station_name: "Mumbai", congestion_low: 3, choose_fn: 2}
 
 		# Start the server
 
-		{:ok, station} = Station.start_link([stationState,
-			MockRegister, MockCollector])
+		{:ok, pid} = start_supervised({Station, [station_state,
+		MockRegister, MockCollector]})
 
-		# Retrieve values from loc_vars
-		assert Station.get_vars(station).loc_vars.delay == 0.12
-		assert Station.get_vars(station).loc_vars.congestion == "low"
-		assert Station.get_vars(station).loc_vars.disturbance == "no"
+		# Retrieve Time Table
+		assert Station.get_timetable(pid) == schedule
 
-		# Retrieve other values from StationStruct
-		assert Station.get_vars(station).station_number == 1710
-		assert Station.get_vars(station).station_name == "Mumbai"
 	end
 
-	# Test 3
+	# Test 2
 
-	# Test to see if the state gets updated once new variable
-	# values are given
-	test "updating the given state" do
+	# Test to see if the station schedule can be updated
+	test "updating the station schedule" do
 
-		stationState = %StationStruct{loc_vars: %{"delay": 0.38,
+		#Station Schedule
+		schedule = [%{vehicleID: "100", src_station: 1, mode_of_transport: "bus",
+		dst_station: 2, dept_time: 25_000, arrival_time: 35_000}]
+
+		new_schedule = [%{vehicleID: "88", src_station: 1, mode_of_transport: "train",
+		dst_station: 2, dept_time: 12_000, arrival_time: 24_000},
+		%{vehicleID: "100", src_station: 1, mode_of_transport: "bus",
+		dst_station: 2, dept_time: 25_000, arrival_time: 35_000}]
+
+		station_state = %StationStruct{loc_vars: %{"delay": 0.12,
 			"congestion": "low", "disturbance": "no"},
-			schedule: [], congestion_low: 4, choose_fn: 1}
+			schedule: schedule, station_number: 1710,
+			station_name: "Mumbai", congestion_low: 3, choose_fn: 2}
+
+
 
 		# Start the server
 
-		{:ok, station} = Station.start_link([stationState,
-			MockRegister, MockCollector])
+		{:ok, pid} = start_supervised({Station, [station_state,
+		MockRegister, MockCollector]})
 
-		# Update state again
-		Station.update(station, %StationStruct{loc_vars: %{"delay": 0.0,
-			"congestion": "none", "disturbance": "no"},
-			schedule: [], station_name: "Panjim", choose_fn: 1})
+		new_station_state = %{station_state | schedule: new_schedule}
 
-		# Check to see if update has taken place
-		assert Station.get_vars(station).loc_vars.disturbance == "no"
-		assert Station.get_vars(station).station_name == "Panjim"
+		Station.update(pid, new_station_state)
+
+		# Retrieve the Time Table and check if it has been updated
+		assert Station.get_timetable(pid) == new_schedule
+
 	end
 
-	# Test 4
+	# Test 3
 	test "Receive a itinerary search query" do
 
 		# Set function parameters to arbitrary values.
@@ -94,7 +86,7 @@ defmodule StationTest do
 		query = [%{qid: "0300", src_station: 0, dst_station: 3, day: 0, arrival_time: 0}]
 		# Any errors due to invalid values do not matter as they will come into
 
-		stationState = %StationStruct{loc_vars: %{"delay": 0.38,
+		station_state = %StationStruct{loc_vars: %{"delay": 0.38,
 			"congestion": "low", "disturbance": "no"},
 			schedule: [%{vehicleID: "100", src_station: 1, mode_of_transport: "bus",
 			dst_station: 2, dept_time: 25_000, arrival_time: 35_000}], station_number: 1,
@@ -114,7 +106,7 @@ defmodule StationTest do
 		|> expect(:lookup_code, fn(_) -> neighbour end)
 
 		#start station
-		{:ok, pid} = start_supervised({Station, [stationState, MockRegister, MockCollector]})
+		{:ok, pid} = start_supervised({Station, [station_state, MockRegister, MockCollector]})
 
 		#Give The Station Process access to mocks defined in the test process
 		allow(MockRegister, test_proc, pid)
@@ -126,9 +118,9 @@ defmodule StationTest do
 		assert_receive :query_received
 	end
 
-	# Test 5
+	# Test 4
 	test "Send completed search query to neighbours" do
-		stationState = %StationStruct{loc_vars: %{"delay": 0.38,
+		station_state = %StationStruct{loc_vars: %{"delay": 0.38,
 			"congestion": "low", "disturbance": "no"},
 			schedule: [%{vehicleID: "100", src_station: 1, mode_of_transport: "bus",
 			dst_station: 2, dept_time: 25_000, arrival_time: 35_000}], station_number: 1,
@@ -146,7 +138,7 @@ defmodule StationTest do
 		mock_send_to_stn = {fn(_) -> send(test_proc, :query_received)
 			end}
 
-		{:ok, pid} = start_supervised({Station, [stationState,
+		{:ok, pid} = start_supervised({Station, [station_state,
 			MockRegister, MockCollector]})
 		{:ok, neighbour} = start_supervised({MockStation, mock_send_to_stn})
 
@@ -164,10 +156,9 @@ defmodule StationTest do
 		assert_receive :query_received
 	end
 
-	# Test 6
-
+	# Test 5
 	test "Does not forward stale queries" do
-		stationState = %StationStruct{loc_vars: %{"delay": 0.38,
+		station_state = %StationStruct{loc_vars: %{"delay": 0.38,
 			"congestion": "low", "disturbance": "no"},
 			schedule: [%{vehicleID: "100", src_station: 1, mode_of_transport: "bus",
 			dst_station: 2, dept_time: 25_000, arrival_time: 35_000}], station_number: 1,
@@ -185,7 +176,7 @@ defmodule StationTest do
 		mock_send_to_stn = {fn(_) -> send(test_proc, :stale_query_forwarded)
 		end}
 
-		{:ok, pid} = start_supervised({Station, [stationState,
+		{:ok, pid} = start_supervised({Station, [station_state,
 			MockRegister, MockCollector]})
 		{:ok, neighbour} = start_supervised({MockStation, mock_send_to_stn})
 
@@ -204,9 +195,9 @@ defmodule StationTest do
 		refute_receive(:stale_query_forwarded)
 	end
 
-	# Test 7
+	# Test 6
 	test "Does not forward queries with self loops" do
-		stationState = %StationStruct{loc_vars: %{"delay": 0.38,
+		station_state = %StationStruct{loc_vars: %{"delay": 0.38,
 			"congestion": "low", "disturbance": "no"},
 			schedule: [%{vehicleID: "100", src_station: 1, mode_of_transport: "bus",
 			dst_station: 2, dept_time: 25_000, arrival_time: 35_000}], station_number: 1,
@@ -225,7 +216,7 @@ defmodule StationTest do
 		mock_send_to_stn = {fn(_) -> send(test_proc, :query_with_self_loop_forwarded)
 		end}
 
-		{:ok, pid} = start_supervised({Station, [stationState,
+		{:ok, pid} = start_supervised({Station, [station_state,
 			MockRegister, MockCollector]})
 		{:ok, neighbour} = start_supervised({MockStation, mock_send_to_stn})
 
@@ -243,10 +234,10 @@ defmodule StationTest do
 		# Query should not be forwarded to neighbour
 		refute_receive(:stale_query_forwarded)
 	end
-	
-	# Test 8
+
+	# Test 7
 	test "Incorrectly received queries are discarded" do
-		stationState = %StationStruct{loc_vars: %{"delay": 0.38,
+		station_state = %StationStruct{loc_vars: %{"delay": 0.38,
 			"congestion": "low", "disturbance": "no"},
 			schedule: [%{vehicleID: "100", src_station: 1, mode_of_transport: "bus",
 			dst_station: 2, dept_time: 25_000, arrival_time: 35_000}], station_number: 1,
@@ -265,7 +256,7 @@ defmodule StationTest do
 			send(test_proc, :incorrect_query_forwarded)
 		end}
 
-		{:ok, pid} = start_supervised({Station, [stationState,
+		{:ok, pid} = start_supervised({Station, [station_state,
 			MockRegister, MockCollector]})
 		{:ok, neighbour} = start_supervised({MockStation, mock_send_to_stn})
 
@@ -284,9 +275,10 @@ defmodule StationTest do
 		refute_receive(:incorrect_query_forwarded)
 	end
 
-	#Test 9
-	test "No query is forwarded from a Station with no viable paths." do
-		stationState = %StationStruct{loc_vars: %{"delay": 0.38,
+	#Test 8
+	test "No query is forwarded from a Station with no viable paths
+	(no viable neighbouring station)." do
+		station_state = %StationStruct{loc_vars: %{"delay": 0.38,
 			"congestion": "low", "disturbance": "no"},
 			schedule: [%{vehicleID: "100", src_station: 1, mode_of_transport: "bus",
 			dst_station: 2, dept_time: 15_000, arrival_time: 35_000}], station_number: 1,
@@ -305,7 +297,7 @@ defmodule StationTest do
 			send(test_proc, :query_forwarded)
 		end}
 
-		{:ok, pid} = start_supervised({Station, [stationState,
+		{:ok, pid} = start_supervised({Station, [station_state,
 			MockRegister, MockCollector]})
 		{:ok, neighbour} = start_supervised({MockStation, mock_send_to_stn})
 
@@ -325,9 +317,9 @@ defmodule StationTest do
 		refute_receive(:query_forwarded)
 	end
 
-	#Test 10
+	#Test 9
 	test "The correct itinerary is forwarded to the next station" do
-		stationState = %StationStruct{loc_vars: %{"delay": 0.38,
+		station_state = %StationStruct{loc_vars: %{"delay": 0.38,
 			"congestion": "low", "disturbance": "no"},
 			schedule: [%{vehicleID: "100", src_station: 1, mode_of_transport: "bus",
 			dst_station: 2, dept_time: 25_000, arrival_time: 35_000}], station_number: 1,
@@ -351,7 +343,7 @@ defmodule StationTest do
 
 		mock_receive_at_stn = {fn(y) -> send(test_proc, {:itinerary_received, y}) end}
 
-		{:ok, pid} = start_supervised({Station, [stationState,
+		{:ok, pid} = start_supervised({Station, [station_state,
 			MockRegister, MockCollector]})
 		{:ok, neighbour} = start_supervised({MockStation, mock_receive_at_stn})
 
@@ -370,9 +362,10 @@ defmodule StationTest do
 		assert_receive({:itinerary_received, ^proper_itinerary})
 	end
 
-	# Test 11
-	test "The correct itinerary is forwarded to the next station with the day updated" do
-		stationState = %StationStruct{loc_vars: %{"delay": 0.38,
+	# Test 10
+	test "The correct itinerary is forwarded to the next station with the
+	updated day" do
+		station_state = %StationStruct{loc_vars: %{"delay": 0.38,
 			"congestion": "low", "disturbance": "no"},
 			schedule: [%{vehicleID: "100", src_station: 1, mode_of_transport: "bus",
 			dst_station: 2, dept_time: 25_000, arrival_time: 35_000}], station_number: 1,
@@ -396,7 +389,7 @@ defmodule StationTest do
 
 		mock_receive_at_stn = {fn(y) -> send(test_proc, {:itinerary_received, y}) end}
 
-		{:ok, pid} = start_supervised({Station, [stationState,
+		{:ok, pid} = start_supervised({Station, [station_state,
 			MockRegister, MockCollector]})
 		{:ok, neighbour} = start_supervised({MockStation, mock_receive_at_stn})
 
@@ -415,9 +408,9 @@ defmodule StationTest do
 		assert_receive({:itinerary_received, ^proper_itinerary})
 	end
 
-	# Test 12
+	# Test 11
 	test "Terminated queries are handed over to query collector with correct itinerary" do
-		stationState = %StationStruct{loc_vars: %{"delay": 0.38,
+		station_state = %StationStruct{loc_vars: %{"delay": 0.38,
 			"congestion": "low", "disturbance": "no"},
 			schedule: [%{vehicleID: "100", src_station: 1, mode_of_transport: "bus",
 			dst_station: 2, dept_time: 25_000, arrival_time: 35_000}],
@@ -442,7 +435,7 @@ defmodule StationTest do
 		|> expect(:collect, fn(itinerary) -> send(test_proc, {:query_received, itinerary})
 		 end)
 
-		{:ok, pid} = start_supervised({Station, [stationState,
+		{:ok, pid} = start_supervised({Station, [station_state,
 			MockRegister, MockCollector]})
 
 		#Give The Station Process access to mocks defined in the test process
@@ -453,13 +446,13 @@ defmodule StationTest do
 		assert_receive({:query_received, ^proper_itinerary})
 	end
 
-	#Test 13
+	#Test 12
 	#Test to check if the station consumes a given number of
 	#streams within a stipulated amount of time.
 	test "Consumes rapid stream of mixed input queries" do
 		query = [%{qid: "0100", src_station: 0, dst_station: 1, day: 0, arrival_time: 0, end_time: 999_999}]
 
-		stationState = %StationStruct{loc_vars: %{"delay": 0.38,
+		station_state = %StationStruct{loc_vars: %{"delay": 0.38,
 			"congestion": "low", "disturbance": "no"},
 			schedule: [%{vehicleID: "100", src_station: 1, mode_of_transport: "bus",
 			dst_station: 2, dept_time: 25_000, arrival_time: 35_000}],
@@ -469,7 +462,7 @@ defmodule StationTest do
 		mock_receive_at_stn = {fn(_) -> false end}
 
 		# Start station
-		{:ok, pid} = start_supervised({Station, [stationState,
+		{:ok, pid} = start_supervised({Station, [station_state,
 			MockRegister, MockCollector]})
 		{:ok, mock_pid} = start_supervised({MockStation, mock_receive_at_stn})
 
