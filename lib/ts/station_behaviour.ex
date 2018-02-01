@@ -1,8 +1,9 @@
-defmodule StationBehaviour do
+defmodule TS.StationBehaviour do
 	@moduledoc """
 	Defines the interface of a Station.
 	"""
-	@callback get_vars(pid) :: {:next_state, term, term, term}
-	@callback get_state(pid) :: {:next_state, term, term, term}
-	@callback update(pid, struct) :: {:next_state, term, term}
+	@callback update(pid, struct) :: any()
+	@callback get_timetable(pid()) :: any()
+	@callback send_query(pid(), any()) :: any()
+
 end

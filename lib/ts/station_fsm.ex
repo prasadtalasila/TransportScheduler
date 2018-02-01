@@ -7,9 +7,33 @@ defmodule StationFsm do
 
 	# Function definitions
 
-	# Check if the query is valid / completed / invalid
+	def process_itinerary(station_fsm, itinerary)  do
+		station_fsm = station_fsm |>
+		StationFsm.query_input(itinerary) |>
+		StationFsm.check_query_status
 
-	def process_station_schedule(station_fsm) do
+		station_fsm = if StationFsm.state(station_fsm) != :ready do
+			StationFsm.initialize(station_fsm)
+		else
+			station_fsm
+		end
+
+		if StationFsm.state(station_fsm) != :ready do
+			process_station_schedule(station_fsm)
+		else
+			station_fsm
+		end
+	end
+
+	def get_timetable(station_fsm) do
+		station_state = station_fsm
+		|> StationFsm.data
+		|> Enum.at(0)
+
+		station_state.schedule
+	end
+
+	defp process_station_schedule(station_fsm) do
 		station_fsm = StationFsm.check_stop(station_fsm)
 		if StationFsm.state(station_fsm) != :ready do
 			process_station_schedule(station_fsm)
@@ -18,7 +42,7 @@ defmodule StationFsm do
 		end
 	end
 
-	def exclude_previous_station(itinerary) do
+	defp exclude_previous_station(itinerary) do
 		if length(itinerary) > 1 do
 			[_| tail] = Enum.reverse(itinerary)
 			Enum.reverse(tail)
@@ -27,7 +51,9 @@ defmodule StationFsm do
 		end
 	end
 
-	def query_status(station_vars, registry, itinerary) do
+	# Check if the query is valid / completed / invalid
+
+	defp query_status(station_vars, registry, itinerary) do
 		self = station_vars.station_number
 		[last] = Enum.take(itinerary, -1)
 		[query] = Enum.take(itinerary, 1)
@@ -55,7 +81,7 @@ defmodule StationFsm do
 
 	# Initialise neighbours_fulfilment array
 
-	def init_neighbours(schedule, _other_means) do
+	defp init_neighbours(schedule, _other_means) do
 
 		# Find all possible neighbors of station
 		# Append them to a list with value of each neighbour = 0
@@ -79,7 +105,7 @@ defmodule StationFsm do
 		Map.new(dst, fn x -> {x, 0} end)
 	end
 
-	def stop_fn(neighbours, schedule) do
+	defp stop_fn(neighbours, schedule) do
 
 		check_unvisited_neighbour = fn ({_, val}, acc) ->
 			if val == 0 do
@@ -99,7 +125,7 @@ defmodule StationFsm do
 
 	# Check if connection is feasible
 
-	def feasibility_check(conn, itinerary, arrival_time, _sch_om) do
+	defp feasibility_check(conn, itinerary, arrival_time, _sch_om) do
 		[query | _] = itinerary
 		# If connection is in schedule
 		if conn.dept_time > arrival_time && (query.day * 86_400 + conn.arrival_time)
@@ -110,7 +136,7 @@ defmodule StationFsm do
 		end
 	end
 
-	def update_days_travelled(itinerary) do
+	defp update_days_travelled(itinerary) do
 		[query | _] = itinerary
 
 		if length(itinerary) > 1 do
@@ -133,7 +159,7 @@ defmodule StationFsm do
 	# Check if there exists a potential loop for the next
 	# station given the schedule of the current station
 
-	def check_member(dst, itinerary) do
+	defp check_member(dst, itinerary) do
 		#IO.inspect itinerary
 		[head | tail] = itinerary
 		dest_list = Enum.map(tail, fn (x) -> x[:dst_station] end)
@@ -143,21 +169,21 @@ defmodule StationFsm do
 
 	# Check if preferences match
 
-	def pref_check(_conn, _itinerary) do
+	defp pref_check(_conn, _itinerary) do
 		# Invoke UQCFSM and check for preferences
 		:true
 	end
 
 	# Send the new itinerary to the neighbour
 
-	def send_to_neighbour(conn, itinerary, registry) do
+	defp send_to_neighbour(conn, itinerary, registry) do
 		# send itinerary to
 		next_station_pid = registry.lookup_code(conn[:dst_station])
 		# Forward itinerary to next station's pid
 		GenServer.cast(next_station_pid, {:receive, itinerary})
 	end
 
-	def iterate_over_schedule([], itinerary, _sch_om,
+	defp iterate_over_schedule([], itinerary, _sch_om,
 		[{_neighbour_map, _schedule, arrival_time} ,
 		station_vars, registry, qc, itinerary]) do
 
@@ -167,7 +193,7 @@ defmodule StationFsm do
 
 	# Iterate over the schedule and operate over each query
 
-	def iterate_over_schedule([conn | schedule_tail], itinerary, sch_om,
+	defp iterate_over_schedule([conn | schedule_tail], itinerary, sch_om,
 		[{neighbour_map, _schedule, arrival_time} ,
 		 station_vars, registry, qc, itinerary]) do
 
