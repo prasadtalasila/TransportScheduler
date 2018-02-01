@@ -113,7 +113,7 @@ defmodule StationTest do
 		allow(MockCollector, test_proc, pid)
 
 		#Send query to station
-		Station.send_to_station(pid, query)
+		Station.send_query(pid, query)
 
 		assert_receive :query_received
 	end
@@ -151,7 +151,7 @@ defmodule StationTest do
 		allow(MockRegister, test_proc, pid)
 		allow(MockCollector, test_proc, pid)
 
-		Station.send_to_station(pid, itinerary)
+		Station.send_query(pid, itinerary)
 
 		assert_receive :query_received
 	end
@@ -189,7 +189,7 @@ defmodule StationTest do
 		allow(MockRegister, test_proc, pid)
 		allow(MockCollector, test_proc, pid)
 
-		Station.send_to_station(pid, itinerary)
+		Station.send_query(pid, itinerary)
 
 		# Query should not be forwarded to neighbour
 		refute_receive(:stale_query_forwarded)
@@ -229,7 +229,7 @@ defmodule StationTest do
 		allow(MockRegister, test_proc, pid)
 		allow(MockCollector, test_proc, pid)
 
-		Station.send_to_station(pid, itinerary)
+		Station.send_query(pid, itinerary)
 
 		# Query should not be forwarded to neighbour
 		refute_receive(:stale_query_forwarded)
@@ -269,7 +269,7 @@ defmodule StationTest do
 		allow(MockRegister, test_proc, pid)
 		allow(MockCollector, test_proc, pid)
 
-		Station.send_to_station(pid, itinerary)
+		Station.send_query(pid, itinerary)
 
 		# Query should not be forwarded to neighbour
 		refute_receive(:incorrect_query_forwarded)
@@ -311,7 +311,7 @@ defmodule StationTest do
 		allow(MockCollector, test_proc, pid)
 
 
-		Station.send_to_station(pid, itinerary)
+		Station.send_query(pid, itinerary)
 
 		# Query should not be forwarded to neighbour
 		refute_receive(:query_forwarded)
@@ -356,7 +356,7 @@ defmodule StationTest do
 		allow(MockRegister, test_proc, pid)
 		allow(MockCollector, test_proc, pid)
 
-		Station.send_to_station(pid, itinerary)
+		Station.send_query(pid, itinerary)
 
 		# Query should not be forwarded to neighbour
 		assert_receive({:itinerary_received, ^proper_itinerary})
@@ -402,7 +402,7 @@ defmodule StationTest do
 		allow(MockRegister, test_proc, pid)
 		allow(MockCollector, test_proc, pid)
 
-		Station.send_to_station(pid, itinerary)
+		Station.send_query(pid, itinerary)
 
 		# Query should not be forwarded to neighbour
 		assert_receive({:itinerary_received, ^proper_itinerary})
@@ -442,7 +442,7 @@ defmodule StationTest do
 		allow(MockRegister, test_proc, pid)
 		allow(MockCollector, test_proc, pid)
 
-		Station.send_to_station(pid, itinerary)
+		Station.send_query(pid, itinerary)
 		assert_receive({:query_received, ^proper_itinerary})
 	end
 
@@ -516,7 +516,7 @@ defmodule StationTest do
 
 	# A function to send 'n' number of messages to given pid
 	def send_message(msg, n, pid) do
-		Station.send_to_station(pid, msg)
+		Station.send_query(pid, msg)
 		send_message(msg, n-1, pid)
 	end
 

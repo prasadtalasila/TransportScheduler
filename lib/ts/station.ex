@@ -4,7 +4,7 @@ defmodule Station do
 	Module that implements the interface of the Station.
 	"""
 
-	@behaviour StationBehaviour
+	@behaviour TS.StationBehaviour
 	use GenServer
 	require StationFsm
 
@@ -38,7 +38,7 @@ defmodule Station do
 		GenServer.cast(pid, {:update, new_vars})
 	end
 
-	def send_to_station(pid, query) do
+	def send_query(pid, query) do
 		GenServer.cast(pid, {:receive, query})
 	end
 
