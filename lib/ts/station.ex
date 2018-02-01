@@ -12,18 +12,17 @@ defmodule Station do
 
 	# Starting the GenServer
 
-	def start_link([station_vars, registry, qc]) do
-		GenServer.start_link(Station, [station_vars, registry, qc])
+	def start_link(station_data) when is_list(station_data) do
+		GenServer.start_link(Station, station_data)
 	end
 
-	def init([station_vars, registry, qc]) do
-		station_fsm = StationFsm.new |>
-		StationFsm.input_data(station_vars, registry, qc)
+	def init(station_data) do
+		station_fsm = StationFsm.initialise_fsm(station_data)
 		{:ok, station_fsm}
 	end
 
 	def stop(pid) do
-		GenServer.stop(pid)
+		GenServer.stop(pid, :normal)
 	end
 
  	# Getting the current schedule

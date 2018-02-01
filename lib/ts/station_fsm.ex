@@ -6,6 +6,11 @@ defmodule StationFsm do
 	use Fsm, initial_state: :start, initial_data: []
 
 	# Function definitions
+	def initialise_fsm(input = [_station_vars,
+	{_registry, _qc, _station}]) do
+		StationFsm.new |>
+		StationFsm.input_data(input)
+	end
 
 	def process_itinerary(station_fsm, itinerary)  do
 		station_fsm = station_fsm |>
@@ -13,7 +18,7 @@ defmodule StationFsm do
 		StationFsm.check_query_status
 
 		station_fsm = if StationFsm.state(station_fsm) != :ready do
-			StationFsm.initialize(station_fsm)
+			StationFsm.initialise(station_fsm)
 		else
 			station_fsm
 		end
@@ -82,27 +87,10 @@ defmodule StationFsm do
 	# Initialise neighbours_fulfilment array
 
 	defp init_neighbours(schedule, _other_means) do
-
-		# Find all possible neighbors of station
-		# Append them to a list with value of each neighbour = 0
-
-		# Add all elements of schedule to dst_schedule
-		dst_sched = for x <- schedule do
-			x.dst_station
-		end
-
-		# Add all elements of other_means to dst_om
-		# dst_om = for x <- other_means do
-		# 	x.dst_station
-		# end
-
-		# Create a concatenated list
-		# dst = dst_sched ++ dst_om
-
-		dst = dst_sched
+		dst = schedule
 
 		# Add neighbours from concatenated list
-		Map.new(dst, fn x -> {x, 0} end)
+		Map.new(dst, fn x -> {x.dst_station, 0} end)
 	end
 
 	defp stop_fn(neighbours, schedule) do
@@ -160,7 +148,6 @@ defmodule StationFsm do
 	# station given the schedule of the current station
 
 	defp check_member(dst, itinerary) do
-		#IO.inspect itinerary
 		[head | tail] = itinerary
 		dest_list = Enum.map(tail, fn (x) -> x[:dst_station] end)
 		dest_list = [head.src_station | dest_list]
@@ -176,44 +163,42 @@ defmodule StationFsm do
 
 	# Send the new itinerary to the neighbour
 
-	defp send_to_neighbour(conn, itinerary, registry) do
+	defp send_to_neighbour(conn, itinerary, registry, station) do
 		# send itinerary to
 		next_station_pid = registry.lookup_code(conn[:dst_station])
 		# Forward itinerary to next station's pid
-		GenServer.cast(next_station_pid, {:receive, itinerary})
+		station.send_query(next_station_pid, itinerary)
 	end
 
-	defp iterate_over_schedule([], itinerary, _sch_om,
-		[{_neighbour_map, _schedule, arrival_time} ,
-		station_vars, registry, qc, itinerary]) do
+	defp iterate_over_schedule(_sch_om, [{_neighbour_map, [], arrival_time} ,
+		itinerary, station_vars, {registry, qc, station}]) do
 
-		next_state(:query_fulfilment_check, [{%{}, [], arrival_time} , station_vars,
-		 registry, qc, itinerary])
+		#Pass empty neighbour map which will give true for stop_fn
+		next_state(:query_fulfilment_check, [{%{}, [], arrival_time} , itinerary,
+		station_vars, {registry, qc, station}])
 	end
 
 	# Iterate over the schedule and operate over each query
 
-	defp iterate_over_schedule([conn | schedule_tail], itinerary, sch_om,
-		[{neighbour_map, _schedule, arrival_time} ,
-		 station_vars, registry, qc, itinerary]) do
-
+	defp iterate_over_schedule(sch_om, [{neighbour_map,
+	[conn | schedule_tail], arrival_time} , itinerary, station_vars,
+	{registry, qc, station}]) do
 		# If query is feasible and preferable
 		if feasibility_check(conn, itinerary, arrival_time, sch_om) &&
-		pref_check(conn, itinerary) do
+		pref_check(conn, itinerary) && neighbour_map[conn.dst_station] == 0 do
 			# Append connection to itinerary
-			itinerary = itinerary ++ [conn]
+			new_itinerary = itinerary ++ [conn]
 			# Send itinerary to neighbour
-			send_to_neighbour(conn, itinerary, registry)
+			send_to_neighbour(conn, new_itinerary, registry, station)
 			# Update neighbour map
-			neighbour_map = %{neighbour_map | conn[:dst_station] => 1}
+			new_neighbour_map = %{neighbour_map | conn[:dst_station] => 1}
 			# Go to previous state and repeat
-			next_state(:query_fulfilment_check, [{neighbour_map, schedule_tail,
-			 arrival_time},	station_vars, registry, qc, itinerary])
+			next_state(:query_fulfilment_check, [{new_neighbour_map, schedule_tail,
+			 arrival_time},	itinerary, station_vars, {registry, qc, station}])
 		else
 			# Pass over connection
-			iterate_over_schedule(schedule_tail, itinerary, sch_om,
-				[{neighbour_map, schedule_tail, arrival_time} ,
-				 station_vars, registry, qc, itinerary])
+			iterate_over_schedule(sch_om, [{neighbour_map, schedule_tail,
+			arrival_time}, itinerary, station_vars, {registry, qc, station}])
 		end
 
 	end
@@ -223,16 +208,18 @@ defmodule StationFsm do
 	# start state
 	defstate start do
 		# On getting the data input, go to ready state
-		defevent input_data(station_vars, registry, qc) do
-			vars = [station_vars, registry, qc]
-			next_state(:ready, vars)
+		defevent input_data(station_data = [_station_vars,
+		{_registry, _qc, _station}])
+		do
+			next_state(:ready, station_data)
 		end
 	end
 
 	# ready state
 	defstate ready do
 		# When local variables of the station are updated
-		defevent update(new_vars), data: original_vars do
+		defevent update(new_vars), data: [_station_vars,
+		dependencies = {_registry, _qc, _station}]do
 			# Replace each entry in the struct original_vars with each entry
 			# in new_vars
 
@@ -248,48 +235,39 @@ defmodule StationFsm do
 			 choose_fn: new_vars.choose_fn}
 
 			# Return to ready state with new variables
-			vars = [new_station_vars, Enum.at(original_vars, 1),
-			Enum.at(original_vars, 2)]
+			vars = [new_station_vars, dependencies]
 			next_state(:ready, vars)
 		end
 
 		# When an itinerary is passed to the station
-		defevent query_input(itinerary), data: vars do
-			vars =
-			if length(vars) == 4 do
-				List.delete_at(vars, 3)
-			else
-				vars
-			end
+		defevent query_input(itinerary), data: vars = [_station_vars,
+		{_registry, _qc, _station}] do
 
 			# Give itinerary as part of query
-			vars = vars ++ [itinerary]
+			vars = [itinerary | vars]
 			next_state(:query_rcvd, vars)
 		end
 	end
 
 	# query_rcvd state
 	defstate query_rcvd do
-		defevent check_query_status, data: vars = [station_vars, registry, qc,
-		itinerary] do
+		defevent check_query_status, data: vars = [itinerary, station_vars,
+		 {registry, qc, _station}] do
 
 			q_stat = query_status(station_vars, registry, itinerary)
 
 			case q_stat do
 				:invalid ->
 					# If invalid query, remove itinerary
-					vars = List.delete_at(vars, 3)
-					vars = vars ++ [:invalid]
+					vars = List.delete_at(vars, 0)
 					next_state(:ready, vars)
 				:collect ->
 					# If completed query, send to
 					qc.collect(itinerary)
-					vars = List.delete_at(vars, 3)
-					vars = vars ++ [:collect]
+					vars = List.delete_at(vars, 0)
 					next_state(:ready, vars)
 				:valid ->
-					# If valid query, compute further
-					vars = vars ++ [:valid]
+					# If valid query, compute
 					next_state(:query_init, vars)
 			end
 		end
@@ -297,20 +275,21 @@ defmodule StationFsm do
 
 	# query_init state
 	defstate query_init do
-		defevent initialize, data: _vars = [station_vars, registry, qc, itinerary,
-		:valid] do
+		defevent initialise, data: vars = [itinerary, station_vars, _dependencies]
+		 do
 
 			# Find all neighbors
 			neighbour_map = init_neighbours(station_vars.schedule,
 			station_vars.other_means)
+
 			# Replace neighbours keyword-list in struct
 			# new_station_vars = %{station_vars | neighbours: nbrs}
 			{itinerary, arrival_time} = update_days_travelled(itinerary)
 
-			vars = [{neighbour_map, station_vars.schedule, arrival_time},
-			station_vars, registry, qc, itinerary]
+			vars = [itinerary | List.delete_at(vars, 0)]
+			new_vars = [{neighbour_map, station_vars.schedule, arrival_time} | vars]
 
-			next_state(:query_fulfilment_check, vars)
+			next_state(:query_fulfilment_check, new_vars)
 		end
 	end
 
@@ -321,7 +300,8 @@ defmodule StationFsm do
 			should_stop = stop_fn(neighbour_map, schedule) # Find out if stop or not
 
 			if should_stop == :true do
-				next_state(:ready, vars_tail)
+				new_vars = List.delete_at(vars_tail, 0)
+				next_state(:ready, new_vars)
 			else
 				next_state(:compute_itinerary, vars)
 			end
@@ -331,12 +311,11 @@ defmodule StationFsm do
 
 	# compute_itinerary state
 	defstate compute_itinerary do
-		defevent check_stop, data: vars = [{_neighbour_map, schedule,
-		_arrival_time}, _station_vars, _registry, _qc, itinerary] do
+		defevent check_stop, data: vars do
 
 			# Iterate over list schedule
 			sch_om = :schedule
-			iterate_over_schedule(schedule, itinerary, sch_om, vars)
+			iterate_over_schedule(sch_om, vars)
 		end
 	end
 

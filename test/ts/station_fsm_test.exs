@@ -9,6 +9,7 @@ defmodule StationFsmTest do
 	setup_all do
 		Mox.defmock(MockCollectorFsm, for: TS.Collector)
 		Mox.defmock(MockRegisterFsm, for: TS.Registry)
+		Mox.defmock(MockStationFsm, for: TS.StationBehaviour)
 		:ok
 	end
 
@@ -20,6 +21,7 @@ defmodule StationFsmTest do
 	test "Check configuration of initial state" do
 		# Create new station and query for state and data
 		station_fsm = StationFsm.new
+
 		initial_state = StationFsm.state(station_fsm)
 		initial_data = StationFsm.data(station_fsm)
 
@@ -33,15 +35,18 @@ defmodule StationFsmTest do
 	# transitioning from 'start' to 'ready' state
 
 	test "Check transition from start to ready state on input data" do
-		station_vars = %StationStruct{}
-		station_fsm = StationFsm.new |>
-			StationFsm.input_data(station_vars, MockRegisterFsm, MockCollectorFsm)
+		station_state = %StationStruct{loc_vars: %{"delay": 0.38,
+			"congestion": "low", "disturbance": "no"},
+			schedule: [%{vehicleID: "100", src_station: 1, mode_of_transport: "bus",
+			dst_station: 2, dept_time: 25_000, arrival_time: 35_000}], station_number: 1,
+			congestion_low: 4, choose_fn: 1}
 
-		curr_state = StationFsm.state(station_fsm)
-		curr_data = StationFsm.data(station_fsm)
+		# Create new station and query for state and data
+		station_fsm = StationFsm.initialise_fsm([station_state ,
+		{MockRegisterFsm, MockCollectorFsm, MockStationFsm}])
 
-		assert curr_state == :ready
-		assert curr_data == [station_vars, MockRegisterFsm, MockCollectorFsm]
+		assert StationFsm.state(station_fsm) == :ready
+		assert StationFsm.data(station_fsm) == [station_state, {MockRegisterFsm, MockCollectorFsm, MockStationFsm}]
 	end
 
 	# Test 3
@@ -50,30 +55,22 @@ defmodule StationFsmTest do
 	# and the new variables take the place of the old station variables
 
 	test "Update variables in 'ready' state" do
-		# Old variables
-		station_vars = %StationStruct{}
-
-		# New variables
-		new_vars = %StationStruct{loc_vars: %{"delay": 0.12,
+		station_state = %StationStruct{loc_vars: %{"delay": 0.38,
 			"congestion": "low", "disturbance": "no"},
-			schedule: [], station_number: 1710,
-			station_name: "Mumbai", congestion_low: 3, choose_fn: 2}
+			schedule: [%{vehicleID: "100", src_station: 1, mode_of_transport: "bus",
+			dst_station: 2, dept_time: 25_000, arrival_time: 35_000}], station_number: 1,
+			congestion_low: 4, choose_fn: 1}
 
-		# New FSM
-		station_fsm = StationFsm.new |>
-			StationFsm.input_data(station_vars, MockRegisterFsm, MockCollectorFsm) |>
-			StationFsm.update(new_vars)
+		# Create new station and query for state and data
+		station_fsm = StationFsm.initialise_fsm([station_state ,
+		{MockRegisterFsm, MockCollectorFsm, MockStationFsm}])
 
-		# Check if state is still ready
+		# Update Station State to new value
+		station_state = %{station_state | schedule: []}
+		station_fsm = StationFsm.update(station_fsm, station_state)
+
 		assert StationFsm.state(station_fsm) == :ready
-
-		# Assert conditions on data
-		new_station_vars = Enum.at(StationFsm.data(station_fsm), 0)
-
-		assert new_station_vars.loc_vars.delay == 0.12
-		assert new_station_vars.schedule == []
-		assert new_station_vars.station_number == 1710
-		assert new_station_vars.station_name == "Mumbai"
+		assert StationFsm.data(station_fsm) == [station_state, {MockRegisterFsm, MockCollectorFsm, MockStationFsm}]
 	end
 
 	# Test 4
@@ -87,32 +84,31 @@ defmodule StationFsmTest do
 		%{vehicleID: "99", src_station: 0, mode_of_transport: "train",
 		dst_station: 1, dept_time: 10_000, arrival_time: 20_000}]
 
-		station_vars = %StationStruct{}
+		station_state = %StationStruct{loc_vars: %{"delay": 0.38,
+			"congestion": "low", "disturbance": "no"},
+			schedule: [%{vehicleID: "100", src_station: 1, mode_of_transport: "bus",
+			dst_station: 2, dept_time: 25_000, arrival_time: 35_000}], station_number: 1,
+			congestion_low: 4, choose_fn: 1}
 
 		# New FSM
-		station_fsm = StationFsm.new |>
-			StationFsm.input_data(station_vars, MockRegisterFsm, MockCollectorFsm) |>
-			StationFsm.query_input(itinerary)
+		station_fsm = StationFsm.initialise_fsm([station_state ,
+		{MockRegisterFsm, MockCollectorFsm, MockStationFsm}])
+
+		station_fsm = StationFsm.query_input(station_fsm, itinerary)
 
 		# Assertion on state
 		assert StationFsm.state(station_fsm) == :query_rcvd
 
 		# Assertions on data
-		vars = StationFsm.data(station_fsm)
-
-		assert Enum.at(vars, 0) == station_vars
-		assert Enum.at(vars, 1) == MockRegisterFsm
-		assert Enum.at(vars, 2) == MockCollectorFsm
-		assert Enum.at(vars, 3) == itinerary
+		assert StationFsm.data(station_fsm) == [itinerary, station_state ,
+		{MockRegisterFsm, MockCollectorFsm, MockStationFsm}]
 	end
 
 	# Test 5
-
-	# Check if queries with self-loops are handled correctly in
-	# check_query_status function of the 'query_rcvd' state
+	# check_query_status function of the 'query_rcvd' state on query with self loops
 
 	test "Check status of query with self-loop in 'query_rcvd' state" do
-		station_vars = %StationStruct{loc_vars: %{"delay": 0.38,
+		station_state = %StationStruct{loc_vars: %{"delay": 0.38,
 			"congestion": "low", "disturbance": "no"},
 			schedule: [%{vehicleID: "100", src_station: 2, mode_of_transport: "bus",
 			dst_station: 0, dept_time: 25_000, arrival_time: 35_000}],
@@ -131,13 +127,13 @@ defmodule StationFsmTest do
 		|> expect(:check_active, fn(_) -> true end)
 
 		# New FSM
-		station_fsm = StationFsm.new |>
-			StationFsm.input_data(station_vars, MockRegisterFsm, MockCollectorFsm) |>
+		# New FSM
+		station_fsm = StationFsm.initialise_fsm([station_state ,
+		{MockRegisterFsm, MockCollectorFsm, MockStationFsm}])
+
+		station_fsm = station_fsm |>
 			StationFsm.query_input(itinerary) |>
 			StationFsm.check_query_status
-
-		# Check if the function has classified query as invalid
-		assert Enum.at(StationFsm.data(station_fsm), 3) == :invalid
 
 		# Assertion on state
 		assert StationFsm.state(station_fsm) == :ready
@@ -150,7 +146,7 @@ defmodule StationFsmTest do
 
 	test "Check status of query with wrong dst in 'query_rcvd' state" do
 		# station_number of the station is set to 1
-		station_vars = %StationStruct{loc_vars: %{"delay": 0.38,
+		station_state = %StationStruct{loc_vars: %{"delay": 0.38,
 			"congestion": "low", "disturbance": "no"},
 			schedule: [%{vehicleID: "100", src_station: 1, mode_of_transport: "bus",
 			dst_station: 0, dept_time: 25_000, arrival_time: 35_000}],
@@ -162,21 +158,20 @@ defmodule StationFsmTest do
 			dst_station: 2, dept_time: 10_000, arrival_time: 20_000}]
 
 		# Mock register for mocking the NC
+		# Mock register for mocking the NC
 		MockRegisterFsm
 		|> expect(:check_active, fn(_) -> true end)
 
 		# New FSM
-		station_fsm = StationFsm.new |>
-			StationFsm.input_data(station_vars, MockRegisterFsm, MockCollectorFsm) |>
-			StationFsm.update(station_vars) |>
+		station_fsm = StationFsm.initialise_fsm([station_state ,
+		{MockRegisterFsm, MockCollectorFsm, MockStationFsm}])
+
+		station_fsm = station_fsm |>
 			StationFsm.query_input(itinerary) |>
 			StationFsm.check_query_status
 
 		# Assertion on state
 		assert StationFsm.state(station_fsm) == :ready
-
-		# Check if function has returned :invalid
-		assert Enum.at(StationFsm.data(station_fsm), 3) == :invalid
 	end
 
 	# Test 7
@@ -186,7 +181,7 @@ defmodule StationFsmTest do
 
 	test "Send completed query to station in 'query_rcvd' state" do
 		# Station is the final station of the query
-		station_vars = %StationStruct{loc_vars: %{"delay": 0.38,
+		station_state = %StationStruct{loc_vars: %{"delay": 0.38,
 			"congestion": "low", "disturbance": "no"},
 			schedule: [%{vehicleID: "100", src_station: 1, mode_of_transport: "bus",
 			dst_station: 0, dept_time: 25_000, arrival_time: 35_000}],
@@ -197,25 +192,29 @@ defmodule StationFsmTest do
 			%{vehicleID: "99", src_station: 0, mode_of_transport: "train",
 			dst_station: 1, dept_time: 10_000, arrival_time: 20_000}]
 
+
+		test_proc = self()
 		# Mock register for mocking the NC
 		MockRegisterFsm
 		|> expect(:check_active, fn(_) -> true end)
 
 		# Mock collector for mocking the QC
 		MockCollectorFsm
-		|> expect(:collect, fn(_) -> true end)
+		|> expect(:collect, fn(_) -> send(test_proc, :collected) end)
 
 		# New FSM
-		station_fsm = StationFsm.new |>
-			StationFsm.input_data(station_vars, MockRegisterFsm, MockCollectorFsm) |>
+		# New FSM
+		station_fsm = StationFsm.initialise_fsm([station_state ,
+		{MockRegisterFsm, MockCollectorFsm, MockStationFsm}])
+
+		station_fsm = station_fsm |>
 			StationFsm.query_input(itinerary) |>
 			StationFsm.check_query_status
 
 		# Assertion on state
 		assert StationFsm.state(station_fsm) == :ready
+		assert_receive :collected
 
-		# Check if function has returned :collect
-		assert Enum.at(StationFsm.data(station_fsm), 3) == :collect
 	end
 
 	# Test 8
@@ -225,7 +224,7 @@ defmodule StationFsmTest do
 
 	test "Send in-process, valid query to station in 'query_rcvd' state" do
 		# Station variables
-		station_vars = %StationStruct{loc_vars: %{"delay": 0.38,
+		station_state = %StationStruct{loc_vars: %{"delay": 0.38,
 			"congestion": "low", "disturbance": "no"},
 			schedule: [%{vehicleID: "100", src_station: 1, mode_of_transport: "bus",
 			dst_station: 2, dept_time: 25_000, arrival_time: 35_000}],
@@ -241,13 +240,12 @@ defmodule StationFsmTest do
 		|> expect(:check_active, fn(_) -> true end)
 
 		# New FSM
-		station_fsm = StationFsm.new |>
-			StationFsm.input_data(station_vars, MockRegisterFsm, MockCollectorFsm) |>
+		station_fsm = StationFsm.initialise_fsm([station_state ,
+		{MockRegisterFsm, MockCollectorFsm, MockStationFsm}])
+
+		station_fsm = station_fsm |>
 			StationFsm.query_input(itinerary) |>
 			StationFsm.check_query_status
-
-		# Check if function returns :valid
-		assert Enum.at(StationFsm.data(station_fsm), 4) == :valid
 
 		# Assertion on state
 		assert StationFsm.state(station_fsm) == :query_init
@@ -261,7 +259,7 @@ defmodule StationFsmTest do
 	test "Initialize neighbours_fulfilment array" do
 		# Station vars -> schedule contains 2 and 4 as neighbouring
 		# dst_stations. These should be initialized in the neighbours map
-		station_vars = %StationStruct{loc_vars: %{"delay": 0.38,
+		station_state = %StationStruct{loc_vars: %{"delay": 0.38,
 			"congestion": "low", "disturbance": "no"},
 			schedule: [%{vehicleID: "100", src_station: 1, mode_of_transport: "bus",
 			dst_station: 2, dept_time: 25_000, arrival_time: 35_000},
@@ -279,24 +277,31 @@ defmodule StationFsmTest do
 		|> expect(:check_active, fn(_) -> true end)
 
 		# New FSM
-		station_fsm = StationFsm.new |>
-			StationFsm.input_data(station_vars, MockRegisterFsm, MockCollectorFsm) |>
+		# Mock register to mock NC
+		MockRegisterFsm
+		|> expect(:check_active, fn(_) -> true end)
+
+		# New FSM
+		station_fsm = StationFsm.initialise_fsm([station_state ,
+		{MockRegisterFsm, MockCollectorFsm, MockStationFsm}])
+
+		station_fsm = station_fsm |>
 			StationFsm.query_input(itinerary) |>
 			StationFsm.check_query_status |>
-			StationFsm.initialize
+			StationFsm.initialise
 
 		# Assertion on state
 		assert StationFsm.state(station_fsm) == :query_fulfilment_check
 
 		# Getting the neighbours map
-		added_element = Enum.at(StationFsm.data(station_fsm), 0)
-		nbrsmap = elem(added_element, 0)
+		[working_state | _] = StationFsm.data(station_fsm)
+		neighbour_map = elem(working_state, 0)
 
 		# Assertions on the neighbours map
-		assert Kernel.map_size(nbrsmap) == 2
-		assert nbrsmap[2] == 0
-		assert nbrsmap[4] == 0
-		assert nbrsmap[3] == nil
+		assert Kernel.map_size(neighbour_map) == 2
+		assert neighbour_map[2] == 0
+		assert neighbour_map[4] == 0
+		assert neighbour_map[3] == nil
 	end
 
 	# Test 10
@@ -304,7 +309,7 @@ defmodule StationFsmTest do
 	# Check if stop_dn works properly by calling check_stop in 'query_fulfilment_check'
 
 	test "Check stop_fn" do
-		station_vars = %StationStruct{loc_vars: %{"delay": 0.38,
+		station_state = %StationStruct{loc_vars: %{"delay": 0.38,
 			"congestion": "low", "disturbance": "no"},
 			schedule: [%{vehicleID: "100", src_station: 1, mode_of_transport: "bus",
 			dst_station: 2, dept_time: 25_000, arrival_time: 35_000},
@@ -322,12 +327,14 @@ defmodule StationFsmTest do
 		|> expect(:check_active, fn(_) -> true end)
 
 
-		# New FSM
-		station_fsm = StationFsm.new |>
-			StationFsm.input_data(station_vars, MockRegisterFsm, MockCollectorFsm) |>
+		# new FSM
+		station_fsm = StationFsm.initialise_fsm([station_state ,
+		{MockRegisterFsm, MockCollectorFsm, MockStationFsm}])
+
+		station_fsm = station_fsm |>
 			StationFsm.query_input(itinerary) |>
 			StationFsm.check_query_status |>
-			StationFsm.initialize |>
+			StationFsm.initialise |>
 			StationFsm.check_stop
 
 		assert StationFsm.state(station_fsm) == :compute_itinerary
@@ -339,7 +346,7 @@ defmodule StationFsmTest do
 	# as needed
 
 	test "Check if itinerary is computed correctly" do
-		station_vars = %StationStruct{loc_vars: %{"delay": 0.38,
+		station_state = %StationStruct{loc_vars: %{"delay": 0.38,
 			"congestion": "low", "disturbance": "no"},
 			schedule: [%{vehicleID: "100", src_station: 1, mode_of_transport: "bus",
 			dst_station: 2, dept_time: 25_000, arrival_time: 35_000},
@@ -352,32 +359,26 @@ defmodule StationFsmTest do
 			%{vehicleID: "99", src_station: 0, mode_of_transport: "train",
 			dst_station: 1, dept_time: 10_000, arrival_time: 20_000}]
 
+		test_proc = self()
+
 		# Mock register to mock the NC
 		MockRegisterFsm
 		|> expect(:check_active, fn(_) -> true end)
 		|> expect(:lookup_code, fn(_) -> true end)
 		|> expect(:lookup_code, fn(_) -> true end)
 
+		MockStationFsm
+		|> expect(:send_query, 2, fn(_, _) -> send(test_proc, :sent_to_neighbour) end)
 
-		# Calling check_stop four times will create make all the
-		# entries in the map as 1:
-		# > %{2 => 0, 4 => 0}
-		# > %{2 => 0, 4 => 1}
-		# > %{2 => 1, 4 => 1}
-		# The stop function will then return true and the station
-		# will transition to 'ready' state
-		station_fsm = StationFsm.new |>
-			StationFsm.input_data(station_vars, MockRegisterFsm, MockCollectorFsm) |>
-			StationFsm.query_input(itinerary) |>
-			StationFsm.check_query_status |>
-			StationFsm.initialize |>
-			StationFsm.check_stop |>
-			StationFsm.check_stop |>
-			StationFsm.check_stop |>
-			StationFsm.check_stop |>
-			StationFsm.check_stop
+
+		# new FSM
+		station_fsm = StationFsm.initialise_fsm([station_state ,
+		{MockRegisterFsm, MockCollectorFsm, MockStationFsm}])
+
+		station_fsm = StationFsm.process_itinerary(station_fsm, itinerary)
 
 		assert StationFsm.state(station_fsm) == :ready
+		assert_receive :sent_to_neighbour
 	end
 
 end

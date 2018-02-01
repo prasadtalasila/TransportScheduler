@@ -5,7 +5,7 @@ defmodule StationFunctionsTest do
 	function
 	"""
 
-	use ExUnit.Case, async: false
+	use ExUnit.Case, async: true
 
 	# Test 1
 
