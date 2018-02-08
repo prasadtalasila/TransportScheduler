@@ -4,6 +4,7 @@ defmodule StationFsm do
 	"""
 
 	use Fsm, initial_state: :start, initial_data: []
+	require Itinerary
 
 	# Function definitions
 	def initialise_fsm(input = [_station_vars,
@@ -47,37 +48,28 @@ defmodule StationFsm do
 		end
 	end
 
-	defp exclude_previous_station(itinerary) do
-		if length(itinerary) > 1 do
-			[_| tail] = Enum.reverse(itinerary)
-			Enum.reverse(tail)
-		else
-			[]
-		end
-	end
+	# defp exclude_previous_station(itinerary) do
+	# 	if length(itinerary) > 1 do
+	# 		[_| tail] = Enum.reverse(itinerary)
+	# 		Enum.reverse(tail)
+	# 	else
+	# 		[]
+	# 	end
+	# end
 
 	# Check if the query is valid / completed / invalid
 
 	defp query_status(station_vars, registry, itinerary) do
-		self = station_vars.station_number
-		[last] = Enum.take(itinerary, -1)
-		[query] = Enum.take(itinerary, 1)
-
-		# Checking for validity
-		# Check for timeout, loops and receiving of a wrong query
-		# i.e. having a different dst_station than the current station
-
-		except_last = exclude_previous_station(itinerary)
-
 		# returns true if query is active, false otherwise
-		active = registry.check_active(query.qid)
+		active = registry.check_active(Itinerary.get_query_id(itinerary))
 
 		cond do
-			(active && length(itinerary) == 1) ->
+			(active && Itinerary.is_empty(itinerary)) ->
 				:valid
-			(active && query.dst_station == last.dst_station) ->
+			(active && Itinerary.is_terminal(itinerary)) ->
 				:collect
-			(!active || check_member(self, except_last) || last.dst_station != self)
+			(!active ||
+			!Itinerary.is_valid_destination(station_vars.station_number, itinerary))
 			->	:invalid
 			true ->
 				:valid
@@ -85,7 +77,6 @@ defmodule StationFsm do
 	end
 
 	# Initialise neighbours_fulfilment array
-
 	defp init_neighbours(schedule, _other_means) do
 		dst = schedule
 
@@ -114,10 +105,11 @@ defmodule StationFsm do
 	# Check if connection is feasible
 
 	defp feasibility_check(conn, itinerary, arrival_time, _sch_om) do
-		[query | _] = itinerary
+		query = Itinerary.get_query(itinerary)
+		preference = Itinerary.get_preference(itinerary)
 		# If connection is in schedule
-		if conn.dept_time > arrival_time && (query.day * 86_400 + conn.arrival_time)
-		 <=	query.end_time do
+		if conn.dept_time > arrival_time &&
+		(preference.day * 86_400 + conn.arrival_time) <=	query.end_time do
 			:true
 		else
 			:false
@@ -125,34 +117,32 @@ defmodule StationFsm do
 	end
 
 	defp update_days_travelled(itinerary) do
-		[query | _] = itinerary
+		query = Itinerary.get_query(itinerary)
 
-		if length(itinerary) > 1 do
-			[previous_station] = 	Enum.take(itinerary, -1)
-
-			if previous_station.arrival_time >= 86_400 do
-				days = div(previous_station.arrival_time, 86_400)
-				itinerary = List.delete_at(itinerary, 0)
-				query = Map.update!(query, :day, &(&1 + days))
-				itinerary = List.insert_at(itinerary, 0, query)
-				{itinerary, Integer.mod(previous_station.arrival_time, 86_400)}
-			else
-				{itinerary, previous_station.arrival_time}
-			end
-		else
+		if Itinerary.is_empty(itinerary) do
 			{itinerary, query.arrival_time}
+		else
+			previous_link = Itinerary.get_last_link(itinerary)
+
+			if previous_link.arrival_time >= 86_400 do
+				day_increment = div(previous_link.arrival_time, 86_400)
+				new_itinerary = Itinerary.increment_day(itinerary, day_increment)
+				{new_itinerary, Integer.mod(previous_link.arrival_time, 86_400)}
+			else
+				{itinerary, previous_link.arrival_time}
+			end
 		end
 	end
 
 	# Check if there exists a potential loop for the next
 	# station given the schedule of the current station
 
-	defp check_member(dst, itinerary) do
-		[head | tail] = itinerary
-		dest_list = Enum.map(tail, fn (x) -> x[:dst_station] end)
-		dest_list = [head.src_station | dest_list]
-		Enum.member?(dest_list, dst)
-	end
+	# defp check_member(dst, itinerary) do
+	# 	[head | tail] = itinerary
+	# 	dest_list = Enum.map(tail, fn (x) -> x[:dst_station] end)
+	# 	dest_list = [head.src_station | dest_list]
+	# 	Enum.member?(dest_list, dst)
+	# end
 
 	# Check if preferences match
 
@@ -185,9 +175,10 @@ defmodule StationFsm do
 	{registry, qc, station}]) do
 		# If query is feasible and preferable
 		if feasibility_check(conn, itinerary, arrival_time, sch_om) &&
-		pref_check(conn, itinerary) && neighbour_map[conn.dst_station] == 0 do
+		pref_check(conn, itinerary) && neighbour_map[conn.dst_station] == 0 &&
+		!Itinerary.check_member(itinerary, conn) do
 			# Append connection to itinerary
-			new_itinerary = itinerary ++ [conn]
+			new_itinerary = Itinerary.add_link(itinerary, conn)
 			# Send itinerary to neighbour
 			send_to_neighbour(conn, new_itinerary, registry, station)
 			# Update neighbour map
@@ -259,13 +250,13 @@ defmodule StationFsm do
 			case q_stat do
 				:invalid ->
 					# If invalid query, remove itinerary
-					vars = List.delete_at(vars, 0)
-					next_state(:ready, vars)
+					new_vars = List.delete_at(vars, 0)
+					next_state(:ready, new_vars)
 				:collect ->
 					# If completed query, send to
 					qc.collect(itinerary)
-					vars = List.delete_at(vars, 0)
-					next_state(:ready, vars)
+					new_vars = List.delete_at(vars, 0)
+					next_state(:ready, new_vars)
 				:valid ->
 					# If valid query, compute
 					next_state(:query_init, vars)

@@ -80,9 +80,11 @@ defmodule StationFsmTest do
 
 	test "Receive query in 'ready' state" do
 		# Itinerary which is received
-		itinerary = [%{qid: "0300", src_station: 0, dst_station: 3, day: 0, arrival_time: 0},
-		%{vehicleID: "99", src_station: 0, mode_of_transport: "train",
-		dst_station: 1, dept_time: 10_000, arrival_time: 20_000}]
+		itinerary = Itinerary.new(%{qid: "0300", src_station: 0,
+		dst_station: 3, arrival_time: 0},
+		[%{vehicleID: "99", src_station: 0, mode_of_transport: "train",
+		dst_station: 1, dept_time: 10_000, arrival_time: 20_000}],
+		%{day: 0, mode: "bus"})
 
 		station_state = %StationStruct{loc_vars: %{"delay": 0.38,
 			"congestion": "low", "disturbance": "no"},
@@ -114,13 +116,15 @@ defmodule StationFsmTest do
 			dst_station: 0, dept_time: 25_000, arrival_time: 35_000}],
 			station_number: 2, congestion_low: 4, choose_fn: 1}
 
-		itinerary = [%{qid: "0300", src_station: 0, dst_station: 7, day: 0, arrival_time: 0},
-			%{vehicleID: "99", src_station: 0, mode_of_transport: "train",
+		itinerary = Itinerary.new(%{qid: "0300", src_station: 0,
+			dst_station: 7, arrival_time: 0},
+			[%{vehicleID: "99", src_station: 0, mode_of_transport: "train",
 			dst_station: 1, dept_time: 10_000, arrival_time: 20_000},
 			%{vehicleID: "100", src_station: 1, mode_of_transport: "train",
 			dst_station: 2, dept_time: 20_000, arrival_time: 25_000},
 			%{vehicleID: "101", src_station: 2, mode_of_transport: "train",
-			dst_station: 3, dept_time: 25_000, arrival_time: 27_000}]
+			dst_station: 3, dept_time: 25_000, arrival_time: 27_000}],
+			%{day: 0, mode: "bus"})
 
 		# Mock register for mocking the NC
 		MockRegisterFsm
@@ -153,11 +157,12 @@ defmodule StationFsmTest do
 			station_number: 1, congestion_low: 4, choose_fn: 1}
 
 		# Query with different dst_station
-		itinerary = [%{qid: "0300", src_station: 0, dst_station: 3, day: 0, arrival_time: 0},
-			%{vehicleID: "99", src_station: 0, mode_of_transport: "train",
-			dst_station: 2, dept_time: 10_000, arrival_time: 20_000}]
+		itinerary = Itinerary.new(%{qid: "0300", src_station: 0,
+		dst_station: 3, arrival_time: 0},
+			[%{vehicleID: "99", src_station: 0, mode_of_transport: "train",
+			dst_station: 2, dept_time: 10_000, arrival_time: 20_000}],
+			%{day: 0})
 
-		# Mock register for mocking the NC
 		# Mock register for mocking the NC
 		MockRegisterFsm
 		|> expect(:check_active, fn(_) -> true end)
@@ -178,7 +183,6 @@ defmodule StationFsmTest do
 
 	# Check that if query is completed, it is sent to the appropriate
 	# query collector
-
 	test "Send completed query to station in 'query_rcvd' state" do
 		# Station is the final station of the query
 		station_state = %StationStruct{loc_vars: %{"delay": 0.38,
@@ -188,9 +192,11 @@ defmodule StationFsmTest do
 			station_number: 1, congestion_low: 4, choose_fn: 1}
 
 		# Query which ends at current station
-		itinerary = [%{qid: "0300", src_station: 0, dst_station: 1, day: 0, arrival_time: 0},
-			%{vehicleID: "99", src_station: 0, mode_of_transport: "train",
-			dst_station: 1, dept_time: 10_000, arrival_time: 20_000}]
+		itinerary = Itinerary.new(%{qid: "0300", src_station: 0,
+			dst_station: 1, arrival_time: 0},
+			[%{vehicleID: "99", src_station: 0, mode_of_transport: "train",
+			dst_station: 1, dept_time: 10_000, arrival_time: 20_000}],
+			%{day: 0})
 
 
 		test_proc = self()
@@ -202,7 +208,6 @@ defmodule StationFsmTest do
 		MockCollectorFsm
 		|> expect(:collect, fn(_) -> send(test_proc, :collected) end)
 
-		# New FSM
 		# New FSM
 		station_fsm = StationFsm.initialise_fsm([station_state ,
 		{MockRegisterFsm, MockCollectorFsm, MockStationFsm}])
@@ -231,9 +236,11 @@ defmodule StationFsmTest do
 			station_number: 1, congestion_low: 4, choose_fn: 1}
 
 		# Itinerary which is not complete or invalid yet
-		itinerary = [%{qid: "0300", src_station: 0, dst_station: 3, day: 0, arrival_time: 0},
-			%{vehicleID: "99", src_station: 0, mode_of_transport: "train",
-			dst_station: 1, dept_time: 10_000, arrival_time: 20_000}]
+		itinerary = Itinerary.new(%{qid: "0300", src_station: 0,
+			dst_station: 2, arrival_time: 0},
+			[%{vehicleID: "99", src_station: 0, mode_of_transport: "train",
+			dst_station: 1, dept_time: 10_000, arrival_time: 20_000}],
+			%{day: 0})
 
 		# Mock register to mock NC
 		MockRegisterFsm
@@ -268,9 +275,11 @@ defmodule StationFsmTest do
 			station_number: 1, congestion_low: 4, choose_fn: 1}
 
 		# Itinerary
-		itinerary = [%{qid: "0300", src_station: 0, dst_station: 3, day: 0, arrival_time: 0},
-			%{vehicleID: "99", src_station: 0, mode_of_transport: "train",
-			dst_station: 1, dept_time: 10_000, arrival_time: 20_000}]
+		itinerary = Itinerary.new(%{qid: "0300", src_station: 0,
+			dst_station: 2, arrival_time: 0},
+			[%{vehicleID: "99", src_station: 0, mode_of_transport: "train",
+			dst_station: 1, dept_time: 10_000, arrival_time: 20_000}],
+			%{day: 0})
 
 		# Mock register to mock the NC
 		MockRegisterFsm
@@ -318,9 +327,11 @@ defmodule StationFsmTest do
 			station_number: 1, congestion_low: 4, choose_fn: 1}
 
 		# Itinerary
-		itinerary = [%{qid: "0300", src_station: 0, dst_station: 3, day: 0, arrival_time: 0},
-			%{vehicleID: "99", src_station: 0, mode_of_transport: "train",
-			dst_station: 1, dept_time: 10_000, arrival_time: 20_000}]
+		itinerary = Itinerary.new(%{qid: "0300", src_station: 0,
+			dst_station: 2, arrival_time: 0},
+			[%{vehicleID: "99", src_station: 0, mode_of_transport: "train",
+			dst_station: 1, dept_time: 10_000, arrival_time: 20_000}],
+			%{day: 0})
 
 		# Mock register to mock the NC
 		MockRegisterFsm
@@ -355,9 +366,11 @@ defmodule StationFsmTest do
 			station_number: 1, congestion_low: 4, choose_fn: 1}
 
 		# Itinerary
-		itinerary = [%{qid: "0300", src_station: 0, dst_station: 3, day: 0, arrival_time: 0, end_time: 999_999},
-			%{vehicleID: "99", src_station: 0, mode_of_transport: "train",
-			dst_station: 1, dept_time: 10_000, arrival_time: 20_000}]
+		itinerary = Itinerary.new(%{qid: "0300", src_station: 0,
+			dst_station: 2, arrival_time: 0, end_time: 999_999},
+			[%{vehicleID: "99", src_station: 0, mode_of_transport: "train",
+			dst_station: 1, dept_time: 10_000, arrival_time: 20_000}],
+			%{day: 0})
 
 		test_proc = self()
 

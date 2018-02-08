@@ -45,7 +45,6 @@ defmodule StationTest do
 	end
 
 	# Test 2
-
 	# Test to see if the station schedule can be updated
 	test "updating the station schedule" do
 
@@ -82,8 +81,8 @@ defmodule StationTest do
 
 		# Set function parameters to arbitrary values.
 		# effect only after the station has received the query.
-		query = [%{qid: "0300", src_station: 0, dst_station: 3, day: 0,
-		arrival_time: 0, end_time: 999_999}]
+		query = Itinerary.new(%{qid: "0300", src_station: 0, dst_station: 3,
+		arrival_time: 0, end_time: 999_999}, %{day: 0})
 		# Any errors due to invalid values do not matter as they will come into
 
 		station_state = %StationStruct{loc_vars: %{"delay": 0.38,
@@ -134,10 +133,10 @@ defmodule StationTest do
 		# 	"congestion": "low", "disturbance": "no"},
 		# 	schedule: [], congestion_low: 4, choose_fn: 1}
 
-		itinerary = [%{qid: "0300", src_station: 0, dst_station: 3, day: 0,
-		arrival_time: 0, end_time: 999_999},
-		%{vehicleID: "99", src_station: 0, mode_of_transport: "train",
-		dst_station: 1, dept_time: 10_000, arrival_time: 20_000}]
+		itinerary = Itinerary.new(%{qid: "0300", src_station: 0,
+		dst_station: 3, arrival_time: 0, end_time: 999_999},
+		[%{vehicleID: "99", src_station: 0, mode_of_transport: "train",
+		dst_station: 1, dept_time: 10_000, arrival_time: 20_000}], %{day: 0})
 
 		test_proc = self()
 
@@ -182,9 +181,10 @@ defmodule StationTest do
 		# 	"congestion": "low", "disturbance": "no"},
 		# 	schedule: [], congestion_low: 4, choose_fn: 1}
 
-		itinerary = [%{qid: "0300", src_station: 0, dst_station: 3, day: 0, arrival_time: 0, end_time: 999_999},
-			%{vehicleID: "99", src_station: 0, mode_of_transport: "train",
-			dst_station: 1, dept_time: 10_000, arrival_time: 20_000}]
+		itinerary = Itinerary.new(%{qid: "0300", src_station: 0,
+		dst_station: 3, arrival_time: 0, end_time: 999_999},
+		[%{vehicleID: "99", src_station: 0, mode_of_transport: "train",
+		dst_station: 1, dept_time: 10_000, arrival_time: 20_000}], %{day: 0})
 
 		test_proc = self()
 
@@ -229,10 +229,12 @@ defmodule StationTest do
 		# 	"congestion": "low", "disturbance": "no"},
 		# 	schedule: [], congestion_low: 4, choose_fn: 1}
 
-		itinerary = [%{qid: "0300", src_station: 1, dst_station: 3, day: 0, arrival_time: 0, end_time: 999_999},
+		itinerary = Itinerary.new(%{qid: "0300", src_station: 1,
+			dst_station: 3, arrival_time: 0, end_time: 999_999},
+			[%{vehicleID: "100", src_station: 2, mode_of_transport: "train",
+			dst_station: 1, dept_time: 25_000, arrival_time: 30_000},
 			%{vehicleID: "99", src_station: 1, mode_of_transport: "train",
-			dst_station: 2, dept_time: 10_000, arrival_time: 20_000}, %{vehicleID: "100", src_station: 2, mode_of_transport: "train",
-			dst_station: 1, dept_time: 25_000, arrival_time: 30_000}]
+			dst_station: 2, dept_time: 10_000, arrival_time: 20_000}], %{day: 0})
 
 		test_proc = self()
 
@@ -277,9 +279,10 @@ defmodule StationTest do
 		# 	"congestion": "low", "disturbance": "no"},
 		# 	schedule: [], congestion_low: 4, choose_fn: 1}
 
-		itinerary = [%{qid: "0300", src_station: 0, dst_station: 3, day: 0, arrival_time: 0, end_time: 999_999},
-			%{vehicleID: "99", src_station: 0, mode_of_transport: "train",
-			dst_station: 5, dept_time: 10_000, arrival_time: 20_000}]
+		itinerary = Itinerary.new(%{qid: "0300", src_station: 1,
+			dst_station: 3, arrival_time: 0, end_time: 999_999},
+			[%{vehicleID: "99", src_station: 1, mode_of_transport: "train",
+			dst_station: 11, dept_time: 10_000, arrival_time: 20_000}], %{day: 0})
 
 		test_proc = self()
 
@@ -325,9 +328,9 @@ defmodule StationTest do
 		# 	"congestion": "low", "disturbance": "no"},
 		# 	schedule: [], congestion_low: 4, choose_fn: 1}
 
-		itinerary = [%{qid: "0300", src_station: 0, dst_station: 3, day: 0, arrival_time: 0, end_time: 999_999},
-			%{vehicleID: "99", src_station: 0, mode_of_transport: "train",
-			dst_station: 1, dept_time: 10_000, arrival_time: 20_000}]
+		itinerary = Itinerary.new(%{qid: "0300", src_station: 0, dst_station: 3, arrival_time: 0, end_time: 999_999},
+			[%{vehicleID: "99", src_station: 0, mode_of_transport: "train",
+			dst_station: 1, dept_time: 10_000, arrival_time: 20_000}], %{day: 0})
 
 		test_proc = self()
 
@@ -372,15 +375,13 @@ defmodule StationTest do
 		# 	"congestion": "low", "disturbance": "no"},
 		# 	schedule: [], congestion_low: 4, choose_fn: 1}
 
-		itinerary = [%{qid: "0300", src_station: 0, dst_station: 3, day: 0, arrival_time: 0, end_time: 999_999},
-			%{vehicleID: "99", src_station: 0, mode_of_transport: "train",
-			dst_station: 1, dept_time: 10_000, arrival_time: 20_000}]
+		itinerary = Itinerary.new(%{qid: "0300", src_station: 0,
+		dst_station: 3, arrival_time: 0, end_time: 999_999},
+		[%{vehicleID: "99", src_station: 0, mode_of_transport: "train",
+			dst_station: 1, dept_time: 10_000, arrival_time: 20_000}], %{day: 0})
 
-		proper_itinerary = [%{qid: "0300", src_station: 0, dst_station: 3, day: 0, arrival_time: 0, end_time: 999_999},
-				%{vehicleID: "99", src_station: 0, mode_of_transport: "train",
-				dst_station: 1, dept_time: 10_000, arrival_time: 20_000},
-				%{vehicleID: "100", src_station: 1, mode_of_transport: "bus",
-				dst_station: 2, dept_time: 25_000, arrival_time: 35_000}]
+		proper_itinerary = Itinerary.add_link(itinerary, %{vehicleID: "100", src_station: 1, mode_of_transport: "bus",
+		dst_station: 2, dept_time: 25_000, arrival_time: 35_000})
 
 		test_proc = self()
 
@@ -427,22 +428,16 @@ defmodule StationTest do
 		# 	"congestion": "low", "disturbance": "no"},
 		# 	schedule: [], congestion_low: 4, choose_fn: 1}
 
-		itinerary = [%{qid: "0300", src_station: 0, dst_station: 3, day: 0,
+		itinerary = Itinerary.new(%{qid: "0300", src_station: 0, dst_station: 3,
 		arrival_time: 0, end_time: 999_999},
-			%{vehicleID: "99", src_station: 0, mode_of_transport: "train",
-			dst_station: 1, dept_time: 10_000, arrival_time: 20_000}]
+			[%{vehicleID: "99", src_station: 0, mode_of_transport: "train",
+			dst_station: 1, dept_time: 10_000, arrival_time: 20_000}], %{day: 0})
 
-		proper_itinerary = [%{qid: "0300", src_station: 0, dst_station: 3, day: 0, arrival_time: 0, end_time: 999_999},
-				%{vehicleID: "99", src_station: 0, mode_of_transport: "train",
-				dst_station: 1, dept_time: 10_000, arrival_time: 20_000},
-				%{vehicleID: "100", src_station: 1, mode_of_transport: "bus",
-				dst_station: 2, dept_time: 25_000, arrival_time: 35_000}]
+		proper_itinerary = Itinerary.add_link(itinerary, %{vehicleID: "100", src_station: 1, mode_of_transport: "bus",
+		dst_station: 2, dept_time: 25_000, arrival_time: 35_000})
 
-		improper_itinerary = [%{qid: "0300", src_station: 0, dst_station: 3, day: 0, arrival_time: 0, end_time: 999_999},
-				%{vehicleID: "99", src_station: 0, mode_of_transport: "train",
-				dst_station: 1, dept_time: 10_000, arrival_time: 20_000},
-				%{vehicleID: "103", src_station: 1, mode_of_transport: "bus",
-				dst_station: 2, dept_time: 25_000, arrival_time: 35_000}]
+		improper_itinerary = Itinerary.add_link(itinerary, %{vehicleID: "103", src_station: 1, mode_of_transport: "bus",
+		dst_station: 2, dept_time: 25_000, arrival_time: 35_000})
 
 		test_proc = self()
 
@@ -500,16 +495,16 @@ defmodule StationTest do
 		# 	"congestion": "low", "disturbance": "no"},
 		# 	schedule: [], congestion_low: 4, choose_fn: 1}
 
-		itinerary = [%{qid: "0300", src_station: 0, dst_station: 3, day: 0, arrival_time: 0, end_time: 999_999},
-			%{vehicleID: "99", src_station: 0, mode_of_transport: "train",
-			dst_station: 1, dept_time: 10_000, arrival_time: 20_000}]
+		itinerary = Itinerary.new(%{qid: "0300", src_station: 0, dst_station: 3, arrival_time: 0, end_time: 999_999},
+			[%{vehicleID: "99", src_station: 0, mode_of_transport: "train",
+			dst_station: 1, dept_time: 10_000, arrival_time: 20_000}], %{day: 0})
 
-		proper_itinerary_1a = itinerary ++ [connection_1a]
-		proper_itinerary_1b = itinerary ++ [connection_1b]
-		proper_itinerary_2a = itinerary ++ [connection_2a]
-		proper_itinerary_2b = itinerary ++ [connection_2b]
-		proper_itinerary_3a = itinerary ++ [connection_3a]
-		proper_itinerary_3b = itinerary ++ [connection_3b]
+		proper_itinerary_1a = Itinerary.add_link(itinerary, connection_1a)
+		proper_itinerary_1b = Itinerary.add_link(itinerary, connection_1b)
+		proper_itinerary_2a = Itinerary.add_link(itinerary, connection_2a)
+		proper_itinerary_2b = Itinerary.add_link(itinerary, connection_2b)
+		proper_itinerary_3a = Itinerary.add_link(itinerary, connection_3a)
+		proper_itinerary_3b = Itinerary.add_link(itinerary, connection_3b)
 
 		test_proc = self()
 		neighbour1 = :c.pid(0, 0, 200)
@@ -575,15 +570,13 @@ defmodule StationTest do
 		# 	"congestion": "low", "disturbance": "no"},
 		# 	schedule: [], congestion_low: 4, choose_fn: 1}
 
-		itinerary = [%{qid: "0300", src_station: 0, dst_station: 3, day: 0, arrival_time: 0, end_time: 999_999},
-			%{vehicleID: "99", src_station: 0, mode_of_transport: "train",
-			dst_station: 1, dept_time: 10_000, arrival_time: 86_400}]
+		itinerary = Itinerary.new(%{qid: "0300", src_station: 0, dst_station: 3, arrival_time: 0, end_time: 999_999},
+		[%{vehicleID: "99", src_station: 0, mode_of_transport: "train",
+			dst_station: 1, dept_time: 10_000, arrival_time: 86_400}], %{day: 0})
 
-		proper_itinerary = [%{qid: "0300", src_station: 0, dst_station: 3, day: 1, arrival_time: 0, end_time: 999_999},
-				%{vehicleID: "99", src_station: 0, mode_of_transport: "train",
-				dst_station: 1, dept_time: 10_000, arrival_time: 86_400},
-				%{vehicleID: "100", src_station: 1, mode_of_transport: "bus",
-				dst_station: 2, dept_time: 25_000, arrival_time: 35_000}]
+		proper_itinerary = Itinerary.add_link(itinerary, %{vehicleID: "100", src_station: 1, mode_of_transport: "bus",
+		dst_station: 2, dept_time: 25_000, arrival_time: 35_000})
+		proper_itinerary = Itinerary.increment_day(proper_itinerary, 1)
 
 		test_proc = self()
 
@@ -624,13 +617,9 @@ defmodule StationTest do
 			dst_station: 2, dept_time: 25_000, arrival_time: 35_000}],
 			congestion_low: 4, choose_fn: 1}
 
-		itinerary = [%{qid: "0100", src_station: 0, dst_station: 1, day: 0, arrival_time: 0, end_time: 999_999},
-			%{vehicleID: "99", src_station: 0, mode_of_transport: "train",
-			dst_station: 1, dept_time: 10_000, arrival_time: 20_000}]
-
-		proper_itinerary = [%{qid: "0100", src_station: 0, dst_station: 1, day: 0, arrival_time: 0, end_time: 999_999},
-			%{vehicleID: "99", src_station: 0, mode_of_transport: "train",
-			dst_station: 1, dept_time: 10_000, arrival_time: 20_000}]
+		itinerary = Itinerary.new(%{qid: "0100", src_station: 0, dst_station: 1, arrival_time: 0, end_time: 999_999},
+		[%{vehicleID: "99", src_station: 0, mode_of_transport: "train",
+			dst_station: 1, dept_time: 10_000, arrival_time: 20_000}], %{day: 0})
 
 		test_proc = self()
 
@@ -665,7 +654,7 @@ defmodule StationTest do
 		wait_for_process_termination(pid)
 
 		# Assert that the query collector collects the itinerary
-		assert_receive({:itinerary_received, ^proper_itinerary})
+		assert_receive({:itinerary_received, ^itinerary})
 		refute_receive :collected_query_forwarded
 	end
 
@@ -693,9 +682,9 @@ defmodule StationTest do
 		# 	"congestion": "low", "disturbance": "no"},
 		# 	schedule: [], congestion_low: 4, choose_fn: 1}
 
-		itinerary = [%{qid: "0300", src_station: 0, dst_station: 3, day: 0, arrival_time: 0, end_time: 999_999},
-			%{vehicleID: "99", src_station: 0, mode_of_transport: "train",
-			dst_station: 1, dept_time: 10_000, arrival_time: 20_000}]
+		itinerary = Itinerary.new(%{qid: "0300", src_station: 0, dst_station: 3, arrival_time: 0, end_time: 999_999},
+			[%{vehicleID: "99", src_station: 0, mode_of_transport: "train",
+			dst_station: 1, dept_time: 10_000, arrival_time: 20_000}], %{day: 0})
 
 		test_proc = self()
 
@@ -729,7 +718,8 @@ defmodule StationTest do
 	# Test to check if the station consumes a given number of
 	# streams within a stipulated amount of time.
 	test "Consumes rapid stream of mixed input queries" do
-		query = [%{qid: "0100", src_station: 0, dst_station: 1, day: 0, arrival_time: 0, end_time: 999_999}]
+		query = Itinerary.new(%{qid: "0100", src_station: 0, dst_station: 1,
+			arrival_time: 0, end_time: 999_999}, %{day: 0})
 
 		station_state = %StationStruct{loc_vars: %{"delay": 0.38,
 			"congestion": "low", "disturbance": "no"},
