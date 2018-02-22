@@ -1,4 +1,4 @@
-defmodule StationStruct do
+defmodule Util.StationStruct do
 	@moduledoc """
 	Module defining the data structure used to describe a station, with local
 	variables, schedule, other means, and additional information fields such

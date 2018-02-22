@@ -12,11 +12,20 @@ defmodule StationTest do
 	# set async:true in test servers for concurrent tests
 	use ExUnit.Case, async: true
 	import Mox
+	alias Station.Registry, as: Registry
+	alias Station.Collector, as: Collector
+	alias Station.StationBehaviour, as: StationBehaviour
+	alias Util.Dependency, as: Dependency
+	alias Util.Itinerary, as: Itinerary
+	alias Util.Query, as: Query
+	alias Util.Connection, as: Connection
+	alias Util.Preference, as: Preference
+	alias Util.StationStruct, as: StationStruct
 
 	setup_all do
-		Mox.defmock(MockCollector, for: TS.Collector)
-		Mox.defmock(MockRegister, for: TS.Registry)
-		Mox.defmock(MockStation, for: TS.StationBehaviour)
+		Mox.defmock(MockCollector, for: Collector)
+		Mox.defmock(MockRegister, for: Registry)
+		Mox.defmock(MockStation, for: StationBehaviour)
 		:ok
 	end
 
@@ -26,7 +35,7 @@ defmodule StationTest do
 	test "retrieving the given schedule" do
 
 		# Station Schedule
-		schedule = [%{vehicleID: "100", src_station: 1, mode_of_transport: "bus",
+		schedule = [%Connection{vehicleID: "100", src_station: 1, mode_of_transport: "bus",
 		dst_station: 2, dept_time: 25_000, arrival_time: 35_000}]
 
 		station_state = %StationStruct{loc_vars: %{"delay": 0.12,
@@ -35,9 +44,12 @@ defmodule StationTest do
 			station_name: "Mumbai", congestion_low: 3, choose_fn: 2}
 
 		# Start the server
+		dependency = %Dependency{station: MockStation,
+		registry: MockRegister,
+		collector: MockCollector,
+		itinerary: Itinerary}
 
-		{:ok, pid} = start_supervised({Station, [station_state,
-		{MockRegister, MockCollector, MockStation}]})
+		{:ok, pid} = start_supervised({Station, [station_state, dependency]})
 
 		# Retrieve Time Table
 		assert Station.get_timetable(pid) == schedule
@@ -49,12 +61,12 @@ defmodule StationTest do
 	test "updating the station schedule" do
 
 		# Station Schedule
-		schedule = [%{vehicleID: "100", src_station: 1, mode_of_transport: "bus",
+		schedule = [%Connection{vehicleID: "100", src_station: 1, mode_of_transport: "bus",
 		dst_station: 2, dept_time: 25_000, arrival_time: 35_000}]
 
-		new_schedule = [%{vehicleID: "88", src_station: 1, mode_of_transport: "train",
+		new_schedule = [%Connection{vehicleID: "88", src_station: 1, mode_of_transport: "train",
 		dst_station: 2, dept_time: 12_000, arrival_time: 24_000},
-		%{vehicleID: "100", src_station: 1, mode_of_transport: "bus",
+		%Connection{vehicleID: "100", src_station: 1, mode_of_transport: "bus",
 		dst_station: 2, dept_time: 25_000, arrival_time: 35_000}]
 
 		station_state = %StationStruct{loc_vars: %{"delay": 0.12,
@@ -62,10 +74,14 @@ defmodule StationTest do
 			schedule: schedule, station_number: 1710,
 			station_name: "Mumbai", congestion_low: 3, choose_fn: 2}
 
-		# Start the server
+		dependency = %Dependency{station: MockStation,
+		registry: MockRegister,
+		collector: MockCollector,
+		itinerary: Itinerary}
 
+		# Start the server
 		{:ok, pid} = start_supervised({Station, [station_state,
-		{MockRegister, MockCollector, MockStation}]})
+		dependency]})
 
 		new_station_state = %{station_state | schedule: new_schedule}
 
@@ -81,13 +97,13 @@ defmodule StationTest do
 
 		# Set function parameters to arbitrary values.
 		# effect only after the station has received the query.
-		query = Itinerary.new(%{qid: "0300", src_station: 0, dst_station: 3,
-		arrival_time: 0, end_time: 999_999}, %{day: 0})
+		query = Itinerary.new(%Query{qid: "0300", src_station: 0, dst_station: 3,
+		arrival_time: 0, end_time: 999_999}, %Preference{day: 0})
 		# Any errors due to invalid values do not matter as they will come into
 
 		station_state = %StationStruct{loc_vars: %{"delay": 0.38,
 			"congestion": "low", "disturbance": "no"},
-			schedule: [%{vehicleID: "100", src_station: 1, mode_of_transport: "bus",
+			schedule: [%Connection{vehicleID: "100", src_station: 1, mode_of_transport: "bus",
 			dst_station: 2, dept_time: 25_000, arrival_time: 35_000}], station_number: 1,
 			congestion_low: 4, choose_fn: 1}
 
@@ -99,9 +115,14 @@ defmodule StationTest do
 			false
 			end)
 
+		dependency = %Dependency{station: MockStation,
+		registry: MockRegister,
+		collector: MockCollector,
+		itinerary: Itinerary}
+
 		# start station
 		{:ok, pid} = Station.start_link [station_state,
-		{MockRegister, MockCollector, MockStation}]
+		dependency]
 
 		# Give The Station Process access to mocks defined in the test process
 		allow(MockRegister, test_proc, pid)
@@ -125,7 +146,7 @@ defmodule StationTest do
 	test "Send completed search query to neighbours" do
 		station_state = %StationStruct{loc_vars: %{"delay": 0.38,
 			"congestion": "low", "disturbance": "no"},
-			schedule: [%{vehicleID: "100", src_station: 1, mode_of_transport: "bus",
+			schedule: [%Connection{vehicleID: "100", src_station: 1, mode_of_transport: "bus",
 			dst_station: 2, dept_time: 25_000, arrival_time: 35_000}], station_number: 1,
 			congestion_low: 4, choose_fn: 1}
 
@@ -133,15 +154,20 @@ defmodule StationTest do
 		# 	"congestion": "low", "disturbance": "no"},
 		# 	schedule: [], congestion_low: 4, choose_fn: 1}
 
-		itinerary = Itinerary.new(%{qid: "0300", src_station: 0,
+		itinerary = Itinerary.new(%Query{qid: "0300", src_station: 0,
 		dst_station: 3, arrival_time: 0, end_time: 999_999},
-		[%{vehicleID: "99", src_station: 0, mode_of_transport: "train",
-		dst_station: 1, dept_time: 10_000, arrival_time: 20_000}], %{day: 0})
+		[%Connection{vehicleID: "99", src_station: 0, mode_of_transport: "train",
+		dst_station: 1, dept_time: 10_000, arrival_time: 20_000}], %Preference{day: 0})
 
 		test_proc = self()
 
+		dependency = %Dependency{station: MockStation,
+		registry: MockRegister,
+		collector: MockCollector,
+		itinerary: Itinerary}
+
 		{:ok, pid} = Station.start_link [station_state,
-		{MockRegister, MockCollector, MockStation}]
+		dependency]
 
 		# Define the expectation for the Mock of the Network Constructor
 		MockRegister
@@ -173,7 +199,7 @@ defmodule StationTest do
 	test "Does not forward stale queries" do
 		station_state = %StationStruct{loc_vars: %{"delay": 0.38,
 			"congestion": "low", "disturbance": "no"},
-			schedule: [%{vehicleID: "100", src_station: 1, mode_of_transport: "bus",
+			schedule: [%Connection{vehicleID: "100", src_station: 1, mode_of_transport: "bus",
 			dst_station: 2, dept_time: 25_000, arrival_time: 35_000}], station_number: 1,
 			congestion_low: 4, choose_fn: 1}
 
@@ -181,15 +207,20 @@ defmodule StationTest do
 		# 	"congestion": "low", "disturbance": "no"},
 		# 	schedule: [], congestion_low: 4, choose_fn: 1}
 
-		itinerary = Itinerary.new(%{qid: "0300", src_station: 0,
+		itinerary = Itinerary.new(%Query{qid: "0300", src_station: 0,
 		dst_station: 3, arrival_time: 0, end_time: 999_999},
-		[%{vehicleID: "99", src_station: 0, mode_of_transport: "train",
-		dst_station: 1, dept_time: 10_000, arrival_time: 20_000}], %{day: 0})
+		[%Connection{vehicleID: "99", src_station: 0, mode_of_transport: "train",
+		dst_station: 1, dept_time: 10_000, arrival_time: 20_000}], %Preference{day: 0})
 
 		test_proc = self()
 
+		dependency = %Dependency{station: MockStation,
+		registry: MockRegister,
+		collector: MockCollector,
+		itinerary: Itinerary}
+
 		{:ok, pid} = Station.start_link [station_state,
-		{MockRegister, MockCollector, MockStation}]
+		dependency]
 
 		# Define the expectation for the Mock of the Network Constructor
 		MockRegister
@@ -221,7 +252,7 @@ defmodule StationTest do
 	test "Does not forward queries with self loops" do
 		station_state = %StationStruct{loc_vars: %{"delay": 0.38,
 			"congestion": "low", "disturbance": "no"},
-			schedule: [%{vehicleID: "100", src_station: 1, mode_of_transport: "bus",
+			schedule: [%Connection{vehicleID: "100", src_station: 1, mode_of_transport: "bus",
 			dst_station: 2, dept_time: 25_000, arrival_time: 35_000}], station_number: 1,
 			congestion_low: 4, choose_fn: 1}
 
@@ -229,17 +260,22 @@ defmodule StationTest do
 		# 	"congestion": "low", "disturbance": "no"},
 		# 	schedule: [], congestion_low: 4, choose_fn: 1}
 
-		itinerary = Itinerary.new(%{qid: "0300", src_station: 1,
+		itinerary = Itinerary.new(%Query{qid: "0300", src_station: 1,
 			dst_station: 3, arrival_time: 0, end_time: 999_999},
-			[%{vehicleID: "100", src_station: 2, mode_of_transport: "train",
+			[%Connection{vehicleID: "100", src_station: 2, mode_of_transport: "train",
 			dst_station: 1, dept_time: 25_000, arrival_time: 30_000},
-			%{vehicleID: "99", src_station: 1, mode_of_transport: "train",
-			dst_station: 2, dept_time: 10_000, arrival_time: 20_000}], %{day: 0})
+			%Connection{vehicleID: "99", src_station: 1, mode_of_transport: "train",
+			dst_station: 2, dept_time: 10_000, arrival_time: 20_000}], %Preference{day: 0})
 
 		test_proc = self()
 
+		dependency = %Dependency{station: MockStation,
+		registry: MockRegister,
+		collector: MockCollector,
+		itinerary: Itinerary}
+
 		{:ok, pid} = Station.start_link [station_state,
-		{MockRegister, MockCollector, MockStation}]
+		dependency]
 
 		# Define the expectation for the Mock of the Network Constructor
 		MockRegister
@@ -271,7 +307,7 @@ defmodule StationTest do
 	test "Incorrectly received queries are discarded" do
 		station_state = %StationStruct{loc_vars: %{"delay": 0.38,
 			"congestion": "low", "disturbance": "no"},
-			schedule: [%{vehicleID: "100", src_station: 1, mode_of_transport: "bus",
+			schedule: [%Connection{vehicleID: "100", src_station: 1, mode_of_transport: "bus",
 			dst_station: 2, dept_time: 25_000, arrival_time: 35_000}], station_number: 1,
 			congestion_low: 4, choose_fn: 1}
 
@@ -279,15 +315,20 @@ defmodule StationTest do
 		# 	"congestion": "low", "disturbance": "no"},
 		# 	schedule: [], congestion_low: 4, choose_fn: 1}
 
-		itinerary = Itinerary.new(%{qid: "0300", src_station: 1,
+		itinerary = Itinerary.new(%Query{qid: "0300", src_station: 1,
 			dst_station: 3, arrival_time: 0, end_time: 999_999},
-			[%{vehicleID: "99", src_station: 1, mode_of_transport: "train",
-			dst_station: 11, dept_time: 10_000, arrival_time: 20_000}], %{day: 0})
+			[%Connection{vehicleID: "99", src_station: 1, mode_of_transport: "train",
+			dst_station: 11, dept_time: 10_000, arrival_time: 20_000}], %Preference{day: 0})
 
 		test_proc = self()
 
+		dependency = %Dependency{station: MockStation,
+		registry: MockRegister,
+		collector: MockCollector,
+		itinerary: Itinerary}
+
 		{:ok, pid} = Station.start_link [station_state,
-		{MockRegister, MockCollector, MockStation}]
+		dependency]
 
 		# Define the expectation for the Mock of the Network Constructor
 		MockRegister
@@ -320,7 +361,7 @@ defmodule StationTest do
 	(no viable neighbouring station)." do
 		station_state = %StationStruct{loc_vars: %{"delay": 0.38,
 			"congestion": "low", "disturbance": "no"},
-			schedule: [%{vehicleID: "100", src_station: 1, mode_of_transport: "bus",
+			schedule: [%Connection{vehicleID: "100", src_station: 1, mode_of_transport: "bus",
 			dst_station: 2, dept_time: 15_000, arrival_time: 35_000}], station_number: 1,
 			congestion_low: 4, choose_fn: 1}
 
@@ -328,14 +369,19 @@ defmodule StationTest do
 		# 	"congestion": "low", "disturbance": "no"},
 		# 	schedule: [], congestion_low: 4, choose_fn: 1}
 
-		itinerary = Itinerary.new(%{qid: "0300", src_station: 0, dst_station: 3, arrival_time: 0, end_time: 999_999},
-			[%{vehicleID: "99", src_station: 0, mode_of_transport: "train",
-			dst_station: 1, dept_time: 10_000, arrival_time: 20_000}], %{day: 0})
+		itinerary = Itinerary.new(%Query{qid: "0300", src_station: 0, dst_station: 3, arrival_time: 0, end_time: 999_999},
+			[%Connection{vehicleID: "99", src_station: 0, mode_of_transport: "train",
+			dst_station: 1, dept_time: 10_000, arrival_time: 20_000}], %Preference{day: 0})
 
 		test_proc = self()
 
+		dependency = %Dependency{station: MockStation,
+		registry: MockRegister,
+		collector: MockCollector,
+		itinerary: Itinerary}
+
 		{:ok, pid} = Station.start_link [station_state,
-		{MockRegister, MockCollector, MockStation}]
+		dependency]
 
 		# Define the expectation for the Mock of the Network Constructor
 		MockRegister
@@ -367,7 +413,7 @@ defmodule StationTest do
 	test "The correct itinerary is forwarded to the next station" do
 		station_state = %StationStruct{loc_vars: %{"delay": 0.38,
 			"congestion": "low", "disturbance": "no"},
-			schedule: [%{vehicleID: "100", src_station: 1, mode_of_transport: "bus",
+			schedule: [%Connection{vehicleID: "100", src_station: 1, mode_of_transport: "bus",
 			dst_station: 2, dept_time: 25_000, arrival_time: 35_000}], station_number: 1,
 			congestion_low: 4, choose_fn: 1}
 
@@ -375,18 +421,23 @@ defmodule StationTest do
 		# 	"congestion": "low", "disturbance": "no"},
 		# 	schedule: [], congestion_low: 4, choose_fn: 1}
 
-		itinerary = Itinerary.new(%{qid: "0300", src_station: 0,
+		itinerary = Itinerary.new(%Query{qid: "0300", src_station: 0,
 		dst_station: 3, arrival_time: 0, end_time: 999_999},
-		[%{vehicleID: "99", src_station: 0, mode_of_transport: "train",
-			dst_station: 1, dept_time: 10_000, arrival_time: 20_000}], %{day: 0})
+		[%Connection{vehicleID: "99", src_station: 0, mode_of_transport: "train",
+			dst_station: 1, dept_time: 10_000, arrival_time: 20_000}], %Preference{day: 0})
 
-		proper_itinerary = Itinerary.add_link(itinerary, %{vehicleID: "100", src_station: 1, mode_of_transport: "bus",
+		proper_itinerary = Itinerary.add_link(itinerary, %Connection{vehicleID: "100", src_station: 1, mode_of_transport: "bus",
 		dst_station: 2, dept_time: 25_000, arrival_time: 35_000})
 
 		test_proc = self()
 
+		dependency = %Dependency{station: MockStation,
+		registry: MockRegister,
+		collector: MockCollector,
+		itinerary: Itinerary}
+
 		{:ok, pid} = Station.start_link [station_state,
-		{MockRegister, MockCollector, MockStation}]
+		dependency]
 
 		# Define the expectation for the Mock of the Network Constructor
 		MockRegister
@@ -418,9 +469,9 @@ defmodule StationTest do
 	test "Itinerary only for a single valid connection is forwarded to the next station" do
 		station_state = %StationStruct{loc_vars: %{"delay": 0.38,
 			"congestion": "low", "disturbance": "no"},
-			schedule: [%{vehicleID: "100", src_station: 1, mode_of_transport: "bus",
+			schedule: [%Connection{vehicleID: "100", src_station: 1, mode_of_transport: "bus",
 			dst_station: 2, dept_time: 25_000, arrival_time: 35_000},
-			%{vehicleID: "103", src_station: 1, mode_of_transport: "bus",
+			%Connection{vehicleID: "103", src_station: 1, mode_of_transport: "bus",
 			dst_station: 2, dept_time: 25_000, arrival_time: 35_000}], station_number: 1,
 			congestion_low: 4, choose_fn: 1}
 
@@ -428,21 +479,26 @@ defmodule StationTest do
 		# 	"congestion": "low", "disturbance": "no"},
 		# 	schedule: [], congestion_low: 4, choose_fn: 1}
 
-		itinerary = Itinerary.new(%{qid: "0300", src_station: 0, dst_station: 3,
+		itinerary = Itinerary.new(%Query{qid: "0300", src_station: 0, dst_station: 3,
 		arrival_time: 0, end_time: 999_999},
-			[%{vehicleID: "99", src_station: 0, mode_of_transport: "train",
-			dst_station: 1, dept_time: 10_000, arrival_time: 20_000}], %{day: 0})
+			[%Connection{vehicleID: "99", src_station: 0, mode_of_transport: "train",
+			dst_station: 1, dept_time: 10_000, arrival_time: 20_000}], %Preference{day: 0})
 
-		proper_itinerary = Itinerary.add_link(itinerary, %{vehicleID: "100", src_station: 1, mode_of_transport: "bus",
+		proper_itinerary = Itinerary.add_link(itinerary, %Connection{vehicleID: "100", src_station: 1, mode_of_transport: "bus",
 		dst_station: 2, dept_time: 25_000, arrival_time: 35_000})
 
-		improper_itinerary = Itinerary.add_link(itinerary, %{vehicleID: "103", src_station: 1, mode_of_transport: "bus",
+		improper_itinerary = Itinerary.add_link(itinerary, %Connection{vehicleID: "103", src_station: 1, mode_of_transport: "bus",
 		dst_station: 2, dept_time: 25_000, arrival_time: 35_000})
 
 		test_proc = self()
 
+		dependency = %Dependency{station: MockStation,
+		registry: MockRegister,
+		collector: MockCollector,
+		itinerary: Itinerary}
+
 		{:ok, pid} = Station.start_link [station_state,
-		{MockRegister, MockCollector, MockStation}]
+		dependency]
 
 		# Define the expectation for the Mock of the Network Constructor
 		MockRegister
@@ -474,17 +530,17 @@ defmodule StationTest do
 	# Test 11
 	test "Itinerary only for a single valid connection is forwarded to the next station (testing for multiple stations)" do
 
-		connection = %{vehicleID: "200", src_station: 1, mode_of_transport: "bus",
+		connection = %Connection{vehicleID: "200", src_station: 1, mode_of_transport: "bus",
 		dst_station: 2, dept_time: 25_000, arrival_time: 35_000}
 
 		connection_1a = connection
-		connection_1b = %{connection | vehicleID: "202"}
+		connection_1b = %Connection{connection | vehicleID: "202"}
 
-		connection_2a = %{connection | vehicleID: "300", dst_station: 3}
-		connection_2b = %{connection | vehicleID: "303", dst_station: 3}
+		connection_2a = %Connection{connection | vehicleID: "300", dst_station: 3}
+		connection_2b = %Connection{connection | vehicleID: "303", dst_station: 3}
 
-		connection_3a = %{connection | vehicleID: "400", dst_station: 4}
-		connection_3b = %{connection | vehicleID: "404", dst_station: 4}
+		connection_3a = %Connection{connection | vehicleID: "400", dst_station: 4}
+		connection_3b = %Connection{connection | vehicleID: "404", dst_station: 4}
 
 		station_state = %StationStruct{loc_vars: %{"delay": 0.38,
 			"congestion": "low", "disturbance": "no"},
@@ -495,9 +551,9 @@ defmodule StationTest do
 		# 	"congestion": "low", "disturbance": "no"},
 		# 	schedule: [], congestion_low: 4, choose_fn: 1}
 
-		itinerary = Itinerary.new(%{qid: "0300", src_station: 0, dst_station: 3, arrival_time: 0, end_time: 999_999},
-			[%{vehicleID: "99", src_station: 0, mode_of_transport: "train",
-			dst_station: 1, dept_time: 10_000, arrival_time: 20_000}], %{day: 0})
+		itinerary = Itinerary.new(%Query{qid: "0300", src_station: 0, dst_station: 3, arrival_time: 0, end_time: 999_999},
+			[%Connection{vehicleID: "99", src_station: 0, mode_of_transport: "train",
+			dst_station: 1, dept_time: 10_000, arrival_time: 20_000}], %Preference{day: 0})
 
 		proper_itinerary_1a = Itinerary.add_link(itinerary, connection_1a)
 		proper_itinerary_1b = Itinerary.add_link(itinerary, connection_1b)
@@ -507,12 +563,18 @@ defmodule StationTest do
 		proper_itinerary_3b = Itinerary.add_link(itinerary, connection_3b)
 
 		test_proc = self()
+
+		dependency = %Dependency{station: MockStation,
+		registry: MockRegister,
+		collector: MockCollector,
+		itinerary: Itinerary}
+
 		neighbour1 = :c.pid(0, 0, 200)
 		neighbour2 = :c.pid(0, 0, 300)
 		neighbour3 = :c.pid(0, 0, 400)
 
 		{:ok, pid} = Station.start_link [station_state,
-		{MockRegister, MockCollector, MockStation}]
+		dependency]
 
 		# Define the expectation for the Mock of the Network Constructor
 		MockRegister
@@ -562,7 +624,7 @@ defmodule StationTest do
 	updated day" do
 		station_state = %StationStruct{loc_vars: %{"delay": 0.38,
 			"congestion": "low", "disturbance": "no"},
-			schedule: [%{vehicleID: "100", src_station: 1, mode_of_transport: "bus",
+			schedule: [%Connection{vehicleID: "100", src_station: 1, mode_of_transport: "bus",
 			dst_station: 2, dept_time: 25_000, arrival_time: 35_000}], station_number: 1,
 			congestion_low: 4, choose_fn: 1}
 
@@ -570,18 +632,23 @@ defmodule StationTest do
 		# 	"congestion": "low", "disturbance": "no"},
 		# 	schedule: [], congestion_low: 4, choose_fn: 1}
 
-		itinerary = Itinerary.new(%{qid: "0300", src_station: 0, dst_station: 3, arrival_time: 0, end_time: 999_999},
-		[%{vehicleID: "99", src_station: 0, mode_of_transport: "train",
-			dst_station: 1, dept_time: 10_000, arrival_time: 86_400}], %{day: 0})
+		itinerary = Itinerary.new(%Query{qid: "0300", src_station: 0, dst_station: 3, arrival_time: 0, end_time: 999_999},
+		[%Connection{vehicleID: "99", src_station: 0, mode_of_transport: "train",
+			dst_station: 1, dept_time: 10_000, arrival_time: 86_400}], %Preference{day: 0})
 
-		proper_itinerary = Itinerary.add_link(itinerary, %{vehicleID: "100", src_station: 1, mode_of_transport: "bus",
+		proper_itinerary = Itinerary.add_link(itinerary, %Connection{vehicleID: "100", src_station: 1, mode_of_transport: "bus",
 		dst_station: 2, dept_time: 25_000, arrival_time: 35_000})
 		proper_itinerary = Itinerary.increment_day(proper_itinerary, 1)
 
 		test_proc = self()
 
+		dependency = %Dependency{station: MockStation,
+		registry: MockRegister,
+		collector: MockCollector,
+		itinerary: Itinerary}
+
 		{:ok, pid} = Station.start_link [station_state,
-		{MockRegister, MockCollector, MockStation}]
+		dependency]
 
 		# Define the expectation for the Mock of the Network Constructor
 		MockRegister
@@ -613,15 +680,20 @@ defmodule StationTest do
 	test "Terminated queries are handed over to query collector with correct itinerary" do
 		station_state = %StationStruct{loc_vars: %{"delay": 0.38,
 			"congestion": "low", "disturbance": "no"},
-			schedule: [%{vehicleID: "100", src_station: 1, mode_of_transport: "bus",
+			schedule: [%Connection{vehicleID: "100", src_station: 1, mode_of_transport: "bus",
 			dst_station: 2, dept_time: 25_000, arrival_time: 35_000}],
 			congestion_low: 4, choose_fn: 1}
 
-		itinerary = Itinerary.new(%{qid: "0100", src_station: 0, dst_station: 1, arrival_time: 0, end_time: 999_999},
-		[%{vehicleID: "99", src_station: 0, mode_of_transport: "train",
-			dst_station: 1, dept_time: 10_000, arrival_time: 20_000}], %{day: 0})
+		itinerary = Itinerary.new(%Query{qid: "0100", src_station: 0, dst_station: 1, arrival_time: 0, end_time: 999_999},
+		[%Connection{vehicleID: "99", src_station: 0, mode_of_transport: "train",
+			dst_station: 1, dept_time: 10_000, arrival_time: 20_000}], %Preference{day: 0})
 
 		test_proc = self()
+
+		dependency = %Dependency{station: MockStation,
+		registry: MockRegister,
+		collector: MockCollector,
+		itinerary: Itinerary}
 
 		# Define the expectation for the Mock of the Network Constructor
 		MockRegister
@@ -638,7 +710,7 @@ defmodule StationTest do
  			end)
 
 		{:ok, pid} = Station.start_link [station_state,
- 		{MockRegister, MockCollector, MockStation}]
+ 		dependency]
 
 		# Give The Station Process access to mocks defined in the test process
 		allow(MockRegister, test_proc, pid)
@@ -660,17 +732,17 @@ defmodule StationTest do
 
 	# Test 14
 	test "Station Schedule is not changed after processing a query" do
-		connection = %{vehicleID: "200", src_station: 1, mode_of_transport: "bus",
+		connection = %Connection{vehicleID: "200", src_station: 1, mode_of_transport: "bus",
 		dst_station: 2, dept_time: 25_000, arrival_time: 35_000}
 
 		connection_1a = connection
-		connection_1b = %{connection | vehicleID: "202"}
+		connection_1b = %Connection{connection | vehicleID: "202"}
 
-		connection_2a = %{connection | vehicleID: "300", dst_station: 3}
-		connection_2b = %{connection | vehicleID: "303", dst_station: 3}
+		connection_2a = %Connection{connection | vehicleID: "300", dst_station: 3}
+		connection_2b = %Connection{connection | vehicleID: "303", dst_station: 3}
 
-		connection_3a = %{connection | vehicleID: "400", dst_station: 4}
-		connection_3b = %{connection | vehicleID: "404", dst_station: 4}
+		connection_3a = %Connection{connection | vehicleID: "400", dst_station: 4}
+		connection_3b = %Connection{connection | vehicleID: "404", dst_station: 4}
 
 		timetable = [connection_1a, connection_1b, connection_2a, connection_2b, connection_3a, connection_3b]
 		station_state = %StationStruct{loc_vars: %{"delay": 0.38,
@@ -682,14 +754,19 @@ defmodule StationTest do
 		# 	"congestion": "low", "disturbance": "no"},
 		# 	schedule: [], congestion_low: 4, choose_fn: 1}
 
-		itinerary = Itinerary.new(%{qid: "0300", src_station: 0, dst_station: 3, arrival_time: 0, end_time: 999_999},
-			[%{vehicleID: "99", src_station: 0, mode_of_transport: "train",
-			dst_station: 1, dept_time: 10_000, arrival_time: 20_000}], %{day: 0})
+		itinerary = Itinerary.new(%Query{qid: "0300", src_station: 0, dst_station: 3, arrival_time: 0, end_time: 999_999},
+			[%Connection{vehicleID: "99", src_station: 0, mode_of_transport: "train",
+			dst_station: 1, dept_time: 10_000, arrival_time: 20_000}], %Preference{day: 0})
 
 		test_proc = self()
 
+		dependency = %Dependency{station: MockStation,
+		registry: MockRegister,
+		collector: MockCollector,
+		itinerary: Itinerary}
+
 		{:ok, pid} = Station.start_link [station_state,
-		{MockRegister, MockCollector, MockStation}]
+		dependency]
 
 		# Define the expectation for the Mock of the Network Constructor
 		MockRegister
@@ -718,20 +795,25 @@ defmodule StationTest do
 	# Test to check if the station consumes a given number of
 	# streams within a stipulated amount of time.
 	test "Consumes rapid stream of mixed input queries" do
-		query = Itinerary.new(%{qid: "0100", src_station: 0, dst_station: 1,
-			arrival_time: 0, end_time: 999_999}, %{day: 0})
+		query = Itinerary.new(%Query{qid: "0100", src_station: 0, dst_station: 1,
+			arrival_time: 0, end_time: 999_999}, %Preference{day: 0})
 
 		station_state = %StationStruct{loc_vars: %{"delay": 0.38,
 			"congestion": "low", "disturbance": "no"},
-			schedule: [%{vehicleID: "100", src_station: 1, mode_of_transport: "bus",
+			schedule: [%Connection{vehicleID: "100", src_station: 1, mode_of_transport: "bus",
 			dst_station: 2, dept_time: 25_000, arrival_time: 35_000}],
 			congestion_low: 4, choose_fn: 1}
 
 		test_proc = self()
 
+		dependency = %Dependency{station: MockStation,
+		registry: MockRegister,
+		collector: MockCollector,
+		itinerary: Itinerary}
+
 		# Start station
 		{:ok, pid} = Station.start_link [station_state,
-		{MockRegister, MockCollector, MockStation}]
+		dependency]
 
 		# Define the expectation for the Mock of the Network Constructor
 		MockRegister

@@ -1,4 +1,4 @@
-defmodule TS.StationBehaviour do
+defmodule Station.StationBehaviour do
 	@moduledoc """
 	Defines the interface of a Station.
 	"""

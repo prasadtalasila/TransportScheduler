@@ -1,4 +1,4 @@
-defmodule TS.Registry do
+defmodule Station.Registry do
 	@moduledoc """
 	Implements the interface of the Network Constructor.
 	"""
