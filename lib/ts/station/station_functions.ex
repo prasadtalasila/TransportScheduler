@@ -1,4 +1,4 @@
-defmodule StationFunctions do
+defmodule Station.Functions do
 	@moduledoc """
 	Module listing possible functions to use to compute congestion_delay value
 	based on delay and some factor for multiplication. Based on the choice of

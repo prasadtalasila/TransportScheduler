@@ -4,26 +4,26 @@ defmodule Station do
 	Module that implements the interface of the Station.
 	"""
 
-	@behaviour TS.StationBehaviour
+	@behaviour Station.StationBehaviour
 	use GenServer
-	require StationFsm
+	require Station.Fsm
+	alias Station.Fsm
 
 	# Client-Side functions
 
 	# Starting the GenServer
 
-	def start_link([station_vars, registry, qc]) do
-		GenServer.start_link(Station, [station_vars, registry, qc])
+	def start_link(station_data) when is_list(station_data) do
+		GenServer.start_link(Station, station_data)
 	end
 
-	def init([station_vars, registry, qc]) do
-		station_fsm = StationFsm.new |>
-		StationFsm.input_data(station_vars, registry, qc)
+	def init(station_data) do
+		station_fsm = Fsm.initialise_fsm(station_data)
 		{:ok, station_fsm}
 	end
 
 	def stop(pid) do
-		GenServer.stop(pid)
+		GenServer.stop(pid, :normal)
 	end
 
  	# Getting the current schedule
@@ -45,17 +45,17 @@ defmodule Station do
 	# Callbacks
 
 	def handle_call(:get_schedule, _from, station_fsm) do
-		timetable = StationFsm.get_timetable(station_fsm)
+		timetable = Fsm.get_timetable(station_fsm)
 		{:reply, timetable, station_fsm}
 	end
 
 	def handle_cast({:update, new_vars}, station_fsm) do
-		station_fsm = StationFsm.update(station_fsm, new_vars)
+		station_fsm = Fsm.update(station_fsm, new_vars)
 		{:noreply, station_fsm}
 	end
 
 	def handle_cast({:receive, itinerary}, station_fsm) do
-		station_fsm = StationFsm.process_itinerary(station_fsm, itinerary)
+		station_fsm = Fsm.process_itinerary(station_fsm, itinerary)
 
 		{:noreply, station_fsm}
 	end
