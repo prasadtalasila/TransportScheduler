@@ -9,6 +9,32 @@ defmodule SB do
     loop(pid, str)
   end
 
+	def benchmark do
+		cases = [0, 1, 2, 4, 8, 16, 32, 64]
+		procs = [1, 2, 3, 4, 5, 6, 10, 100, 1000, 10_000]
+		IO.puts "Starting benchmark"
+		IO.write "| "
+		for i <- cases do
+			IO.write "| #{i} "
+		end
+		IO.puts "|"
+		IO.write "| --- "
+		for i <- cases do
+			IO.write "| --- "
+		end
+		IO.puts "|"
+		for i <- procs do
+			IO.write "| #{i} processes "
+			for j <- cases do
+				itinerary = Util.Itinerary.new(j)
+				val = runner(i, itinerary)
+				IO.write "| #{val} "
+			end
+			IO.puts "|"
+		end
+		IO.puts "Ending benchmark"
+	end
+
   def runner(n, str) do
     {:ok, pid} = Registry.start_link
     spawner(n, str, pid)
@@ -16,7 +42,7 @@ defmodule SB do
     :timer.sleep(31_000)
     val = Registry.getCount(pid)
     Registry.stop(pid)
-    IO.puts "for #{n} processes sending messages of size #{byte_size(str)} : #{val}"
+		val
   end
 
   def spawner(n, str, pid) when n > 0 do

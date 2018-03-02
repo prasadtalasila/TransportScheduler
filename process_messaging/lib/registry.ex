@@ -26,7 +26,7 @@ defmodule Registry do
   end
 
   def handle_cast(:start_timer, {record, count, counter}) do
-    count = 0
+    counter = 0
     Process.send_after(self(), :stop_benchmark, 30_000)
     {:noreply, {record, count, counter}}
   end
