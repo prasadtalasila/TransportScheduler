@@ -106,74 +106,110 @@ defmodule Util.Itinerary do
 		:true
 	end
 
-	# Send the new itinerary to the neighbour
-	defp send_to_neighbour(conn, itinerary, dependency) do
-		registry = dependency.registry
-		station = dependency.station
-		# send itinerary to
-		next_station_pid = registry.lookup_code(conn.dst_station)
-		# Forward itinerary to next station's pid
-		station.send_query(next_station_pid, itinerary)
-	end
-
 	# Check if connection is feasible
-	defp feasibility_check(conn, itinerary, arrival_time) do
+	defp feasibility_check(conn, itinerary, arrival_time, :first_pass) do
 		query = get_query(itinerary)
 		preference = get_preference(itinerary)
-		# If connection is in schedule
+
 		if conn.dept_time > arrival_time &&
 		(preference.day * 86_400 + conn.arrival_time) <=	query.end_time do
-			:true
+			true
 		else
-			:false
+			false
+		end
+	end
+
+	# Check if connection is feasible on second pass over the schedule
+	defp feasibility_check(conn, itinerary, _arrival_time, :second_pass) do
+		query = get_query(itinerary)
+		preference = get_preference(itinerary)
+
+		if query.end_time >= (preference.day * 86_400 + conn.arrival_time) do
+			true
+		else
+			false
+		end
+	end
+
+	defp update_flag(flag, arrival_time, conn, pass) do
+		if pass == :first_pass && flag == nil && arrival_time < conn.dept_time do
+			conn
+		else
+			flag
 		end
 	end
 
 	# Iterate over the schedule to find a valid connection.
-	defp find_valid_connection([{_neighbour_map, [], arrival_time} ,
-		itinerary, station_vars, dependency]) do
-
-		#Pass empty neighbour map which will give true for stop_fn
-		process_schedule([{%{}, [], arrival_time} , itinerary,
-		station_vars, dependency])
+	defp find_valid_connection([{_neighbour_map, [flag | _schedule_tail],
+	_arrival_time, flag, :second_pass} , _itinerary, _station_vars, _dependency])
+	do
+		nil
 	end
 
-	defp find_valid_connection([{neighbour_map,
-	[conn | schedule_tail], arrival_time} , itinerary, station_vars,
+	defp find_valid_connection([{neighbour_map, [conn | schedule_tail],
+	arrival_time, flag, pass} , itinerary, station_vars,
 	dependency]) do
+
+		flag = update_flag(flag, arrival_time, conn, pass)
+
 		# If query is feasible and preferable
-		if feasibility_check(conn, itinerary, arrival_time) &&
+		if feasibility_check(conn, itinerary, arrival_time, pass) &&
 		pref_check(conn, itinerary) && neighbour_map[conn.dst_station] == 0 &&
 		!check_member(itinerary, conn) do
 			# Append connection to itinerary
 			new_itinerary = add_link(itinerary, conn)
 			# Send itinerary to neighbour
-			send_to_neighbour(conn, new_itinerary, dependency)
+			# send_to_neighbour(conn, new_itinerary, dependency)
 			# Update neighbour map
 			new_neighbour_map = %{neighbour_map | conn.dst_station => 1}
-			# Go to previous state and repeat
-			process_schedule([{new_neighbour_map, schedule_tail,
-			 arrival_time},	itinerary, station_vars, dependency])
+
+			{[{new_neighbour_map, schedule_tail, arrival_time, flag, pass},
+			itinerary, station_vars, dependency], conn, new_itinerary}
 		else
 			# Pass over connection
-			find_valid_connection([{neighbour_map, schedule_tail,
-			arrival_time}, itinerary, station_vars, dependency])
+			find_valid_connection([{neighbour_map, schedule_tail, arrival_time, flag,
+			pass}, itinerary, station_vars, dependency])
 		end
 
+	end
+
+	defp find_valid_connection([{neighbour_map, [], arrival_time, flag,
+	:first_pass}, itinerary, station_vars, dependency]) do
+
+		# itineraries that start from the next day will be considered in the second
+		# pass hence the day has to be incremented by 1.
+		new_itinerary = increment_day(itinerary, 1)
+
+		# Start second pass over the schedule.
+		next_itinerary([{neighbour_map, station_vars.schedule, arrival_time,
+		flag, :second_pass} , new_itinerary, station_vars, dependency])
+	end
+
+	defp find_valid_connection([{_neighbour_map, [], _arrival_time, _flag,
+	:second_pass} | _vars_tail]) do
+		nil
 	end
 
 	# Iterates over the the station schedule to generate new itineraries to be
 	# sent to neighbouring stations.
-	def process_schedule(vars = [{neighbour_map, schedule, _arrival_time} |
-	vars_tail])  do
-
+	def next_itinerary(vars = [{neighbour_map, schedule, _arrival_time,
+	_flag, _pass} | _vars_tail])  do
 		should_stop = stop_fn(neighbour_map, schedule) # Find out if stop or not
 
-		if should_stop == :true do
-			List.delete_at(vars_tail, 0)
-		else
+		if should_stop == false && vars != nil do
 			find_valid_connection(vars)
+		else
+			nil
 		end
 
 	end
+
+	# Returns an iterator for valid itineraries to be sent to neighbouring
+	# stations.
+	def valid_itinerary_iterator(neighbour_map, schedule, arrival_time,
+	vars_tail) do
+
+		[{neighbour_map, schedule, arrival_time, nil, :first_pass} | vars_tail]
+	end
+
 end

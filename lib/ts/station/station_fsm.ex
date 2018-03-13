@@ -40,6 +40,7 @@ defmodule Station.Fsm do
 		registry = dependency.registry
 
 		active = registry.check_active(itinerary_fn.get_query_id(itinerary))
+
 		cond do
 			(active && itinerary_fn.is_empty(itinerary)) ->
 				:valid
@@ -51,6 +52,16 @@ defmodule Station.Fsm do
 			true ->
 				:valid
 		end
+	end
+
+	# Send the new itinerary to the neighbour
+	defp send_to_neighbour(conn, itinerary, dependency) do
+		registry = dependency.registry
+		station = dependency.station
+		# get neighbour pid
+		next_station_pid = registry.lookup_code(conn.dst_station)
+		# Forward itinerary to next station's pid
+		station.send_query(next_station_pid, itinerary)
 	end
 
 	# Initialise neighbours_fulfilment array
@@ -77,6 +88,17 @@ defmodule Station.Fsm do
 			else
 				{itinerary, previous_link.arrival_time}
 			end
+		end
+	end
+
+	defp process_schedule(itinerary_iterator, dependency) do
+		itinerary_fn = dependency.itinerary
+		case itinerary_fn.next_itinerary(itinerary_iterator) do
+			{new_iterator, conn, itinerary} ->
+				send_to_neighbour(conn, itinerary, dependency)
+				process_schedule(new_iterator, dependency)
+
+			_ -> nil
 		end
 	end
 
@@ -165,10 +187,13 @@ defmodule Station.Fsm do
 			{itinerary, arrival_time} = update_days_travelled(itinerary, dependency)
 
 			vars = [itinerary | List.delete_at(vars, 0)]
-			new_vars = [{neighbour_map, station_vars.schedule, arrival_time} | vars]
 
-			new_vars = itinerary_fn.process_schedule(new_vars)
-			next_state(:ready, new_vars)
+			# Get iterator to valid itineraries.
+			itinerary_iterator = itinerary_fn.valid_itinerary_iterator(neighbour_map,
+			station_vars.schedule, arrival_time, vars)
+
+			process_schedule(itinerary_iterator, dependency)
+			next_state(:ready, [station_vars, dependency])
 		end
 	end
 

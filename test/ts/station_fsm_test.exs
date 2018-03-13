@@ -16,7 +16,6 @@ defmodule StationFsmTest do
 	alias Util.Preference, as: Preference
 	alias Util.StationStruct, as: StationStruct
 
-
 	setup_all do
 		Mox.defmock(MockCollectorFsm, for: Collector)
 		Mox.defmock(MockRegisterFsm, for: Registry)
@@ -52,7 +51,6 @@ defmodule StationFsmTest do
 			dst_station: 2, dept_time: 25_000, arrival_time: 35_000}], station_number: 1,
 			congestion_low: 4, choose_fn: 1}
 
-
 		dependency = %Dependency{station: MockStationFsm,
 		registry: MockRegisterFsm,
 		collector: MockCollectorFsm,
@@ -86,7 +84,6 @@ defmodule StationFsmTest do
 		# Create new station and query for state and data
 		station_fsm = Fsm.initialise_fsm([station_state ,
 		dependency])
-
 
 		# Update Station State to new value
 		station_state = %{station_state | schedule: []}
@@ -135,7 +132,8 @@ defmodule StationFsmTest do
 	end
 
 	# Test 5
-	# check_query_status function of the 'query_rcvd' state on query with self loops
+	# check_query_status function of the 'query_rcvd' state on query with self
+	# loops
 
 	test "Check status of query with self-loop in 'query_rcvd' state" do
 		station_state = %StationStruct{loc_vars: %{"delay": 0.38,
@@ -234,7 +232,6 @@ defmodule StationFsmTest do
 			[%Connection{vehicleID: "99", src_station: 0, mode_of_transport: "train",
 			dst_station: 1, dept_time: 10_000, arrival_time: 20_000}],
 			%Preference{day: 0})
-
 
 		test_proc = self()
 
