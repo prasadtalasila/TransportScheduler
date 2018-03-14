@@ -3,24 +3,24 @@ defmodule TransportScheduler.Mixfile do
 
   def project do
     [
-			app: :TransportScheduler,
-			version: "0.1.0",
-			elixir: "~> 1.6.2",
-			test_coverage: [tool: ExCoveralls],
-			preferred_cli_env: [coveralls: :test],
-			source_url: "https://github.com/prasadtalasila/TransportScheduler",
-			name: "TransportScheduler",
-			start_permanent: Mix.env == :prod,
-			elixirc_paths: elixirc_paths(Mix.env),
-			deps: deps()
+      app: :TransportScheduler,
+      version: "0.1.0",
+      elixir: "~> 1.6.2",
+      test_coverage: [tool: ExCoveralls],
+      preferred_cli_env: [coveralls: :test],
+      source_url: "https://github.com/prasadtalasila/TransportScheduler",
+      name: "TransportScheduler",
+      start_permanent: Mix.env() == :prod,
+      elixirc_paths: elixirc_paths(Mix.env()),
+      deps: deps()
     ]
   end
 
-	defp elixirc_paths(:test) do
-		["lib", "test/mocks"]
-	end
+  defp elixirc_paths(:test) do
+    ["lib", "test/mocks"]
+  end
 
-	defp elixirc_paths(_), do: ["lib"]
+  defp elixirc_paths(_), do: ["lib"]
 
   # Run "mix help compile.app" to learn about applications.
   def application do
@@ -32,10 +32,10 @@ defmodule TransportScheduler.Mixfile do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-			{:mox, "~> 0.3.1", only: :test},
-			{:excoveralls, "~> 0.7", only: :test},
-			{:credo, "~> 0.9.0-rc8", only: [:dev, :test], runtime: false},
-			{:fsm, "~> 0.3.0"}
+      {:mox, "~> 0.3.1", only: :test},
+      {:excoveralls, "~> 0.7", only: :test},
+      {:credo, "~> 0.9.0-rc8", only: [:dev, :test], runtime: false},
+      {:fsm, "~> 0.3.0"}
     ]
   end
 end
