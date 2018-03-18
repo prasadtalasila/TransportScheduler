@@ -31,14 +31,14 @@ else
 fi
 asdf global erlang 20.0
 
-if [ -f /home/vagrant/.asdf/installs/elixir/1.5.1/bin/elixir ]
+if [ -f /home/vagrant/.asdf/installs/elixir/1.6.2/bin/elixir ]
 then
     echo "elixir already installed"
 else
     asdf plugin-add elixir https://github.com/asdf-vm/asdf-elixir.git
     asdf list-all elixir
-    asdf install elixir 1.5.1
+    asdf install elixir 1.6.2
     asdf list elixir
-    asdf global elixir 1.5.1
+    asdf global elixir 1.6.2
 fi
-asdf global elixir 1.5.1
+asdf global elixir 1.6.2

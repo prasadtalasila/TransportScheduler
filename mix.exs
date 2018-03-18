@@ -32,10 +32,10 @@ defmodule TransportScheduler.Mixfile do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:mox, "~> 0.3.1", only: :test},
-      {:excoveralls, "~> 0.7", only: :test},
-      {:credo, "~> 0.9.0-rc8", only: [:dev, :test], runtime: false},
-      {:fsm, "~> 0.3.0"}
+      {:mox, "~> 0.3", only: :test},
+      {:excoveralls, "~> 0.8", only: :test},
+      {:credo, "~> 0.8", only: [:dev, :test], runtime: false},
+      {:fsm, "~> 0.3"}
     ]
   end
 end

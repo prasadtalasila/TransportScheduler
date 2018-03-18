@@ -390,7 +390,7 @@ defmodule StationFsmTest do
   # Test 8
 
   # If a valid, in-process query is sent to station, it transitions to
-  # the 'query_init' state
+  # the 'process_query' state
 
   test "Send in-process, valid query to station in 'query_rcvd' state" do
     # Station variables
@@ -448,7 +448,7 @@ defmodule StationFsmTest do
       |> Fsm.check_query_status()
 
     # Assertion on state
-    assert Fsm.state(station_fsm) == :query_init
+    assert Fsm.state(station_fsm) == :process_query
   end
 
   test "Check if itinerary is computed correctly" do

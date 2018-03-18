@@ -6,7 +6,7 @@ defmodule Station do
   @behaviour Station.StationBehaviour
   use GenServer
   require Station.Fsm
-  alias Station.Fsm
+  alias Station.Fsm, as: FSM
 
   # Client-Side functions
 
@@ -17,7 +17,7 @@ defmodule Station do
   end
 
   def init(station_data) do
-    station_fsm = Fsm.initialise_fsm(station_data)
+    station_fsm = FSM.initialise_fsm(station_data)
     {:ok, station_fsm}
   end
 
@@ -26,13 +26,11 @@ defmodule Station do
   end
 
   # Getting the current schedule
-
   def get_timetable(pid) do
     GenServer.call(pid, :get_schedule)
   end
 
   # Updating the current state
-
   def update(pid, new_vars) do
     GenServer.cast(pid, {:update, new_vars})
   end
@@ -41,21 +39,19 @@ defmodule Station do
     GenServer.cast(pid, {:receive, query})
   end
 
-  # Callbacks
-
   def handle_call(:get_schedule, _from, station_fsm) do
-    timetable = Fsm.get_timetable(station_fsm)
+    timetable = FSM.get_timetable(station_fsm)
     {:reply, timetable, station_fsm}
   end
 
-  def handle_cast({:update, new_vars}, station_fsm) do
-    station_fsm = Fsm.update(station_fsm, new_vars)
+  def handle_cast({:receive, itinerary}, station_fsm) do
+    station_fsm = FSM.process_itinerary(station_fsm, itinerary)
+
     {:noreply, station_fsm}
   end
 
-  def handle_cast({:receive, itinerary}, station_fsm) do
-    station_fsm = Fsm.process_itinerary(station_fsm, itinerary)
-
+  def handle_cast({:update, new_vars}, station_fsm) do
+    station_fsm = FSM.update(station_fsm, new_vars)
     {:noreply, station_fsm}
   end
 
