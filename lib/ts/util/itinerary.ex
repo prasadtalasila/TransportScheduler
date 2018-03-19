@@ -6,6 +6,7 @@ defmodule Util.Itinerary do
 
   @behaviour Util.ItineraryBehaviour
 
+  require Logger
   # generates itinerary in the format {query, route, preference}
   def new(query, route, preference), do: {query, route, preference}
 
@@ -26,7 +27,7 @@ defmodule Util.Itinerary do
   # and also returns the arrival time of the last link
   def update_days_travelled(itinerary) do
     query = get_query(itinerary)
-
+    itinerary_arr_time =
     if is_empty(itinerary) do
       {itinerary, query.arrival_time}
     else
@@ -40,31 +41,37 @@ defmodule Util.Itinerary do
         {itinerary, previous_link.arrival_time}
       end
     end
+    Logger.debug(fn -> "itinerary_arr_time = #{inspect itinerary_arr_time}" end)
+    itinerary_arr_time
   end
 
   # Check if connection is feasible on second pass over the schedule
   defp _feasibility_check(conn, itinerary, _arrival_time, :second_pass) do
     query = get_query(itinerary)
     preference = get_preference(itinerary)
-
+    result_feasibility_check =
     if query.end_time >= preference.day * 86_400 + conn.arrival_time do
       true
     else
       false
     end
+    Logger.debug(fn -> "result_feasibility_check = #{result_feasibility_check}" end)
+    result_feasibility_check
   end
 
   # Check if connection is feasible
   defp _feasibility_check(conn, itinerary, arrival_time, :first_pass) do
     query = get_query(itinerary)
     preference = get_preference(itinerary)
-
+    result_feasibility_check =
     if conn.dept_time > arrival_time &&
          preference.day * 86_400 + conn.arrival_time <= query.end_time do
       true
     else
       false
     end
+    Logger.debug(fn -> "result_feasibility_check = #{result_feasibility_check}" end)
+    result_feasibility_check
   end
 
   # Iterates over the the station schedule to generate new itineraries to be
@@ -77,12 +84,15 @@ defmodule Util.Itinerary do
       ) do
     # Find out if stop or not
     should_stop = stop_fn(neighbour_map, schedule)
-
+    Logger.debug(fn -> "should_stop = #{inspect should_stop}" end)
+    result_find_valid_connection =
     if should_stop == false && vars != nil do
       _find_valid_connection(vars)
     else
       nil
     end
+    Logger.debug(fn -> "The value from _find_valid_connection = #{inspect result_find_valid_connection}" end)
+    result_find_valid_connection
   end
 
   # Iterate over the schedule to find a valid connection.
@@ -180,14 +190,18 @@ defmodule Util.Itinerary do
   # Returns true if the route stops (This does not mean it has reached the final
   # destination) at the the given station argument
   def is_valid_destination(present_station, itinerary) do
-    present_station == get_last_link(itinerary).dst_station
+    result = present_station == get_last_link(itinerary).dst_station
+    Logger.debug(fn -> "present_station = #{inspect present_station}; result = #{result}" end)
+    result
   end
 
   # Returns true if the itinerary is terminal.
   def is_terminal(itinerary) do
     query = get_query(itinerary)
     last_link = get_last_link(itinerary)
-    query.dst_station == last_link.dst_station
+    result_is_terminal = query.dst_station == last_link.dst_station
+    Logger.debug(fn -> "qid = #{query.qid}; result_is_terminal = #{result_is_terminal}" end)
+    result_is_terminal
   end
 
   # Returns the last link in the itinerary route.
@@ -199,6 +213,7 @@ defmodule Util.Itinerary do
   # Adds a link to the present itinerary route.
   def add_link({query, route, preference}, link) do
     new_route = [link | route]
+    Logger.debug(fn -> "The itinerary = #{inspect {query, route, preference}} got link = #{inspect link} added to it" end)
     {query, new_route, preference}
   end
 
@@ -223,6 +238,7 @@ defmodule Util.Itinerary do
   # Signals iteration to stop when schedule is empty or
   # all neighbours have been visited
   defp stop_fn(neighbours, schedule) do
+    Logger.debug(fn -> "All neighbours visited" end)
     schedule == [] || _visited_all_neighbours(neighbours)
   end
 
