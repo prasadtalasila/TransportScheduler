@@ -3,7 +3,7 @@ defmodule Util.Itinerary do
 	Defines the operations that can be performed on the itinerary container of the
 	 format {query, route, preferences}.
 	"""
-
+	require Logger
 	# generates itinerary in the format {query, route, preference}
 	def new(query, route, preference), do: {query, route, preference}
 
@@ -54,17 +54,20 @@ defmodule Util.Itinerary do
 		query = get_query(itinerary)
 		last_link = get_last_link(itinerary)
 		query.dst_station == last_link.dst_station
+		Logger.debug("qid :#{query.qid}; query.dst_station: #{query.dst_station}; last_link.dst_station: #{last_link.dst_station}")
 	end
 
 	# Returns true if the route stops (This does not mean it has reached the final
 	# destination) at the the given station argument
 	def is_valid_destination(present_station, itinerary) do
 		present_station == get_last_link(itinerary).dst_station
+		Logger.debug("qid: #{get_query_id(itinerary)}; present_station: #{present_station}; last_link.dst_station: #{get_last_link(itinerary).dst_station}")
 	end
 
 	# Adds a link to the present itinerary route.
 	def add_link({query, route, preference}, link) do
 		new_route = [link | route]
+		Logger.debug("qid: #{query.qid}; link: #{inspect link}; last_link: #{inspect get_last_link({query, route, preference})}")
 		{query, new_route, preference}
 	end
 
@@ -91,13 +94,14 @@ defmodule Util.Itinerary do
 				acc
 			end
 		end
-
+		Logger.debug("schedule: {inspect schedule}")
 		if schedule != [] &&
 		Enum.reduce(neighbours, false, check_unvisited_neighbour) == true do
 			false
 		else
 			true
 		end
+		Logger.debug("schedule: {inspect schedule}")
 	end
 
 	# Check if preferences match
@@ -112,8 +116,10 @@ defmodule Util.Itinerary do
 		station = dependency.station
 		# send itinerary to
 		next_station_pid = registry.lookup_code(conn.dst_station)
+		Logger.debug("qid: {get_query(itinerary)}")
 		# Forward itinerary to next station's pid
 		station.send_query(next_station_pid, itinerary)
+		Logger.debug("qid: {get_query(itinerary)}")
 	end
 
 	# Check if connection is feasible
@@ -127,6 +133,7 @@ defmodule Util.Itinerary do
 		else
 			:false
 		end
+		Logger.debug("qid: #{query.qid}; query.end_time: #{query.end_time}; preference.day: #{preference.day}; conn.dept_time: #{conn.dept_time}; arrival_time: #{arrival_time}")
 	end
 
 	# Iterate over the schedule to find a valid connection.
@@ -136,6 +143,7 @@ defmodule Util.Itinerary do
 		#Pass empty neighbour map which will give true for stop_fn
 		process_schedule([{%{}, [], arrival_time} , itinerary,
 		station_vars, dependency])
+		Logger.debug("qid: {get_query(itinerary)}")
 	end
 
 	defp find_valid_connection([{neighbour_map,
@@ -154,6 +162,7 @@ defmodule Util.Itinerary do
 			# Go to previous state and repeat
 			process_schedule([{new_neighbour_map, schedule_tail,
 			 arrival_time},	itinerary, station_vars, dependency])
+			Logger.debug("qid: {get_query(itinerary)}")
 		else
 			# Pass over connection
 			find_valid_connection([{neighbour_map, schedule_tail,
