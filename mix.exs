@@ -35,7 +35,8 @@ defmodule TransportScheduler.Mixfile do
 			{:mox, "~> 0.3.1", only: :test},
 			{:excoveralls, "~> 0.7", only: :test},
 			{:credo, "~> 0.8", only: [:dev, :test], runtime: false},
-			{:fsm, "~> 0.3.0"}
+			{:fsm, "~> 0.3.0"},
+			{:logger_file_backend, "~> 0.0.10"}
     ]
   end
 end
