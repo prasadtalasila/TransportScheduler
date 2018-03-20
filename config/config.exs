@@ -28,3 +28,28 @@ use Mix.Config
 # here (which is why it is important to import them last).
 #
 #     import_config "#{Mix.env}.exs"
+config :logger,
+	backends: [{LoggerFileBackend, :info},
+	{LoggerFileBackend, :warn},
+	{LoggerFileBackend, :error},
+	{LoggerFileBackend, :debug}]
+
+config :logger, :info,
+	level: :info,
+	path: "log/info.log",
+	format: "[$time] $message\n"
+
+config :logger, :debug,
+	level: :debug,
+	path: "log/debug.log",
+	format: "[$time] $message\n"
+
+config :logger, :error,
+	level: :error,
+	path: "log/error.log",
+	format: "[$time] $message\n"
+
+config :logger, :warn,
+	level: :warn,
+	path: "log/warn.log",
+	format: "[$time] $message\n"
