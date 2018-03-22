@@ -1,4 +1,4 @@
-defmodule Station.FsmBehaviour do
+defmodule Station.FSMBehaviour do
   @moduledoc """
   Defines the interface of Station.Fsm.
   """

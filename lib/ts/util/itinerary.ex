@@ -4,6 +4,8 @@ defmodule Util.Itinerary do
    format {query, route, preferences}.
   """
 
+  @behaviour Util.ItineraryBehaviour
+
   # generates itinerary in the format {query, route, preference}
   def new(query, route, preference), do: {query, route, preference}
 
@@ -104,8 +106,8 @@ defmodule Util.Itinerary do
 
     # If query is feasible and preferable
     if _feasibility_check(conn, itinerary, arrival_time, pass) &&
-         pref_check(conn, itinerary) && neighbour_map[conn.dst_station] == 0 &&
-         !check_member(itinerary, conn) do
+         _pref_check(conn, itinerary) && neighbour_map[conn.dst_station] == 0 &&
+         !check_self_loop(itinerary, conn) do
       # Append connection to itinerary
       new_itinerary = add_link(itinerary, conn)
       # Send itinerary to neighbour
@@ -201,7 +203,10 @@ defmodule Util.Itinerary do
   end
 
   # Checks if adding link will generate a selfloop.
-  def check_member({_query, route, _preference}, link),
+  # Makes the assumption that the last station of the route
+  # is the source station of the link and that any link won't be a self loop
+  # that is having the same source and destination stations
+  def check_self_loop({_query, route, _preference}, link),
     do: _match_station(route, link)
 
   defp _match_station([], _link), do: false
@@ -218,10 +223,10 @@ defmodule Util.Itinerary do
   # Signals iteration to stop when schedule is empty or
   # all neighbours have been visited
   defp stop_fn(neighbours, schedule) do
-    schedule == [] || visited_all_neighbours(neighbours)
+    schedule == [] || _visited_all_neighbours(neighbours)
   end
 
-  defp visited_all_neighbours(neighbours) do
+  defp _visited_all_neighbours(neighbours) do
     check_if_visited = fn {_, val}, acc ->
       if val == 0 do
         false
@@ -234,7 +239,7 @@ defmodule Util.Itinerary do
   end
 
   # Check if preferences match
-  def pref_check(_conn, _itinerary) do
+  def _pref_check(_conn, _itinerary) do
     # Invoke UQCFSM and check for preferences
     true
   end
@@ -250,9 +255,7 @@ defmodule Util.Itinerary do
   # Returns an iterator for valid itineraries to be sent to neighbouring
   # stations.
   def valid_itinerary_iterator(
-        neighbour_map,
-        schedule,
-        arrival_time,
+        {neighbour_map, schedule, arrival_time},
         vars_tail
       ) do
     [{neighbour_map, schedule, arrival_time, nil, :first_pass} | vars_tail]

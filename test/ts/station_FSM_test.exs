@@ -1,14 +1,11 @@
-defmodule StationFsmTest do
+defmodule StationFSMTest do
   @moduledoc """
   Test suite for the StationFsm module
   """
 
   use ExUnit.Case, async: true
   import Mox
-  alias Station.Fsm, as: Fsm
-  alias Station.StationBehaviour, as: StationBehaviour
-  alias Station.Collector, as: Collector
-  alias Station.Registry, as: Registry
+  alias Station.FSM, as: FSM
   alias Util.Dependency, as: Dependency
   alias Util.Itinerary, as: Itinerary
   alias Util.Query, as: Query
@@ -16,24 +13,15 @@ defmodule StationFsmTest do
   alias Util.Preference, as: Preference
   alias Util.StationStruct, as: StationStruct
 
-  setup_all do
-    Mox.defmock(MockCollectorFsm, for: Collector)
-    Mox.defmock(MockRegisterFsm, for: Registry)
-    Mox.defmock(MockStationFsm, for: StationBehaviour)
-    :ok
-  end
-
   # Test 1
-
   # Check if initial state is 'start' and initial data
   # is an empty list
-
   test "Check configuration of initial state" do
     # Create new station and query for state and data
-    station_fsm = Fsm.new()
+    station_fsm = FSM.new()
 
-    initial_state = Fsm.state(station_fsm)
-    initial_data = Fsm.data(station_fsm)
+    initial_state = FSM.state(station_fsm)
+    initial_data = FSM.data(station_fsm)
 
     assert initial_state == :start
     assert initial_data == []
@@ -63,17 +51,17 @@ defmodule StationFsmTest do
     }
 
     dependency = %Dependency{
-      station: MockStationFsm,
-      registry: MockRegisterFsm,
-      collector: MockCollectorFsm,
+      station: MockStation,
+      registry: MockRegister,
+      collector: MockCollector,
       itinerary: Util.Itinerary
     }
 
     # Create new station and query for state and data
-    station_fsm = Fsm.initialise_fsm([station_state, dependency])
+    station_fsm = FSM.initialise_fsm([station_state, dependency])
 
-    assert Fsm.state(station_fsm) == :ready
-    assert Fsm.data(station_fsm) == [station_state, dependency]
+    assert FSM.state(station_fsm) == :ready
+    assert FSM.data(station_fsm) == [station_state, dependency]
   end
 
   # Test 3
@@ -100,21 +88,21 @@ defmodule StationFsmTest do
     }
 
     dependency = %Dependency{
-      station: MockStationFsm,
-      registry: MockRegisterFsm,
-      collector: MockCollectorFsm,
+      station: MockStation,
+      registry: MockRegister,
+      collector: MockCollector,
       itinerary: Util.Itinerary
     }
 
     # Create new station and query for state and data
-    station_fsm = Fsm.initialise_fsm([station_state, dependency])
+    station_fsm = FSM.initialise_fsm([station_state, dependency])
 
     # Update Station State to new value
     station_state = %{station_state | schedule: []}
-    station_fsm = Fsm.update(station_fsm, station_state)
+    station_fsm = FSM.update(station_fsm, station_state)
 
-    assert Fsm.state(station_fsm) == :ready
-    assert Fsm.data(station_fsm) == [station_state, dependency]
+    assert FSM.state(station_fsm) == :ready
+    assert FSM.data(station_fsm) == [station_state, dependency]
   end
 
   # Test 4
@@ -158,22 +146,22 @@ defmodule StationFsmTest do
     }
 
     dependency = %Dependency{
-      station: MockStationFsm,
-      registry: MockRegisterFsm,
-      collector: MockCollectorFsm,
+      station: MockStation,
+      registry: MockRegister,
+      collector: MockCollector,
       itinerary: Util.Itinerary
     }
 
     # New Fsm
-    station_fsm = Fsm.initialise_fsm([station_state, dependency])
+    station_fsm = FSM.initialise_fsm([station_state, dependency])
 
-    station_fsm = Fsm.query_input(station_fsm, itinerary)
+    station_fsm = FSM.query_input(station_fsm, itinerary)
 
     # Assertion on state
-    assert Fsm.state(station_fsm) == :query_rcvd
+    assert FSM.state(station_fsm) == :query_rcvd
 
     # Assertions on data
-    assert Fsm.data(station_fsm) == [itinerary, station_state, dependency]
+    assert FSM.data(station_fsm) == [itinerary, station_state, dependency]
   end
 
   # Test 5
@@ -231,26 +219,26 @@ defmodule StationFsmTest do
       )
 
     # Mock register for mocking the NC
-    MockRegisterFsm
+    MockRegister
     |> expect(:check_active, fn _ -> true end)
 
     dependency = %Dependency{
-      station: MockStationFsm,
-      registry: MockRegisterFsm,
-      collector: MockCollectorFsm,
+      station: MockStation,
+      registry: MockRegister,
+      collector: MockCollector,
       itinerary: Util.Itinerary
     }
 
     # New Fsm
-    station_fsm = Fsm.initialise_fsm([station_state, dependency])
+    station_fsm = FSM.initialise_fsm([station_state, dependency])
 
     station_fsm =
       station_fsm
-      |> Fsm.query_input(itinerary)
-      |> Fsm.check_query_status()
+      |> FSM.query_input(itinerary)
+      |> FSM.check_query_status()
 
     # Assertion on state
-    assert Fsm.state(station_fsm) == :ready
+    assert FSM.state(station_fsm) == :ready
   end
 
   # Test 6
@@ -295,26 +283,26 @@ defmodule StationFsmTest do
       )
 
     # Mock register for mocking the NC
-    MockRegisterFsm
+    MockRegister
     |> expect(:check_active, fn _ -> true end)
 
     dependency = %Dependency{
-      station: MockStationFsm,
-      registry: MockRegisterFsm,
-      collector: MockCollectorFsm,
+      station: MockStation,
+      registry: MockRegister,
+      collector: MockCollector,
       itinerary: Util.Itinerary
     }
 
     # New Fsm
-    station_fsm = Fsm.initialise_fsm([station_state, dependency])
+    station_fsm = FSM.initialise_fsm([station_state, dependency])
 
     station_fsm =
       station_fsm
-      |> Fsm.query_input(itinerary)
-      |> Fsm.check_query_status()
+      |> FSM.query_input(itinerary)
+      |> FSM.check_query_status()
 
     # Assertion on state
-    assert Fsm.state(station_fsm) == :ready
+    assert FSM.state(station_fsm) == :ready
   end
 
   # Test 7
@@ -360,30 +348,30 @@ defmodule StationFsmTest do
     test_proc = self()
 
     dependency = %Dependency{
-      station: MockStationFsm,
-      registry: MockRegisterFsm,
-      collector: MockCollectorFsm,
+      station: MockStation,
+      registry: MockRegister,
+      collector: MockCollector,
       itinerary: Util.Itinerary
     }
 
     # Mock register for mocking the NC
-    MockRegisterFsm
+    MockRegister
     |> expect(:check_active, fn _ -> true end)
 
     # Mock collector for mocking the QC
-    MockCollectorFsm
+    MockCollector
     |> expect(:collect, fn _ -> send(test_proc, :collected) end)
 
     # New Fsm
-    station_fsm = Fsm.initialise_fsm([station_state, dependency])
+    station_fsm = FSM.initialise_fsm([station_state, dependency])
 
     station_fsm =
       station_fsm
-      |> Fsm.query_input(itinerary)
-      |> Fsm.check_query_status()
+      |> FSM.query_input(itinerary)
+      |> FSM.check_query_status()
 
     # Assertion on state
-    assert Fsm.state(station_fsm) == :ready
+    assert FSM.state(station_fsm) == :ready
     assert_receive :collected
   end
 
@@ -429,26 +417,26 @@ defmodule StationFsmTest do
       )
 
     # Mock register to mock NC
-    MockRegisterFsm
+    MockRegister
     |> expect(:check_active, fn _ -> true end)
 
     dependency = %Dependency{
-      station: MockStationFsm,
-      registry: MockRegisterFsm,
-      collector: MockCollectorFsm,
+      station: MockStation,
+      registry: MockRegister,
+      collector: MockCollector,
       itinerary: Util.Itinerary
     }
 
     # New Fsm
-    station_fsm = Fsm.initialise_fsm([station_state, dependency])
+    station_fsm = FSM.initialise_fsm([station_state, dependency])
 
     station_fsm =
       station_fsm
-      |> Fsm.query_input(itinerary)
-      |> Fsm.check_query_status()
+      |> FSM.query_input(itinerary)
+      |> FSM.check_query_status()
 
     # Assertion on state
-    assert Fsm.state(station_fsm) == :process_query
+    assert FSM.state(station_fsm) == :process_query
   end
 
   test "Check if itinerary is computed correctly" do
@@ -503,29 +491,29 @@ defmodule StationFsmTest do
     test_proc = self()
 
     # Mock register to mock the NC
-    MockRegisterFsm
+    MockRegister
     |> expect(:check_active, fn _ -> true end)
     |> expect(:lookup_code, fn _ -> true end)
     |> expect(:lookup_code, fn _ -> true end)
 
-    MockStationFsm
+    MockStation
     |> expect(:send_query, 2, fn _, _ ->
       send(test_proc, :sent_to_neighbour)
     end)
 
     dependency = %Dependency{
-      station: MockStationFsm,
-      registry: MockRegisterFsm,
-      collector: MockCollectorFsm,
+      station: MockStation,
+      registry: MockRegister,
+      collector: MockCollector,
       itinerary: Util.Itinerary
     }
 
     # new Fsm
-    station_fsm = Fsm.initialise_fsm([station_state, dependency])
+    station_fsm = FSM.initialise_fsm([station_state, dependency])
 
-    station_fsm = Fsm.process_itinerary(station_fsm, itinerary)
+    station_fsm = FSM.process_itinerary(station_fsm, itinerary)
 
-    assert Fsm.state(station_fsm) == :ready
+    assert FSM.state(station_fsm) == :ready
     assert_receive :sent_to_neighbour
   end
 end

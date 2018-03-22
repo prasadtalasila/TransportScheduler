@@ -1,10 +1,10 @@
-defmodule Station.Fsm do
+defmodule Station.FSM do
   @moduledoc """
   Provides implementation of the core logic of a Station.
   """
 
   use Fsm, initial_state: :start, initial_data: []
-  @behaviour Station.FsmBehaviour
+  @behaviour Station.FSMBehaviour
 
   # Module interface definition
   def initialise_fsm(input = [_station_struct, _dependency]) do
@@ -132,9 +132,7 @@ defmodule Station.Fsm do
       # Get iterator to valid itineraries.
       itinerary_iterator =
         itinerary_fn.valid_itinerary_iterator(
-          neighbour_map,
-          station_struct.schedule,
-          arrival_time,
+          {neighbour_map, station_struct.schedule, arrival_time},
           station_data
         )
 

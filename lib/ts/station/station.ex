@@ -5,8 +5,8 @@ defmodule Station do
 
   @behaviour Station.StationBehaviour
   use GenServer
-  require Station.Fsm
-  alias Station.Fsm, as: FSM
+  require Station.FSM
+  alias Station.FSM, as: FSM
 
   # Client-Side functions
 

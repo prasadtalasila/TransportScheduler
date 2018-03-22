@@ -3,7 +3,8 @@
   inputs: [
     ".formatter.exs",
     "mix.exs",
-    "{config, lib, test, lib}/**/*.{ex,exs}",
-    "lib/**/**/*.{ex, exs}"
+    "{config, lib, test}/**/*.{ex,exs}",
+    "lib/**/**/*.{ex,exs}",
+    "test/ts/*.exs"
   ]
 ]

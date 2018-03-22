@@ -14,7 +14,7 @@ if [ -f "$ASDF_HOME/.asdf/completions/asdf.bash" ]
 then
     echo "asdf already installed"
 else
-    git clone https://github.com/asdf-vm/asdf.git "$ASDF_HOME/.asdf" --branch v0.3.0
+    git clone https://github.com/asdf-vm/asdf.git "$ASDF_HOME/.asdf" --branch v0.4.3
     . "$ASDF_HOME/.asdf/asdf.sh"
     . "$ASDF_HOME/.asdf/completions/asdf.bash"
 fi
@@ -25,11 +25,11 @@ then
 else
     asdf plugin-add erlang https://github.com/asdf-vm/asdf-erlang.git
     asdf list-all erlang
-    asdf install erlang 20.0
+    asdf install erlang 20.3
     asdf list erlang
-    asdf global erlang 20.0
+    asdf global erlang 20.3
 fi
-asdf global erlang 20.0
+asdf global erlang 20.3
 
 if [ -f /home/vagrant/.asdf/installs/elixir/1.6.2/bin/elixir ]
 then
