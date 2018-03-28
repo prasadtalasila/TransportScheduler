@@ -13,6 +13,7 @@ defmodule StationStressTest do
 
   # Test to check if the station consumes a given number of
   # streams within a stipulated amount of time.
+  @tag :slow
   test "Consumes rapid stream of mixed input queries" do
     query =
       Itinerary.new(

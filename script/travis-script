@@ -26,5 +26,5 @@ MIX_ENV=test mix do compile coveralls.json
 # shellcheck disable=SC2037
 MIX_ENV=test mix credo --strict
 
-mix test
+mix test --exclude slow
 mix profile
