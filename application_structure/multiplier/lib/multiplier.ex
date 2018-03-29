@@ -4,7 +4,7 @@ defmodule Multiplier do
         use GenServer
     
         def start_link(_) do
-                GenServer.start_link(__MODULE__,:ok)
+                GenServer.start_link(__MODULE__,:ok, [debug: [:statistics, :trace]])
         end
 
     
