@@ -36,8 +36,6 @@ For more detailed output,in `script/normal_parse.sh`,set the `MIX_DEBUG=1` flag 
 
 `MIX_DEBUG=1 mix parse` 
 
-
-
 2. For running in debug mode-
 
 run `bash script/debug.sh`
@@ -59,11 +57,10 @@ Starting application in InputParser.Application(lib/input_parser/application.ex)
 Input Parser Initialised and Queries are Obtained
 ```
 
+
 For more detailed output,`script/debug.sh` set the `MIX_DEBUG=1` flag before the mix task as-
 
 `MIX_DEBUG=1 MIX_ENV=debug  mix debug`
-
-
 
 ## Installation
 
