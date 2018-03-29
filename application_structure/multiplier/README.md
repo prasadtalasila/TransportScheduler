@@ -9,6 +9,7 @@ run `bash script/multiplying.sh`
 
 EXPECTED OUTPUT-
 
+
 ```
 $ bash script/multiplying.sh 
 Loading from config.exs in multiplier
