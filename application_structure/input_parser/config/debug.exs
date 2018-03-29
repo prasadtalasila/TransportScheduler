@@ -1,5 +1,5 @@
 use Mix.Config
-IO.puts "using debug config file"
+IO.puts "Loading from config/debug.exs in input parser."
 
 config :logger,
 	backends: [

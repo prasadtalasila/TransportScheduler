@@ -7,6 +7,22 @@ Instructions-
 
 run `bash script/multiplying.sh`
 
+EXPECTED OUTPUT-
+
+```
+$ bash script/multiplying.sh 
+Loading from config.exs in multiplier
+Resolving Hex dependencies...
+Dependency resolution completed:
+  logger_file_backend 0.0.10
+Loading from config.exs in multiplier
+Starting application in InputParser.Application(lib/input_parser/application.ex)
+Input Parser Initialised and Queries are Obtained
+Starting application in Multiplier.Application(lib/multiplier/application.ex)
+Multiplier initialised
+Multiplying....
+Done calculating,please open results.txt
+```
 
 
 ## Installation
