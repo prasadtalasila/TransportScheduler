@@ -17,11 +17,40 @@ INSTRUCTIONS-
 
 run `bash script/normal_parse.sh`
 
+EXPECTED OUTPUT-
+```
+$ bash script/normal_parse.sh 
+Loading from config/config.exs in input parser
+Resolving Hex dependencies...
+Dependency resolution completed:
+  logger_file_backend 0.0.10
+All dependencies up to date
+Loading from config/config.exs in input parser
+Starting application in InputParser.Application(lib/input_parser/application.ex)
+Input Parser Initialised and Queries are Obtained
+Qmap is %{1 => 2, 3 => 4, 5 => 6}
+```
+
 2. For running in debug mode-
 
 run `bash script/debug.sh`
 
 and check `log/debug.log`
+
+EXPECTED OUTPUT-
+
+```
+$ bash script/debug.sh
+Loading from config/config.exs in input parser
+Resolving Hex dependencies...
+Dependency resolution completed:
+  logger_file_backend 0.0.10
+All dependencies up to date
+Loading from config/config.exs in input parser
+using debug config file
+Starting application in InputParser.Application(lib/input_parser/application.ex)
+Input Parser Initialised and Queries are Obtained
+```
 
 
 ## Installation
