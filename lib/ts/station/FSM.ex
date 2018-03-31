@@ -2,12 +2,13 @@ defmodule Station.FSM do
   @moduledoc """
   Provides implementation of the core logic of a Station.
   """
-
+  require Logger
   use Fsm, initial_state: :start, initial_data: []
   @behaviour Station.FSMBehaviour
 
   # Module interface definition
   def initialise_fsm(input = [_station_struct, _dependency]) do
+    Logger.info(fn -> "Initialised the fsm" end)
     new()
     |> input_data(input)
   end
@@ -45,6 +46,7 @@ defmodule Station.FSM do
   defstate start do
     # On getting the data input, go to ready state
     defevent input_data(station_data = [_station_struct, _dependency]) do
+      Logger.info(fn -> "Current state='start'; Next state='ready'" end)
       next_state(:ready, station_data)
     end
   end
@@ -53,6 +55,7 @@ defmodule Station.FSM do
   defstate ready do
     # When local variables of the station are updated
     defevent update(new_station_struct), data: [_station_struct, dependency] do
+      Logger.info(fn -> "Current state='ready'; Next state='ready'" end)
       schedule =
         Enum.sort(
           new_station_struct.schedule,
@@ -79,6 +82,7 @@ defmodule Station.FSM do
     # When an itinerary is passed to the station
     defevent query_input(itinerary),
       data: station_data = [_station_struct, _dependency] do
+      Logger.info(fn -> "Current state='ready'; Next state='query_rcvd'" end)
       # Give itinerary as part of query
       station_data = [itinerary | station_data]
       next_state(:query_rcvd, station_data)
@@ -95,16 +99,19 @@ defmodule Station.FSM do
         :invalid ->
           # If invalid query, remove itinerary
           new_station_data = List.delete_at(station_data, 0)
+          Logger.info(fn -> "Current state='query_rcvd'; Next state='ready'" end)
           next_state(:ready, new_station_data)
 
         :collect ->
           # If completed query, send to
           dependency.collector.collect(itinerary)
           new_station_data = List.delete_at(station_data, 0)
+          Logger.info(fn -> "Current state='query_rcvd'; Next state='ready'" end)
           next_state(:ready, new_station_data)
 
         :valid ->
           # If valid query, compute
+          Logger.info(fn -> "Current state='query_rcvd'; Next state='process_query'" end)
           next_state(:process_query, station_data)
       end
     end
@@ -114,6 +121,7 @@ defmodule Station.FSM do
   defstate process_query do
     defevent initialise,
       data: station_data = [itinerary, station_struct, dependency] do
+      Logger.info(fn -> "Current state='process_query'; Next state='ready'" end)
       itinerary_fn = dependency.itinerary
 
       # Find all neighbors
@@ -183,7 +191,7 @@ defmodule Station.FSM do
   # Initialise neighbours_fulfilment array
   defp _init_neighbours(schedule, _other_means) do
     dst = schedule
-
+    Logger.info(fn -> "Initialise neighbours_fulfilment array" end)
     # Add neighbours from concatenated list
     Map.new(dst, fn x -> {x.dst_station, 0} end)
   end
