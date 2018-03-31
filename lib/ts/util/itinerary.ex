@@ -27,21 +27,26 @@ defmodule Util.Itinerary do
   # and also returns the arrival time of the last link
   def update_days_travelled(itinerary) do
     query = get_query(itinerary)
-    itinerary_arr_time =
-    if is_empty(itinerary) do
-      {itinerary, query.arrival_time}
-    else
-      previous_link = get_last_link(itinerary)
 
-      if previous_link.arrival_time >= 86_400 do
-        day_increment = div(previous_link.arrival_time, 86_400)
-        new_itinerary = increment_day(itinerary, day_increment)
-        {new_itinerary, Integer.mod(previous_link.arrival_time, 86_400)}
+    itinerary_arr_time =
+      if is_empty(itinerary) do
+        {itinerary, query.arrival_time}
       else
-        {itinerary, previous_link.arrival_time}
+        previous_link = get_last_link(itinerary)
+
+        if previous_link.arrival_time >= 86_400 do
+          day_increment = div(previous_link.arrival_time, 86_400)
+          new_itinerary = increment_day(itinerary, day_increment)
+          {new_itinerary, Integer.mod(previous_link.arrival_time, 86_400)}
+        else
+          {itinerary, previous_link.arrival_time}
+        end
       end
-    end
-    Logger.debug(fn -> "itinerary_arr_time = #{inspect itinerary_arr_time}" end)
+
+    Logger.debug(fn ->
+      "itinerary_arr_time = #{inspect(itinerary_arr_time)}"
+    end)
+
     itinerary_arr_time
   end
 
@@ -49,13 +54,18 @@ defmodule Util.Itinerary do
   defp _feasibility_check(conn, itinerary, _arrival_time, :second_pass) do
     query = get_query(itinerary)
     preference = get_preference(itinerary)
+
     result_feasibility_check =
-    if query.end_time >= preference.day * 86_400 + conn.arrival_time do
-      true
-    else
-      false
-    end
-    Logger.debug(fn -> "result_feasibility_check = #{result_feasibility_check}" end)
+      if query.end_time >= preference.day * 86_400 + conn.arrival_time do
+        true
+      else
+        false
+      end
+
+    Logger.debug(fn ->
+      "result_feasibility_check = #{result_feasibility_check}"
+    end)
+
     result_feasibility_check
   end
 
@@ -63,14 +73,19 @@ defmodule Util.Itinerary do
   defp _feasibility_check(conn, itinerary, arrival_time, :first_pass) do
     query = get_query(itinerary)
     preference = get_preference(itinerary)
+
     result_feasibility_check =
-    if conn.dept_time > arrival_time &&
-         preference.day * 86_400 + conn.arrival_time <= query.end_time do
-      true
-    else
-      false
-    end
-    Logger.debug(fn -> "result_feasibility_check = #{result_feasibility_check}" end)
+      if conn.dept_time > arrival_time &&
+           preference.day * 86_400 + conn.arrival_time <= query.end_time do
+        true
+      else
+        false
+      end
+
+    Logger.debug(fn ->
+      "result_feasibility_check = #{result_feasibility_check}"
+    end)
+
     result_feasibility_check
   end
 
@@ -84,14 +99,21 @@ defmodule Util.Itinerary do
       ) do
     # Find out if stop or not
     should_stop = stop_fn(neighbour_map, schedule)
-    Logger.debug(fn -> "should_stop = #{inspect should_stop}" end)
+    Logger.debug(fn -> "should_stop = #{inspect(should_stop)}" end)
+
     result_find_valid_connection =
-    if should_stop == false && vars != nil do
-      _find_valid_connection(vars)
-    else
-      nil
-    end
-    Logger.debug(fn -> "The value from _find_valid_connection = #{inspect result_find_valid_connection}" end)
+      if should_stop == false && vars != nil do
+        _find_valid_connection(vars)
+      else
+        nil
+      end
+
+    Logger.debug(fn ->
+      "The value from _find_valid_connection = #{
+        inspect(result_find_valid_connection)
+      }"
+    end)
+
     result_find_valid_connection
   end
 
@@ -116,8 +138,7 @@ defmodule Util.Itinerary do
 
     # If query is feasible and preferable
     if _feasibility_check(conn, itinerary, arrival_time, pass) &&
-         _pref_check(conn, itinerary) && neighbour_map[conn.dst_station] == 0 &&
-         !check_self_loop(itinerary, conn) do
+         _pref_check(conn, itinerary) && neighbour_map[conn.dst_station] == 0 do
       # Append connection to itinerary
       new_itinerary = add_link(itinerary, conn)
       # Send itinerary to neighbour
@@ -191,7 +212,11 @@ defmodule Util.Itinerary do
   # destination) at the the given station argument
   def is_valid_destination(present_station, itinerary) do
     result = present_station == get_last_link(itinerary).dst_station
-    Logger.debug(fn -> "present_station = #{inspect present_station}; result = #{result}" end)
+
+    Logger.debug(fn ->
+      "present_station = #{inspect(present_station)}; result = #{result}"
+    end)
+
     result
   end
 
@@ -200,7 +225,11 @@ defmodule Util.Itinerary do
     query = get_query(itinerary)
     last_link = get_last_link(itinerary)
     result_is_terminal = query.dst_station == last_link.dst_station
-    Logger.debug(fn -> "qid = #{query.qid}; result_is_terminal = #{result_is_terminal}" end)
+
+    Logger.debug(fn ->
+      "qid = #{query.qid}; result_is_terminal = #{result_is_terminal}"
+    end)
+
     result_is_terminal
   end
 
@@ -213,16 +242,24 @@ defmodule Util.Itinerary do
   # Adds a link to the present itinerary route.
   def add_link({query, route, preference}, link) do
     new_route = [link | route]
-    Logger.debug(fn -> "The itinerary = #{inspect {query, route, preference}} got link = #{inspect link} added to it" end)
+
+    Logger.debug(fn ->
+      "The itinerary = #{inspect({query, route, preference})} got link = #{
+        inspect(link)
+      } added to it"
+    end)
+
     {query, new_route, preference}
   end
 
-  # Checks if adding link will generate a selfloop.
-  # Makes the assumption that the last station of the route
+  # Checks the last link generates a selfloop.
+  # Makes the assumption that the last station of the route (last link exc)
   # is the source station of the link and that any link won't be a self loop
   # that is having the same source and destination stations
-  def check_self_loop({_query, route, _preference}, link),
-    do: _match_station(route, link)
+  def check_self_loop({_query, [last_link | route], _preference}),
+    do: _match_station(route, last_link)
+
+  def check_self_loop({_query, [], _preference}), do: false
 
   defp _match_station([], _link), do: false
 

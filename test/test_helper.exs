@@ -1,5 +1,5 @@
 ExUnit.start()
-Mox.defmock(MockCollector, for: Station.Collector)
-Mox.defmock(MockRegister, for: Station.Registry)
+Mox.defmock(MockCollector, for: Station.CollectorBehaviour)
+Mox.defmock(MockRegister, for: Station.RegistryBehaviour)
 Mox.defmock(MockStation, for: Station.StationBehaviour)
 #ExUnit.configure exclude: [:slow]

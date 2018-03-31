@@ -1,4 +1,4 @@
-defmodule Station.Collector do
+defmodule Station.CollectorBehaviour do
   @moduledoc """
   Defines the interface for the Query Collector.
   """
