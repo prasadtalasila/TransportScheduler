@@ -34,6 +34,7 @@ Qmap is %{1 => 2, 3 => 4, 5 => 6}
 
 For more detailed output,in `script/normal_parse.sh`,set the `MIX_DEBUG=1` flag before the mix task as-
 
+
 `MIX_DEBUG=1 mix parse` 
 
 2. For running in debug mode-
