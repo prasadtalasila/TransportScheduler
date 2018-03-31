@@ -25,7 +25,7 @@ defmodule InputParser do
 
         def obtain_queries do
                 query_map=Map.new
-                {_,file}=open_file("queries.txt")
+                {_,file}=open_file(Application.get_env(:input_parser,:filename))
                 n=3
                 obtain_query(file,n,query_map)
 
