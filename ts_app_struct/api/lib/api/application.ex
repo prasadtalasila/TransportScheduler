@@ -9,7 +9,7 @@ defmodule API.Application do
   def start(_type, _args) do
     
     children = [
-       {API,[]},
+       {API, []},
     ]
   
     IO.puts"Starting API application.(lib/api/application.ex)"

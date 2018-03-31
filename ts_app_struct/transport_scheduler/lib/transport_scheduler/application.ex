@@ -8,7 +8,7 @@ defmodule TransportScheduler.Application do
   def start(_type, _args) do
     
     children = [
-     {TransportScheduler,[]}
+     {TransportScheduler, []}
     ]
 
     IO.puts"Starting TransportScheduler application.(lib/transport_scheduler/application.ex)"

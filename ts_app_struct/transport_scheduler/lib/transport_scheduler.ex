@@ -12,15 +12,15 @@ defmodule TransportScheduler do
 
   def init(:ok) do
 
-    list=[]
+    list = []
     IO.puts"Transport Scheduler Initialised.(lib/transport_scheduler.ex)"
-    {:ok,list}
+    {:ok, list}
 
   end
 
-  def handle_call(:dummy_call, _from,list) do
+  def handle_call(:dummy_call, _from, list) do
 
-    {:reply,list,list}
+    {:reply, list, list}
 
   end
 

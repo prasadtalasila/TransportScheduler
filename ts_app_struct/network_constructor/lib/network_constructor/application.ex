@@ -9,12 +9,12 @@ defmodule NetworkConstructor.Application do
   def start(_type, _args) do
     
     children = [
-       {NetworkConstructor,[]},
+       {NetworkConstructor, []},
     ]
-	
+
     IO.puts"Starting network constructor application.(lib/network_constructor/application.ex)"
 
-	opts = [strategy: :one_for_one, name: NetworkConstructor.Supervisor]
+    opts = [strategy: :one_for_one, name: NetworkConstructor.Supervisor]
     Supervisor.start_link(children, opts)
 
   end

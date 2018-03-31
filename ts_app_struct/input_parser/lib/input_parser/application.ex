@@ -9,7 +9,7 @@ defmodule InputParser.Application do
   def start(_type, _args) do
     
     children = [
-      {InputParser,[]}
+      {InputParser, []}
     ]
 
     IO.puts"Starting input parser application.(lib/input_parser/application.ex)"
