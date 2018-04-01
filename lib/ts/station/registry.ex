@@ -4,6 +4,7 @@ defmodule Station.Registry do
   This includes the mapping between station code to station pid and query id to query status.
   """
   use GenServer, async: true
+  require Logger
   @behaviour Station.RegistryBehaviour
 
   # Starts the Registry process with the name, name.
@@ -12,10 +13,12 @@ defmodule Station.Registry do
   end
 
   def init(:ok) do
+    Logger.debug(fn -> "Starting Registry" end)
     {:ok, nil}
   end
 
   def stop(pid) do
+    Logger.debug(fn -> "Terminating Registry normally" end)
     GenServer.stop(pid, :normal)
   end
 
@@ -24,8 +27,15 @@ defmodule Station.Registry do
     stations = :pg2.get_members({:station_code, station_code})
 
     if is_list(stations) and stations != [] do
-      List.first(stations)
+      neighbour_pid = List.first(stations)
+
+      Logger.debug(fn ->
+        "Station code lookup #{station_code} -> #{neighbour_pid}"
+      end)
+
+      neighbour_pid
     else
+      Logger.debug(fn -> "Station code lookup failed for #{station_code}" end)
       nil
     end
   end
@@ -36,30 +46,46 @@ defmodule Station.Registry do
   def check_active(qid) do
     qc = :pg2.get_members({:qid, qid})
 
-    if is_list(qc) and qc != [] do
-      true
+    active =
+      if is_list(qc) and qc != [] do
+        true
+      else
+        false
+      end
+
+    if active do
+      Logger.debug(fn -> "Query #{qid} is active" end)
     else
-      false
+      Logger.debug(fn -> "Query #{qid} is inactive" end)
     end
+
+    active
   end
 
   # Registers station code to station pid mapping globally.
   def register_station(station_code, station_pid) do
+    Logger.debug(fn ->
+      "Registering station #{station_code} as #{station_pid}"
+    end)
+
     register_name({:station_code, station_code}, station_pid)
   end
 
   # Unregisters the station group designated by the station code globally
   def unregister_station(station_code) do
+    Logger.debug(fn -> "Unregistering station #{station_code}" end)
     unregister_group({:station_code, station_code})
   end
 
   # Registers query id to query collector pid mapping globally.
   def register_query(qid, qc_pid) do
+    Logger.debug(fn -> "Registering Query #{qid} as #{qc_pid}" end)
     register_name({:qid, qid}, qc_pid)
   end
 
   # Marks a query as stale by unregistering it globally.
   def unregister_query(qid) do
+    Logger.debug(fn -> "Unregistering Query #{qid}" end)
     unregister_group({:qid, qid})
   end
 
