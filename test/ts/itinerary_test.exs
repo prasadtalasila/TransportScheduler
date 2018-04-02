@@ -48,6 +48,8 @@ defmodule ItineraryTest do
       arrival_time: 100_000
     }
 
+    self_loop_itinerary = Itinerary.add_link(itinerary, self_loop_connection)
+
     non_self_loop_connection = %Connection{
       vehicleID: "200",
       src_station: start_station + itinerary_length - 1,
@@ -57,10 +59,12 @@ defmodule ItineraryTest do
       arrival_time: 100_000
     }
 
-    assert Itinerary.check_self_loop(itinerary, self_loop_connection) == true
+    non_self_loop_itinerary =
+      Itinerary.add_link(itinerary, non_self_loop_connection)
 
-    assert Itinerary.check_self_loop(itinerary, non_self_loop_connection) ==
-             false
+    assert Itinerary.check_self_loop(self_loop_itinerary) == true
+
+    assert Itinerary.check_self_loop(non_self_loop_itinerary) == false
   end
 
   test "Check if valid_itinerary_iterator returns iterator of valid format" do
@@ -436,7 +440,7 @@ defmodule ItineraryTest do
   def get_dependency() do
     %Dependency{
       station: Station,
-      registry: Registery,
+      registry: Registry,
       collector: Collector,
       itinerary: Itinerary
     }

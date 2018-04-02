@@ -159,10 +159,10 @@ defmodule Station.FSM do
         :collect
 
       !active ||
-          !itinerary_fn.is_valid_destination(
-            station_struct.station_number,
-            itinerary
-          ) ->
+        !itinerary_fn.is_valid_destination(
+          station_struct.station_number,
+          itinerary
+        ) || itinerary_fn.check_self_loop(itinerary) ->
         :invalid
 
       true ->

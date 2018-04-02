@@ -29,8 +29,8 @@ use Mix.Config
 #
 # import_config "#{Mix.env}.exs"
 
-case Mix.env do
-	:test-> import_config "test.exs"
-	:dev-> import_config "dev.exs"
-	_-> nil
+case Mix.env() do
+  :test -> import_config "test.exs"
+  :dev -> import_config "dev.exs"
+  _ -> nil
 end
