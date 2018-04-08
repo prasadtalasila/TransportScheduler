@@ -105,7 +105,7 @@ defmodule Station.FSM do
 
         :collect ->
           # If completed query, send to
-          dependency.collector.collect(itinerary)
+          dependency.collector.collect(itinerary, dependency)
           new_station_data = List.delete_at(station_data, 0)
           Logger.info(fn -> "Query #{Itinerary.get_query_id(itinerary)} is collected" end)
           next_state(:ready, new_station_data)

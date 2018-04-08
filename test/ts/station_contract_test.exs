@@ -405,7 +405,7 @@ defmodule StationContractTest do
 
     # Define the expectation for the Mock of the Query Collector
     MockCollector
-    |> expect(:collect, fn itinerary ->
+    |> expect(:collect, fn itinerary, ^dependency ->
       send(test_proc, {:itinerary_received, itinerary})
     end)
 

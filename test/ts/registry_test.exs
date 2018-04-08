@@ -66,6 +66,7 @@ defmodule RegistryTest do
     MockServer.stop(pid)
 
     wait_for_process_termination(pid)
+    Process.sleep(100)
 
     assert :pg2.get_members(group) == []
   end
@@ -167,6 +168,36 @@ defmodule RegistryTest do
 
     # Assert that the query is inactive
     refute Registry.check_active(qid)
+  end
+
+  test "Perform lookup for registered and unregistered query" do
+    # Start Registry Process
+    {:ok, _reg_pid} = Registry.start_link()
+
+    # Start a GenServer Process
+    {:ok, qc_pid} = MockServer.start_link()
+    qid = "qid"
+    group = {:qid, qid}
+
+    # Ensure that no group named group exists beforehand
+    :pg2.delete(group)
+
+    # Since query is not registered yet hence query id lookup should return nil
+    assert Registry.lookup_query_id(qid) == nil
+
+    # Register station
+    Registry.register_query(qid, qc_pid)
+
+    # Assert that query id lookup returns the pid of the registered
+    # Query Collector process
+    assert Registry.lookup_query_id(qid) == qc_pid
+
+    # Unregister Query
+    Registry.unregister_query(qid)
+
+    # Assert that when the query is unregistered lookup on the
+    # unregistered query returns nil
+    assert Registry.lookup_query_id(qid) == nil
   end
 
   def wait_for_process_termination(pid) do
