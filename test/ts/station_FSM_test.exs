@@ -360,7 +360,7 @@ defmodule StationFSMTest do
 
     # Mock collector for mocking the QC
     MockCollector
-    |> expect(:collect, fn _ -> send(test_proc, :collected) end)
+    |> expect(:collect, fn _, ^dependency -> send(test_proc, :collected) end)
 
     # New Fsm
     station_fsm = FSM.initialise_fsm([station_state, dependency])

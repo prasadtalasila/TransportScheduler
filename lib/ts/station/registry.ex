@@ -40,6 +40,24 @@ defmodule Station.Registry do
     end
   end
 
+    # Returns the Query Collecotr pid associated with the query id
+    def lookup_query_id(qid) do
+      qc = :pg2.get_members({:qid, qid})
+
+      if is_list(qc) and qc != [] do
+        qc_pid = List.first(qc)
+
+        Logger.debug(fn ->
+          "Query ID lookup #{qid} -> #{qc_pid}"
+        end)
+
+        qc_pid
+      else
+        Logger.debug(fn -> "Query ID lookup failed for #{qid}" end)
+        nil
+      end
+    end
+
   # Checks whether the query is active. If there is no query collector
   # process associated with the qid process group it is assumed that the query
   # has gone stale

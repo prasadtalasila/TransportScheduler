@@ -6,6 +6,7 @@ defmodule Util.ItineraryBehaviour do
   @callback valid_itinerary_iterator(any(), any()) :: any()
   @callback next_itinerary(itinerary_iterator :: any()) :: any()
   @callback get_query_id(itinerary :: any()) :: any()
+  @callback get_query(itinerary :: any()) :: any()
   @callback is_empty(itinerary :: any()) :: any()
   @callback is_terminal(itinerary :: any()) :: any()
   @callback is_valid_destination(
