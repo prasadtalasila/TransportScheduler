@@ -1,22 +1,22 @@
 defmodule Util.Itinerary do
   @moduledoc """
   Defines the operations that can be performed on the itinerary container of the
-   format {query, route, preferences}.
+   format {query, itinerary, preferences}.
   """
 
   @behaviour Util.ItineraryBehaviour
 
   require Logger
-  # generates itinerary in the format {query, route, preference}
-  def new(query, route, preference), do: {query, route, preference}
+  # generates itinerary in the format {query, itinerary, preference}
+  def new(query, itinerary, preference), do: {query, itinerary, preference}
 
   def new(query, preference), do: {query, [], preference}
 
-  # Returns true if the itinerary route is empty.
-  def is_empty(itinerary) do
-    route = get_route(itinerary)
+  # Returns true if the itinerary is empty.
+  def is_empty(itinerary_acc) do
+    itinerary_acc = get_itinerary(itinerary_acc)
 
-    if route == [] do
+    if itinerary_acc == [] do
       true
     else
       false
@@ -25,21 +25,21 @@ defmodule Util.Itinerary do
 
   # Updates the number of days travelled in an itinerary
   # and also returns the arrival time of the last link
-  def update_days_travelled(itinerary) do
-    query = get_query(itinerary)
+  def update_days_travelled(itinerary_acc) do
+    query = get_query(itinerary_acc)
 
     itinerary_arr_time =
-      if is_empty(itinerary) do
-        {itinerary, query.arrival_time}
+      if is_empty(itinerary_acc) do
+        {itinerary_acc, query.arrival_time}
       else
-        previous_link = get_last_link(itinerary)
+        previous_link = get_last_link(itinerary_acc)
 
         if previous_link.arrival_time >= 86_400 do
           day_increment = div(previous_link.arrival_time, 86_400)
-          new_itinerary = increment_day(itinerary, day_increment)
-          {new_itinerary, Integer.mod(previous_link.arrival_time, 86_400)}
+          new_itinerary_acc = increment_day(itinerary_acc, day_increment)
+          {new_itinerary_acc, Integer.mod(previous_link.arrival_time, 86_400)}
         else
-          {itinerary, previous_link.arrival_time}
+          {itinerary_acc, previous_link.arrival_time}
         end
       end
 
@@ -51,9 +51,9 @@ defmodule Util.Itinerary do
   end
 
   # Check if connection is feasible on second pass over the schedule
-  defp _feasibility_check(conn, itinerary, _arrival_time, :second_pass) do
-    query = get_query(itinerary)
-    preference = get_preference(itinerary)
+  defp _feasibility_check(conn, itinerary_acc, _arrival_time, :second_pass) do
+    query = get_query(itinerary_acc)
+    preference = get_preference(itinerary_acc)
 
     result_feasibility_check =
       if query.end_time >= preference.day * 86_400 + conn.arrival_time do
@@ -70,9 +70,9 @@ defmodule Util.Itinerary do
   end
 
   # Check if connection is feasible
-  defp _feasibility_check(conn, itinerary, arrival_time, :first_pass) do
-    query = get_query(itinerary)
-    preference = get_preference(itinerary)
+  defp _feasibility_check(conn, itinerary_acc, arrival_time, :first_pass) do
+    query = get_query(itinerary_acc)
+    preference = get_preference(itinerary_acc)
 
     result_feasibility_check =
       if conn.dept_time > arrival_time &&
@@ -87,6 +87,15 @@ defmodule Util.Itinerary do
     end)
 
     result_feasibility_check
+  end
+
+  # Returns an iterator for valid itineraries to be sent to neighbouring
+  # stations.
+  def valid_itinerary_iterator(
+        {neighbour_map, schedule, arrival_time},
+        vars_tail
+      ) do
+    [{neighbour_map, schedule, arrival_time, nil, :first_pass} | vars_tail]
   end
 
   # Iterates over the the station schedule to generate new itineraries to be
@@ -117,101 +126,28 @@ defmodule Util.Itinerary do
     result_find_valid_connection
   end
 
-  # Iterate over the schedule to find a valid connection.
-  defp _find_valid_connection([
-         {_neighbour_map, [flag | _schedule_tail], _arrival_time, flag,
-          :second_pass},
-         _itinerary,
-         _station_struct,
-         _dependency
-       ]) do
-    nil
-  end
-
-  defp _find_valid_connection([
-         {neighbour_map, [conn | schedule_tail], arrival_time, flag, pass},
-         itinerary,
-         station_struct,
-         dependency
-       ]) do
-    flag = _update_flag(flag, arrival_time, conn, pass)
-
-    # If query is feasible and preferable
-    if _feasibility_check(conn, itinerary, arrival_time, pass) &&
-         _pref_check(conn, itinerary) && neighbour_map[conn.dst_station] == 0 do
-      # Append connection to itinerary
-      new_itinerary = add_link(itinerary, conn)
-      # Send itinerary to neighbour
-      # send_to_neighbour(conn, new_itinerary, dependency)
-      # Update neighbour map
-      new_neighbour_map = %{neighbour_map | conn.dst_station => 1}
-
-      {[
-         {new_neighbour_map, schedule_tail, arrival_time, flag, pass},
-         itinerary,
-         station_struct,
-         dependency
-       ], conn, new_itinerary}
-    else
-      # Pass over connection
-      _find_valid_connection([
-        {neighbour_map, schedule_tail, arrival_time, flag, pass},
-        itinerary,
-        station_struct,
-        dependency
-      ])
-    end
-  end
-
-  defp _find_valid_connection([
-         {neighbour_map, [], arrival_time, flag, :first_pass},
-         itinerary,
-         station_struct,
-         dependency
-       ]) do
-    # itineraries that start from the next day will be considered in the second
-    # pass hence the day has to be incremented by 1.
-    new_itinerary = increment_day(itinerary, 1)
-
-    # Start second pass over the schedule.
-    next_itinerary([
-      {neighbour_map, station_struct.schedule, arrival_time, flag,
-       :second_pass},
-      new_itinerary,
-      station_struct,
-      dependency
-    ])
-  end
-
-  defp _find_valid_connection([
-         {_neighbour_map, [], _arrival_time, _flag, :second_pass}
-         | _vars_tail
-       ]) do
-    nil
-  end
-
   # Returns query contained in the itinerary.
-  def get_query(itinerary), do: elem(itinerary, 0)
+  def get_query(itinerary_acc), do: elem(itinerary_acc, 0)
 
   # Returns the query id of the itinerary.
-  def get_query_id(itinerary), do: get_query(itinerary).qid
+  def get_query_id(itinerary_acc), do: get_query(itinerary_acc).qid
 
-  # Returns the partial/complete route.
-  def get_route(itinerary), do: elem(itinerary, 1)
+  # Returns the partial/complete itinerary.
+  def get_itinerary(itinerary_acc), do: elem(itinerary_acc, 1)
 
   # Returns the preferences for the itinerary.
-  def get_preference(itinerary), do: elem(itinerary, 2)
+  def get_preference(itinerary_acc), do: elem(itinerary_acc, 2)
 
   # Increments the the days travelled in the itinerary.
-  def increment_day({query, route, preference}, value) do
+  def increment_day({query, itinerary, preference}, value) do
     new_preference = Map.update!(preference, :day, &(&1 + value))
-    {query, route, new_preference}
+    {query, itinerary, new_preference}
   end
 
-  # Returns true if the route stops (This does not mean it has reached the final
-  # destination) at the the given station argument
-  def is_valid_destination(present_station, itinerary) do
-    result = present_station == get_last_link(itinerary).dst_station
+  # Returns true if the itinerary stops (This does not mean it has reached
+  # the final estination) at the the given station argument
+  def is_valid_destination(present_station, itinerary_acc) do
+    result = present_station == get_last_link(itinerary_acc).dst_station
 
     Logger.debug(fn ->
       "present_station = #{inspect(present_station)}; result = #{result}"
@@ -221,9 +157,9 @@ defmodule Util.Itinerary do
   end
 
   # Returns true if the itinerary is terminal.
-  def is_terminal(itinerary) do
-    query = get_query(itinerary)
-    last_link = get_last_link(itinerary)
+  def is_terminal(itinerary_acc) do
+    query = get_query(itinerary_acc)
+    last_link = get_last_link(itinerary_acc)
     result_is_terminal = query.dst_station == last_link.dst_station
 
     Logger.debug(fn ->
@@ -233,31 +169,31 @@ defmodule Util.Itinerary do
     result_is_terminal
   end
 
-  # Returns the last link in the itinerary route.
-  def get_last_link(itinerary) do
-    [head | _] = elem(itinerary, 1)
+  # Returns the last link in the itinerary.
+  def get_last_link(itinerary_acc) do
+    [head | _] = elem(itinerary_acc, 1)
     head
   end
 
-  # Adds a link to the present itinerary route.
-  def add_link({query, route, preference}, link) do
-    new_route = [link | route]
+  # Adds a link to the present itinerary.
+  def add_link({query, itinerary, preference}, link) do
+    new_itinerary = [link | itinerary]
 
     Logger.debug(fn ->
-      "The itinerary = #{inspect({query, route, preference})} got link = #{
+      "The itinerary = #{inspect({query, itinerary, preference})} got link = #{
         inspect(link)
       } added to it"
     end)
 
-    {query, new_route, preference}
+    {query, new_itinerary, preference}
   end
 
   # Checks the last link generates a selfloop.
   # Makes the assumption that the last station of the route (last link exc)
   # is the source station of the link and that any link won't be a self loop
   # that is having the same source and destination stations
-  def check_self_loop({_query, [last_link | route], _preference}),
-    do: _match_station(route, last_link)
+  def check_self_loop({_query, [last_link | itinerary], _preference}),
+    do: _match_station(itinerary, last_link)
 
   def check_self_loop({_query, [], _preference}), do: false
 
@@ -269,6 +205,80 @@ defmodule Util.Itinerary do
     else
       _match_station(tail, link)
     end
+  end
+
+  # Iterate over the schedule to find a valid connection.
+  defp _find_valid_connection([
+         {_neighbour_map, [flag | _schedule_tail], _arrival_time, flag,
+          :second_pass},
+         _itinerary_acc,
+         _station_struct,
+         _dependency
+       ]) do
+    nil
+  end
+
+  defp _find_valid_connection([
+         {neighbour_map, [conn | schedule_tail], arrival_time, flag, pass},
+         itinerary_acc,
+         station_struct,
+         dependency
+       ]) do
+    flag = _update_flag(flag, arrival_time, conn, pass)
+
+    # If query is feasible and preferable
+    if _feasibility_check(conn, itinerary_acc, arrival_time, pass) &&
+         _pref_check(conn, itinerary_acc) &&
+         neighbour_map[conn.dst_station] == 0 do
+      # Append connection to itinerary
+      new_itinerary_acc = add_link(itinerary_acc, conn)
+      # Send itinerary to neighbour
+      # send_to_neighbour(conn, new_itinerary, dependency)
+      # Update neighbour map
+      new_neighbour_map = %{neighbour_map | conn.dst_station => 1}
+
+      {[
+         {new_neighbour_map, schedule_tail, arrival_time, flag, pass},
+         itinerary_acc,
+         station_struct,
+         dependency
+       ], conn, new_itinerary_acc}
+    else
+      # Pass over connection
+      _find_valid_connection([
+        {neighbour_map, schedule_tail, arrival_time, flag, pass},
+        itinerary_acc,
+        station_struct,
+        dependency
+      ])
+    end
+  end
+
+  defp _find_valid_connection([
+         {neighbour_map, [], arrival_time, flag, :first_pass},
+         itinerary_acc,
+         station_struct,
+         dependency
+       ]) do
+    # itineraries that start from the next day will be considered in the second
+    # pass hence the day has to be incremented by 1.
+    new_itinerary_acc = increment_day(itinerary_acc, 1)
+
+    # Start second pass over the schedule.
+    next_itinerary([
+      {neighbour_map, station_struct.schedule, arrival_time, flag,
+       :second_pass},
+      new_itinerary_acc,
+      station_struct,
+      dependency
+    ])
+  end
+
+  defp _find_valid_connection([
+         {_neighbour_map, [], _arrival_time, _flag, :second_pass}
+         | _vars_tail
+       ]) do
+    nil
   end
 
   # Returns true when iteration must be stopped.
@@ -292,7 +302,7 @@ defmodule Util.Itinerary do
   end
 
   # Check if preferences match
-  def _pref_check(_conn, _itinerary) do
+  def _pref_check(_conn, _itinerary_acc) do
     # Invoke UQCFSM and check for preferences
     true
   end
@@ -303,14 +313,5 @@ defmodule Util.Itinerary do
     else
       flag
     end
-  end
-
-  # Returns an iterator for valid itineraries to be sent to neighbouring
-  # stations.
-  def valid_itinerary_iterator(
-        {neighbour_map, schedule, arrival_time},
-        vars_tail
-      ) do
-    [{neighbour_map, schedule, arrival_time, nil, :first_pass} | vars_tail]
   end
 end

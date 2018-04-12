@@ -15,7 +15,10 @@ defmodule Station do
   # Starting the GenServer
 
   def start_link(station_data) when is_list(station_data) do
-    Logger.info(fn -> "Station starting for station_number=#{hd(station_data).station_number}" end)
+    Logger.info(fn ->
+      "Station starting for station_number=#{hd(station_data).station_number}"
+    end)
+
     GenServer.start_link(Station, station_data)
   end
 
@@ -25,24 +28,28 @@ defmodule Station do
   end
 
   def stop(pid) do
-    Logger.info(fn -> "Station stopped at pid=#{inspect pid}" end)
+    Logger.info(fn -> "Station stopped at pid=#{inspect(pid)}" end)
     GenServer.stop(pid, :normal)
   end
 
   # Getting the current schedule
   def get_timetable(pid) do
-    Logger.info(fn -> "Getting the current schedule at pid=#{inspect pid}" end)
+    Logger.info(fn -> "Getting the current schedule at pid=#{inspect(pid)}" end)
+
     GenServer.call(pid, :get_schedule)
   end
 
   # Updating the current state
   def update(pid, new_vars) do
-    Logger.info(fn -> "Updating the current state at pid=#{inspect pid}" end)
+    Logger.info(fn -> "Updating the current state at pid=#{inspect(pid)}" end)
     GenServer.cast(pid, {:update, new_vars})
   end
 
   def send_query(pid, query) do
-    Logger.info(fn -> "Received query #{Itinerary.get_query_id(query)} at pid=#{inspect pid}" end)
+    Logger.info(fn ->
+      "Received query #{Itinerary.get_query_id(query)} at pid=#{inspect(pid)}"
+    end)
+
     GenServer.cast(pid, {:receive, query})
   end
 

@@ -43,7 +43,11 @@ defmodule CollectorTest do
     itinerary4 = get_terminal_itinerary(query, preference, 4)
     itinerary5 = get_terminal_itinerary(query, preference, 4)
 
-    result = [itinerary5, itinerary4, itinerary3, itinerary2, itinerary1]
+    result =
+      [itinerary5, itinerary4, itinerary3, itinerary2, itinerary1]
+      |> Enum.map(fn itinerary_acc ->
+        Itinerary.get_itinerary(itinerary_acc)
+      end)
 
     station_pid = :c.pid(0, 99, 1)
     station_code = query.src_station
@@ -63,6 +67,7 @@ defmodule CollectorTest do
     |> expect(:send_query, fn ^station_pid, ^itinerary -> nil end)
 
     MockItinerary
+    |> expect(:get_itinerary, 5, fn {_, itinerary, _} -> itinerary end)
     |> expect(:get_query, fn {query, _, _} -> query end)
     |> expect(:get_query_id, 7, fn {query, _, _} -> query.qid end)
 
@@ -113,7 +118,11 @@ defmodule CollectorTest do
     itinerary2 = get_terminal_itinerary(query, preference, 4)
     itinerary3 = get_terminal_itinerary(query, preference, 4)
 
-    result = [itinerary3, itinerary2, itinerary1]
+    result =
+      [itinerary3, itinerary2, itinerary1]
+      |> Enum.map(fn itinerary_acc ->
+        Itinerary.get_itinerary(itinerary_acc)
+      end)
 
     station_pid = :c.pid(0, 99, 1)
     station_code = query.src_station
@@ -133,6 +142,7 @@ defmodule CollectorTest do
     |> expect(:send_query, fn ^station_pid, ^itinerary -> nil end)
 
     MockItinerary
+    |> expect(:get_itinerary, 3, fn {_, itinerary, _} -> itinerary end)
     |> expect(:get_query, fn {query, _, _} -> query end)
     |> expect(:get_query_id, 5, fn {query, _, _} -> query.qid end)
 
@@ -159,7 +169,7 @@ defmodule CollectorTest do
   end
 
   def get_terminal_itinerary(query, preference, n) when n >= 0 do
-    route = loop(n, [], query.src_station)
+    route = loop(n - 1, [], query.src_station)
     last_link = List.first(route)
     src_station = last_link.dst_station
     dst_station = query.dst_station
