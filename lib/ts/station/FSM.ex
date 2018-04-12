@@ -9,7 +9,12 @@ defmodule Station.FSM do
 
   # Module interface definition
   def initialise_fsm(input = [_station_struct, _dependency]) do
-    Logger.info(fn -> "Initialised the fsm with station_number=#{inspect _station_struct.station_number} and station_name=#{inspect _station_struct.station_name}" end)
+    Logger.info(fn ->
+      "Initialised the fsm with station_number=#{
+        inspect(_station_struct.station_number)
+      } and station_name=#{inspect(_station_struct.station_name)}"
+    end)
+
     new()
     |> input_data(input)
   end
@@ -19,10 +24,10 @@ defmodule Station.FSM do
     |> update(new_station_struct)
   end
 
-  def process_itinerary(station_fsm, itinerary) do
+  def process_itinerary(station_fsm, itinerary_acc) do
     station_fsm =
       station_fsm
-      |> query_input(itinerary)
+      |> query_input(itinerary_acc)
       |> check_query_status()
 
     if state(station_fsm) != :ready do
@@ -47,7 +52,12 @@ defmodule Station.FSM do
   defstate start do
     # On getting the data input, go to ready state
     defevent input_data(station_data = [_station_struct, _dependency]) do
-      Logger.debug(fn -> "Initialise the station data with station_number=#{inspect _station_struct.station_number} and station_name=#{inspect _station_struct.station_name}" end)
+      Logger.debug(fn ->
+        "Initialise the station data with station_number=#{
+          inspect(_station_struct.station_number)
+        } and station_name=#{inspect(_station_struct.station_name)}"
+      end)
+
       next_state(:ready, station_data)
     end
   end
@@ -56,7 +66,12 @@ defmodule Station.FSM do
   defstate ready do
     # When local variables of the station are updated
     defevent update(new_station_struct), data: [_station_struct, dependency] do
-      Logger.debug(fn -> "Update the station data of station_number=#{inspect _station_struct.station_number}" end)
+      Logger.debug(fn ->
+        "Update the station data of station_number=#{
+          inspect(_station_struct.station_number)
+        }"
+      end)
+
       schedule =
         Enum.sort(
           new_station_struct.schedule,
@@ -81,11 +96,16 @@ defmodule Station.FSM do
     end
 
     # When an itinerary is passed to the station
-    defevent query_input(itinerary),
+    defevent query_input(itinerary_acc),
       data: station_data = [_station_struct, _dependency] do
-      Logger.info(fn -> "Query #{Itinerary.get_query_id(itinerary)} received at station #{inspect _station_struct.station_number}" end)
+      Logger.info(fn ->
+        "Query #{Itinerary.get_query_id(itinerary_acc)} received at station #{
+          inspect(_station_struct.station_number)
+        }"
+      end)
+
       # Give itinerary as part of query
-      station_data = [itinerary | station_data]
+      station_data = [itinerary_acc | station_data]
       next_state(:query_rcvd, station_data)
     end
   end
@@ -93,26 +113,37 @@ defmodule Station.FSM do
   # query_rcvd state
   defstate query_rcvd do
     defevent check_query_status,
-      data: station_data = [itinerary, station_struct, dependency] do
-      q_stat = _query_status(station_struct, itinerary, dependency)
+      data: station_data = [itinerary_acc, station_struct, dependency] do
+      q_stat = _query_status(station_struct, itinerary_acc, dependency)
 
       case q_stat do
         :invalid ->
           # If invalid query, remove itinerary
           new_station_data = List.delete_at(station_data, 0)
-          Logger.info(fn -> "Query #{Itinerary.get_query_id(itinerary)} is invalid" end)
+
+          Logger.info(fn ->
+            "Query #{Itinerary.get_query_id(itinerary_acc)} is invalid"
+          end)
+
           next_state(:ready, new_station_data)
 
         :collect ->
           # If completed query, send to
-          dependency.collector.collect(itinerary, dependency)
+          dependency.collector.collect(itinerary_acc, dependency)
           new_station_data = List.delete_at(station_data, 0)
-          Logger.info(fn -> "Query #{Itinerary.get_query_id(itinerary)} is collected" end)
+
+          Logger.info(fn ->
+            "Query #{Itinerary.get_query_id(itinerary_acc)} is collected"
+          end)
+
           next_state(:ready, new_station_data)
 
         :valid ->
           # If valid query, compute
-          Logger.info(fn -> "Query #{Itinerary.get_query_id(itinerary)} is valid" end)
+          Logger.info(fn ->
+            "Query #{Itinerary.get_query_id(itinerary_acc)} is valid"
+          end)
+
           next_state(:process_query, station_data)
       end
     end
@@ -121,7 +152,7 @@ defmodule Station.FSM do
   # process_query state
   defstate process_query do
     defevent initialise,
-      data: station_data = [itinerary, station_struct, dependency] do
+      data: station_data = [itinerary_acc, station_struct, dependency] do
       itinerary_fn = dependency.itinerary
 
       # Find all neighbors
@@ -133,9 +164,10 @@ defmodule Station.FSM do
 
       # Replace neighbours keyword-list in struct
       # new_station_struct = %{station_struct | neighbours: nbrs}
-      {itinerary, arrival_time} = itinerary_fn.update_days_travelled(itinerary)
+      {itinerary_acc, arrival_time} =
+        itinerary_fn.update_days_travelled(itinerary_acc)
 
-      station_data = [itinerary | List.delete_at(station_data, 0)]
+      station_data = [itinerary_acc | List.delete_at(station_data, 0)]
 
       # Get iterator to valid itineraries.
       itinerary_iterator =
@@ -145,7 +177,13 @@ defmodule Station.FSM do
         )
 
       _process_schedule(itinerary_iterator, dependency)
-      Logger.info(fn -> "Query #{Itinerary.get_query_id(itinerary)} processing complete at station #{station_struct.station_number}" end)
+
+      Logger.info(fn ->
+        "Query #{Itinerary.get_query_id(itinerary_acc)} processing complete at station #{
+          station_struct.station_number
+        }"
+      end)
+
       next_state(:ready, [station_struct, dependency])
     end
   end
@@ -153,25 +191,25 @@ defmodule Station.FSM do
   # Helper Function definitions
 
   # Check if the query is valid / completed / invalid
-  defp _query_status(station_struct, itinerary, dependency) do
+  defp _query_status(station_struct, itinerary_acc, dependency) do
     # returns true if query is active, false otherwise
     itinerary_fn = dependency.itinerary
     registry = dependency.registry
 
-    active = registry.check_active(itinerary_fn.get_query_id(itinerary))
+    active = registry.check_active(itinerary_fn.get_query_id(itinerary_acc))
 
     cond do
-      active && itinerary_fn.is_empty(itinerary) ->
+      active && itinerary_fn.is_empty(itinerary_acc) ->
         :valid
 
-      active && itinerary_fn.is_terminal(itinerary) ->
+      active && itinerary_fn.is_terminal(itinerary_acc) ->
         :collect
 
       !active ||
         !itinerary_fn.is_valid_destination(
           station_struct.station_number,
-          itinerary
-        ) || itinerary_fn.check_self_loop(itinerary) ->
+          itinerary_acc
+        ) || itinerary_fn.check_self_loop(itinerary_acc) ->
         :invalid
 
       true ->
@@ -180,13 +218,13 @@ defmodule Station.FSM do
   end
 
   # Send the new itinerary to the neighbour
-  defp _send_to_neighbour(conn, itinerary, dependency) do
+  defp _send_to_neighbour(conn, itinerary_acc, dependency) do
     registry = dependency.registry
     station = dependency.station
     # get neighbour pid
     next_station_pid = registry.lookup_code(conn.dst_station)
     # Forward itinerary to next station's pid
-    station.send_query(next_station_pid, itinerary)
+    station.send_query(next_station_pid, itinerary_acc)
   end
 
   # Initialise neighbours_fulfilment array
@@ -200,8 +238,8 @@ defmodule Station.FSM do
     itinerary_fn = dependency.itinerary
 
     case itinerary_fn.next_itinerary(itinerary_iterator) do
-      {new_iterator, conn, itinerary} ->
-        _send_to_neighbour(conn, itinerary, dependency)
+      {new_iterator, conn, itinerary_acc} ->
+        _send_to_neighbour(conn, itinerary_acc, dependency)
         _process_schedule(new_iterator, dependency)
 
       _ ->
