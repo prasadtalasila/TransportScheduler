@@ -1,0 +1,9 @@
+{
+    "custom_stop_words": [
+	"super\(.*\)"
+    ],
+    
+    "skip_files": [
+	
+    ]
+}

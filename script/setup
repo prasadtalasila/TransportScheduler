@@ -1,0 +1,16 @@
+#!/bin/bash
+########################
+# Purpose: build and install the project
+# Author: Prasad Talasila
+# Date: 10-April-2017
+# Invocation: This script does not require any arguements. From the project top-level
+#             directory, invoke as follows
+#             $bash script/setup
+########################
+
+set -e
+
+cd "$TS_HOME"
+mix local.rebar --force
+mix local.hex --force
+mix deps.get

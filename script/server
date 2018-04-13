@@ -1,0 +1,30 @@
+#!/bin/bash
+########################
+# Purpose: update the project and reinstall
+# Author: Prasad Talasila
+# Date: 10-April-2017
+# Invocation: This script does not require any arguements. From the project top-level
+#             directory, invoke as follows
+#             $bash script/update
+########################
+
+set -e
+
+cd "$TS_HOME"
+
+# uncomment next line if you want to pull from github before server release
+#source script/update
+
+#build local release
+mix release
+
+#copy data directory into build path
+cp -r data/ _build/dev/rel/ts
+
+#undemonstrated, but can do remote deployment
+#mix edeliver build release
+#mix edeliver deploy release
+#mix edeliver start
+
+#copy data directory into build path
+#cp -r data/ $TS_HOME/test/ts

@@ -1,0 +1,14 @@
+#!/bin/bash
+########################
+# Purpose: run all the tests
+# Author: Prasad Talasila
+# Date: 10-April-2017
+# Invocation: This script does not require any arguements. From the project top-level
+#             directory, invoke as follows
+#             $bash script/test
+########################
+
+set -e
+
+cd "$TS_HOME"
+mix test

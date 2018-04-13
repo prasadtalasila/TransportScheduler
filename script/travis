@@ -1,0 +1,28 @@
+#!/bin/bash
+########################
+# Purpose: To perform CI on travis-ci.org
+# Author: Prasad Talasila
+# Date: 10-April-2017
+# Invocation: This script does not require any arguements. From the project top-level
+#             directory, invoke as follows. ONLY INVOKE INSIDE TRAVIS-CI ENVIRONMENT.
+#             $bash script/travis
+########################
+
+set -e
+
+source "$HOME/.bashrc"
+mix local.rebar --force
+mix local.hex --force
+mix deps.get
+
+mix test --exclude slow
+mix profile
+
+# report test coverage to coveralls.io
+# shellcheck disable=SC2037
+MIX_ENV=test mix coveralls.travis
+
+# lint code using credo
+# shellcheck disable=SC2037
+MIX_ENV=test mix credo --strict
+source script/server
