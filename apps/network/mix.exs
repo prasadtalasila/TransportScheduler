@@ -11,6 +11,8 @@ defmodule Network.MixProject do
       lockfile: "../../mix.lock",
       elixir: "~> 1.6",
       start_permanent: Mix.env() == :prod,
+      test_coverage: [tool: ExCoveralls],
+      preferred_cli_env: [coveralls: :test],
       elixirc_paths: elixirc_paths(Mix.env()),
       deps: deps()
     ]

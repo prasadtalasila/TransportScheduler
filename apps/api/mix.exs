@@ -10,6 +10,8 @@ defmodule Api.Mixfile do
       deps_path: "../../deps",
       lockfile: "../../mix.lock",
       elixir: "~> 1.6",
+      test_coverage: [tool: ExCoveralls],
+      preferred_cli_env: [coveralls: :test],
       start_permanent: Mix.env() == :prod,
       deps: deps()
     ]
