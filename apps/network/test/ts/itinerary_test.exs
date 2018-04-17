@@ -357,7 +357,7 @@ defmodule ItineraryTest do
     assert Itinerary.next_itinerary(itinerary_iterator) == nil
   end
 
-  def make_itinerary() do
+  def make_itinerary do
     Itinerary.new(
       %Query{
         qid: "0300",
@@ -437,7 +437,7 @@ defmodule ItineraryTest do
 
   def loop(0, acc, _), do: acc
 
-  def get_dependency() do
+  def get_dependency do
     %Dependency{
       station: Station,
       registry: Registry,
