@@ -16,7 +16,7 @@ mix compile
 
 # report test coverage to coveralls.io
 # shellcheck disable=SC2037
-MIX_ENV=test mix coveralls.travis --exclude slow
+MIX_ENV=test mix coveralls.travis --umbrella --exclude slow
 
 # report test coverage to codecov
 # shellcheck disable=SC2037
@@ -28,3 +28,7 @@ MIX_ENV=test mix credo --strict
 
 mix test --exclude slow
 mix profile
+
+MIX_ENV=test mix coveralls.json --umbrella --exclude slow
+
+bash <(curl -s https://codecov.io/bash) -f cover/excoveralls.json

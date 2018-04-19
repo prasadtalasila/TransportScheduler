@@ -8,11 +8,11 @@ defmodule Station.FSM do
   @behaviour Station.FSMBehaviour
 
   # Module interface definition
-  def initialise_fsm(input = [_station_struct, _dependency]) do
+  def initialise_fsm(input = [l_station_struct, _dependency]) do
     Logger.info(fn ->
       "Initialised the fsm with station_number=#{
-        inspect(_station_struct.station_number)
-      } and station_name=#{inspect(_station_struct.station_name)}"
+        inspect(l_station_struct.station_number)
+      } and station_name=#{inspect(l_station_struct.station_name)}"
     end)
 
     new()
@@ -51,11 +51,11 @@ defmodule Station.FSM do
   # start state
   defstate start do
     # On getting the data input, go to ready state
-    defevent input_data(station_data = [_station_struct, _dependency]) do
+    defevent input_data(station_data = [l_station_struct, _dependency]) do
       Logger.debug(fn ->
         "Initialise the station data with station_number=#{
-          inspect(_station_struct.station_number)
-        } and station_name=#{inspect(_station_struct.station_name)}"
+          inspect(l_station_struct.station_number)
+        } and station_name=#{inspect(l_station_struct.station_name)}"
       end)
 
       next_state(:ready, station_data)
@@ -65,10 +65,10 @@ defmodule Station.FSM do
   # ready state
   defstate ready do
     # When local variables of the station are updated
-    defevent update(new_station_struct), data: [_station_struct, dependency] do
+    defevent update(new_station_struct), data: [l_station_struct, dependency] do
       Logger.debug(fn ->
         "Update the station data of station_number=#{
-          inspect(_station_struct.station_number)
+          inspect(l_station_struct.station_number)
         }"
       end)
 
@@ -97,10 +97,10 @@ defmodule Station.FSM do
 
     # When an itinerary is passed to the station
     defevent query_input(itinerary_acc),
-      data: station_data = [_station_struct, _dependency] do
+      data: station_data = [l_station_struct, _dependency] do
       Logger.info(fn ->
         "Query #{Itinerary.get_query_id(itinerary_acc)} received at station #{
-          inspect(_station_struct.station_number)
+          inspect(l_station_struct.station_number)
         }"
       end)
 
