@@ -1,4 +1,4 @@
-defmodule TransportSchedulerTest do
+defmodule TransportSchedulerUnitTest do
   use ExUnit.Case
   doctest TransportScheduler
 

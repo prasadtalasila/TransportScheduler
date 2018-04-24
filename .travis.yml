@@ -9,6 +9,8 @@ install:
 
 script:
 - bash script/travis-script
+- bash script/travis-script-unit
+- bash script/travis-script-integration
 
 after_success:
 - bash script/travis-after-success

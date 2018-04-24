@@ -1,4 +1,4 @@
-defmodule ApiTest do
+defmodule ApiUnitTest do
   use ExUnit.Case
   doctest Api
 

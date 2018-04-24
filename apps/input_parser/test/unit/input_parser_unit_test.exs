@@ -1,4 +1,4 @@
-defmodule InputParserTest do
+defmodule InputParserUnitTest do
   use ExUnit.Case
   doctest InputParser
 
