@@ -31,7 +31,7 @@ defmodule InputParser.Mixfile do
       # {:mox, "~> 0.3", only: :test},
       # {:credo, "~> 0.8", only: [:dev, :test], runtime: false},
       # {:excoveralls, "~> 0.8", only: :test},
-      # {:logger_file_backend, "~> 0.0.10"},
+       {:logger_file_backend, "~> 0.0.10"},
       # {:csvlixir, "~> 2.0.3"}
     ]
   end
