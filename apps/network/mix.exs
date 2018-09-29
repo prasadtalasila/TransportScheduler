@@ -40,9 +40,9 @@ defmodule Network.MixProject do
       {:credo, "~> 0.8", only: [:dev, :test], runtime: false},
       {:fsm, "~> 0.3"},
       # ,
-      {:logger_file_backend, "~> 0.0.10"}
+      {:logger_file_backend, "~> 0.0.10"},
       # {:dep_from_hexpm, "~> 0.3.0"},
-      # {:util, in_umbrella: true}
+      {:util, in_umbrella: true}
     ]
   end
 end
