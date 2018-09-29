@@ -101,10 +101,10 @@ defmodule Util.Itinerary do
   # Iterates over the the station schedule to generate new itineraries to be
   # sent to neighbouring stations.
   def next_itinerary(
-        vars = [
+        [
           {neighbour_map, schedule, _arrival_time, _flag, _pass}
           | _vars_tail
-        ]
+        ] = vars
       ) do
     # Find out if stop or not
     should_stop = stop_fn(neighbour_map, schedule)
