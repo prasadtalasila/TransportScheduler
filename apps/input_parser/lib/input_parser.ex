@@ -6,6 +6,7 @@ defmodule InputParser do
   for storing in corresponding Station processes.
   Uses GenServer.
   """
+  @behaviour InputParser.InputParserBehaviour
   use GenServer
 
   # Client-side functions

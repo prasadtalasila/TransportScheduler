@@ -22,7 +22,6 @@ defmodule RegistryTest do
     assert :pg2.get_members(group) == [pid]
 
     Registry.stop(reg_pid)
-
   end
 
   test "Unregistering a process from a group" do
@@ -105,8 +104,8 @@ defmodule RegistryTest do
 
   test "Perform lookup after registering and unregistering a station" do
     # Start Registry Process
-    #{:error, {:already_started, prev_pid}} = Registry.start_link()
-    #Registry.stop(prev_pid)
+    # {:error, {:already_started, prev_pid}} = Registry.start_link()
+    # Registry.stop(prev_pid)
 
     {:ok, reg_pid} = Registry.start_link()
 

@@ -22,7 +22,8 @@ defmodule Station do
     GenServer.start_link(Station, station_data)
   end
 
-  def init([_station_struct, _dependency] = station_data) do
+  # credo:disable-for-next-line Credo.Check.Consistency.ParameterPatternMatching
+  def init(station_data = [_station_struct, _dependency]) do
     station_fsm = FSM.initialise_fsm(station_data)
     {:ok, station_fsm}
   end

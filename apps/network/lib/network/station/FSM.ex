@@ -8,7 +8,8 @@ defmodule Station.FSM do
   @behaviour Station.FSMBehaviour
 
   # Module interface definition
-  def initialise_fsm([l_station_struct, _dependency] = input) do
+  # credo:disable-for-next-line Credo.Check.Consistency.ParameterPatternMatching
+  def initialise_fsm(input = [l_station_struct, _dependency]) do
     Logger.info(fn ->
       "Initialised the fsm with station_number=#{
         inspect(l_station_struct.station_number)
