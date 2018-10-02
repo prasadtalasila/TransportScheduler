@@ -6,10 +6,10 @@ defmodule CollectorTest do
   use ExUnit.Case, async: true
   import Mox
   alias Station.QueryCollector, as: QC
-  alias Util.Itinerary, as: Itinerary
-  alias Util.Query, as: Query
   alias Util.Connection, as: Connection
+  alias Util.Itinerary, as: Itinerary
   alias Util.Preference, as: Preference
+  alias Util.Query, as: Query
 
   @dependency %{
     uqc: MockUQC,
