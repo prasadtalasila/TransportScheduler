@@ -19,6 +19,7 @@ defmodule TransportScheduler.MixProject do
   defp deps do
     [
       {:excoveralls, "~> 0.8", only: :test},
+      {:credo, "~> 0.10.0", only: [:dev, :test], runtime: false}
     ]
   end
 end

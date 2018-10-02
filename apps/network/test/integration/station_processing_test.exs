@@ -7,11 +7,11 @@ defmodule StationProcessingTest do
 
   use ExUnit.Case, async: true
   import Mox
+  alias Util.Connection, as: Connection
   alias Util.Dependency, as: Dependency
   alias Util.Itinerary, as: Itinerary
-  alias Util.Query, as: Query
-  alias Util.Connection, as: Connection
   alias Util.Preference, as: Preference
+  alias Util.Query, as: Query
   alias Util.StationStruct, as: StationStruct
 
   test "Does not forward stale queries" do

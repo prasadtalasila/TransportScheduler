@@ -30,7 +30,9 @@ defmodule Station.Registry do
       neighbour_pid = List.first(stations)
 
       Logger.debug(fn ->
-        "Station code lookup #{station_code} -> #{Kernel.inspect neighbour_pid}"
+        "Station code lookup #{station_code} -> #{
+          Kernel.inspect(neighbour_pid)
+        }"
       end)
 
       neighbour_pid
@@ -48,7 +50,7 @@ defmodule Station.Registry do
       qc_pid = List.first(qc)
 
       Logger.debug(fn ->
-        "Query ID lookup #{qid} -> #{Kernel.inspect qc_pid}"
+        "Query ID lookup #{qid} -> #{Kernel.inspect(qc_pid)}"
       end)
 
       qc_pid
@@ -83,7 +85,7 @@ defmodule Station.Registry do
   # Registers station code to station pid mapping globally.
   def register_station(station_code, station_pid) do
     Logger.debug(fn ->
-      "Registering station #{station_code} as #{Kernel.inspect station_pid}"
+      "Registering station #{station_code} as #{Kernel.inspect(station_pid)}"
     end)
 
     register_name({:station_code, station_code}, station_pid)
@@ -97,7 +99,10 @@ defmodule Station.Registry do
 
   # Registers query id to query collector pid mapping globally.
   def register_query(qid, qc_pid) do
-    Logger.debug(fn -> "Registering Query #{qid} as #{Kernel.inspect qc_pid}" end)
+    Logger.debug(fn ->
+      "Registering Query #{qid} as #{Kernel.inspect(qc_pid)}"
+    end)
+
     register_name({:qid, qid}, qc_pid)
   end
 

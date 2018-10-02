@@ -7,7 +7,7 @@ defmodule RegistryTest do
 
   test "Registering a process id in a group and perform lookup" do
     # Start Registry Process
-    {:ok, _reg_pid} = Registry.start_link()
+    {:ok, reg_pid} = Registry.start_link()
 
     # Start a GenServer Process
     {:ok, pid} = MockServer.start_link()
@@ -20,11 +20,13 @@ defmodule RegistryTest do
     Registry.register_name(group, pid)
 
     assert :pg2.get_members(group) == [pid]
+
+    Registry.stop(reg_pid)
   end
 
   test "Unregistering a process from a group" do
     # Start Registry Process
-    {:ok, _reg_pid} = Registry.start_link()
+    {:ok, reg_pid} = Registry.start_link()
 
     # Start a GenServer Process
     {:ok, pid} = MockServer.start_link()
@@ -43,11 +45,13 @@ defmodule RegistryTest do
     Registry.unregister_name(group, pid)
 
     assert :pg2.get_members(group) == []
+
+    Registry.stop(reg_pid)
   end
 
   test "Process automatically is unregistered on its termination" do
     # Start Registry Process
-    {:ok, _reg_pid} = Registry.start_link()
+    {:ok, reg_pid} = Registry.start_link()
 
     # Start a GenServer Process
     {:ok, pid} = MockServer.start_link()
@@ -69,11 +73,13 @@ defmodule RegistryTest do
     Process.sleep(100)
 
     assert :pg2.get_members(group) == []
+
+    Registry.stop(reg_pid)
   end
 
   test "Unregistering a group" do
     # Start Registry Process
-    {:ok, _reg_pid} = Registry.start_link()
+    {:ok, reg_pid} = Registry.start_link()
 
     # Start a GenServer Process
     {:ok, pid} = MockServer.start_link()
@@ -92,11 +98,16 @@ defmodule RegistryTest do
     Registry.unregister_group(group)
 
     assert :pg2.get_members(group) == {:error, {:no_such_group, group}}
+
+    Registry.stop(reg_pid)
   end
 
   test "Perform lookup after registering and unregistering a station" do
     # Start Registry Process
-    {:ok, _reg_pid} = Registry.start_link()
+    # {:error, {:already_started, prev_pid}} = Registry.start_link()
+    # Registry.stop(prev_pid)
+
+    {:ok, reg_pid} = Registry.start_link()
 
     # Start a GenServer Process
     {:ok, stn_pid} = MockServer.start_link()
@@ -115,11 +126,13 @@ defmodule RegistryTest do
     Registry.unregister_station(station_code)
 
     assert Registry.lookup_code(station_code) == nil
+
+    Registry.stop(reg_pid)
   end
 
   test "Perform lookup after registering and unregistering a station via termination of Station Process" do
     # Start Registry Process
-    {:ok, _reg_pid} = Registry.start_link()
+    {:ok, reg_pid} = Registry.start_link()
 
     # Start a GenServer Process
     {:ok, stn_pid} = MockServer.start_link()
@@ -139,12 +152,16 @@ defmodule RegistryTest do
 
     wait_for_process_termination(stn_pid)
 
+    Process.sleep(10)
+
     assert Registry.lookup_code(station_code) == nil
+
+    Registry.stop(reg_pid)
   end
 
   test "Check status for registered and unregistered query" do
     # Start Registry Process
-    {:ok, _reg_pid} = Registry.start_link()
+    {:ok, reg_pid} = Registry.start_link()
 
     # Start a GenServer Process
     {:ok, qc_pid} = MockServer.start_link()
@@ -168,11 +185,13 @@ defmodule RegistryTest do
 
     # Assert that the query is inactive
     refute Registry.check_active(qid)
+
+    Registry.stop(reg_pid)
   end
 
   test "Perform lookup for registered and unregistered query" do
     # Start Registry Process
-    {:ok, _reg_pid} = Registry.start_link()
+    {:ok, reg_pid} = Registry.start_link()
 
     # Start a GenServer Process
     {:ok, qc_pid} = MockServer.start_link()
@@ -198,6 +217,8 @@ defmodule RegistryTest do
     # Assert that when the query is unregistered lookup on the
     # unregistered query returns nil
     assert Registry.lookup_query_id(qid) == nil
+
+    Registry.stop(reg_pid)
   end
 
   def wait_for_process_termination(pid) do
