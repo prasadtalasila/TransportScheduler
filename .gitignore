@@ -3,3 +3,4 @@
 /deps
 erl_crash.dump
 *.ez
+.fuse_hidden000003f900000003
