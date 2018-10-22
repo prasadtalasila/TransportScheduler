@@ -211,7 +211,7 @@ defmodule InputParser do
   # Obtains Map of stations
   def obtain_stations do
     station_map = Map.new()
-    {_, file} = open_file("data/stations.txt")
+    {_, file} = open_file(Application.fetch_env!(:input_parser, :stations))
     # n = IO.binread file, [:line] |> String.trim |> String.to_integer
     n = 2264
     obtain_station(file, n, station_map)
@@ -220,7 +220,7 @@ defmodule InputParser do
   # Obtains Map of schedules
   def obtain_schedules do
     schedule = Keyword.new()
-    {_, file} = open_file("data/schedule.txt")
+    {_, file} = open_file(Application.fetch_env!(:input_parser, :schedule))
     # n = IO.binread file, [:line] |> String.trim |> String.to_integer
     n = 56_555
     obtain_schedule(file, n, schedule)
@@ -229,7 +229,7 @@ defmodule InputParser do
   # Obtains list of other means transport
   def obtain_other_means do
     other_means = Keyword.new()
-    {_, file} = open_file("data/OMT.txt")
+    {_, file} = open_file(Application.fetch_env!(:input_parser, :other_means))
     n = 151
     obtain_other_mean(file, n, other_means)
   end
@@ -237,7 +237,10 @@ defmodule InputParser do
   # Obtains Map of local variables
   def obtain_loc_var_map do
     loc_var_map = Map.new()
-    {_, file} = open_file("data/local_variables.txt")
+
+    {_, file} =
+      open_file(Application.fetch_env!(:input_parser, :local_variables))
+
     # n = IO.binread file, [:line] |> String.trim |> String.to_integer
     n = 2264
     obtain_loc_vars(file, n, loc_var_map)
