@@ -42,6 +42,8 @@ defmodule Network.Application do
 
       new_stn_struct = stn_struct |> Map.put(:pid, stn_pid)
       Station.update(stn_pid, new_stn_struct)
+      stn_code = Map.get(new_stn_struct, :station_number)
+      Registry.register_station(stn_code, stn_pid)
     end
 
     {:ok, main_sup_pid}

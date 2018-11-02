@@ -7,7 +7,9 @@ defmodule RegistryTest do
 
   test "Registering a process id in a group and perform lookup" do
     # Start Registry Process
-    {:ok, reg_pid} = Registry.start_link()
+    # {:ok, reg_pid} = Registry.start_link()
+    tuple = List.last(Supervisor.which_children(Util.Supervisor))
+    reg_pid = elem(tuple, 1)
 
     # Start a GenServer Process
     {:ok, pid} = MockServer.start_link()
@@ -26,7 +28,9 @@ defmodule RegistryTest do
 
   test "Unregistering a process from a group" do
     # Start Registry Process
-    {:ok, reg_pid} = Registry.start_link()
+    # {:ok, reg_pid} = Registry.start_link()
+    tuple = List.last(Supervisor.which_children(Util.Supervisor))
+    reg_pid = elem(tuple, 1)
 
     # Start a GenServer Process
     {:ok, pid} = MockServer.start_link()
@@ -51,7 +55,9 @@ defmodule RegistryTest do
 
   test "Process automatically is unregistered on its termination" do
     # Start Registry Process
-    {:ok, reg_pid} = Registry.start_link()
+    # {:ok, reg_pid} = Registry.start_link()
+    tuple = List.last(Supervisor.which_children(Util.Supervisor))
+    reg_pid = elem(tuple, 1)
 
     # Start a GenServer Process
     {:ok, pid} = MockServer.start_link()
@@ -79,7 +85,9 @@ defmodule RegistryTest do
 
   test "Unregistering a group" do
     # Start Registry Process
-    {:ok, reg_pid} = Registry.start_link()
+    # {:ok, reg_pid} = Registry.start_link()
+    tuple = List.last(Supervisor.which_children(Util.Supervisor))
+    reg_pid = elem(tuple, 1)
 
     # Start a GenServer Process
     {:ok, pid} = MockServer.start_link()
@@ -107,7 +115,9 @@ defmodule RegistryTest do
     # {:error, {:already_started, prev_pid}} = Registry.start_link()
     # Registry.stop(prev_pid)
 
-    {:ok, reg_pid} = Registry.start_link()
+    # {:ok, reg_pid} = Registry.start_link()
+    tuple = List.last(Supervisor.which_children(Util.Supervisor))
+    reg_pid = elem(tuple, 1)
 
     # Start a GenServer Process
     {:ok, stn_pid} = MockServer.start_link()
@@ -132,7 +142,9 @@ defmodule RegistryTest do
 
   test "Perform lookup after registering and unregistering a station via termination of Station Process" do
     # Start Registry Process
-    {:ok, reg_pid} = Registry.start_link()
+    # {:ok, reg_pid} = Registry.start_link()
+    tuple = List.last(Supervisor.which_children(Util.Supervisor))
+    reg_pid = elem(tuple, 1)
 
     # Start a GenServer Process
     {:ok, stn_pid} = MockServer.start_link()
@@ -161,7 +173,9 @@ defmodule RegistryTest do
 
   test "Check status for registered and unregistered query" do
     # Start Registry Process
-    {:ok, reg_pid} = Registry.start_link()
+    # {:ok, reg_pid} = Registry.start_link()
+    tuple = List.last(Supervisor.which_children(Util.Supervisor))
+    reg_pid = elem(tuple, 1)
 
     # Start a GenServer Process
     {:ok, qc_pid} = MockServer.start_link()
@@ -191,7 +205,9 @@ defmodule RegistryTest do
 
   test "Perform lookup for registered and unregistered query" do
     # Start Registry Process
-    {:ok, reg_pid} = Registry.start_link()
+    # {:ok, reg_pid} = Registry.start_link()
+    tuple = List.last(Supervisor.which_children(Util.Supervisor))
+    reg_pid = elem(tuple, 1)
 
     # Start a GenServer Process
     {:ok, qc_pid} = MockServer.start_link()
