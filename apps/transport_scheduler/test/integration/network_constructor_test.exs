@@ -25,7 +25,8 @@ defmodule NetworkConstructorTest do
     end)
   end
 
-  
+      @moduledoc """
+
     # Test to see if data can be retrieved from the station correctly
     test "retrieving the given schedule" do
       # Station Schedule
@@ -69,7 +70,6 @@ defmodule NetworkConstructorTest do
       assert Station.get_timetable(pid) == schedule
     end
 
-    @moduledoc """
 
     # Test to see if the station schedule can be updated
     test "updating the station schedule" do
