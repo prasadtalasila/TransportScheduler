@@ -7,7 +7,9 @@ defmodule InputParser.Application do
 
   def start(_type, _args) do
     # List all child processes to be supervised
+
     children = [
+      {InputParser, %{id: InputParser, start: {InputParser, :start_link, []}}}
       # Starts a worker by calling: InputParser.Worker.start_link(arg)
       # {InputParser.Worker, arg},
     ]

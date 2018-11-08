@@ -38,7 +38,8 @@ defmodule TransportScheduler.Mixfile do
       # {:input_parser, in_umbrella: :true}
       # {:input_parser, in_umbrella: :true}
       # {:dep_from_hexpm, "~> 0.3.0"},
-      # {:sibling_app_in_umbrella, in_umbrella: true},
+      {:input_parser, in_umbrella: true},
+      {:network, in_umbrella: true}
     ]
   end
 end

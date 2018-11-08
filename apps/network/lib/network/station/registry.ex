@@ -8,7 +8,7 @@ defmodule Station.Registry do
   @behaviour Station.RegistryBehaviour
 
   # Starts the Registry process with the name, name.
-  def start_link do
+  def start_link() do
     GenServer.start_link(__MODULE__, :ok, name: :registry)
   end
 

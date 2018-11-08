@@ -21,7 +21,8 @@ defmodule Network.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger]
+      extra_applications: [:logger],
+      mod: {Network.Application, []}
     ]
   end
 
@@ -42,6 +43,7 @@ defmodule Network.MixProject do
       # ,
       {:logger_file_backend, "~> 0.0.10"},
       # {:dep_from_hexpm, "~> 0.3.0"},
+      {:input_parser, in_umbrella: true},
       {:util, in_umbrella: true}
     ]
   end
