@@ -25,7 +25,7 @@ defmodule NetworkConstructorTest do
     end)
   end
 
-      @moduledoc """
+  @moduledoc """
 
     # Test to see if data can be retrieved from the station correctly
     test "retrieving the given schedule" do
