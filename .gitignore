@@ -5,3 +5,4 @@ erl_crash.dump
 *.ez
 .fuse_hidden000003f900000003
 /apps/*/log
+/log
