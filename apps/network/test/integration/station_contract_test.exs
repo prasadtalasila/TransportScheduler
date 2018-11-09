@@ -73,8 +73,7 @@ defmodule StationContractTest do
         dept_time: 12_000,
         arrival_time: 24_000
       },
-      %
-      {
+      %Connection{
         vehicleID: "100",
         src_station: 1,
         mode_of_transport: "bus",
