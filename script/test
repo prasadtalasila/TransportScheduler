@@ -11,4 +11,5 @@
 set -e
 
 cd "$TS_HOME"
-mix test
+MIX_ENV=unit mix test
+MIX_ENV=integration mix test

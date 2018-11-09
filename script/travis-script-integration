@@ -12,6 +12,6 @@ set -e
 
 source "$HOME/.bashrc"
 
-MIX_ENV=test mix coveralls.json test/integration --umbrella --exclude slow
+MIX_ENV=integration mix coveralls.json test/integration --umbrella --exclude slow
 
 bash <(curl -s https://codecov.io/bash) -f cover/excoveralls.json -F integration

@@ -15,14 +15,19 @@ mix local.rebar --force
 mix local.hex --force
 mix deps.get
 
-mix test --exclude slow
+MIX_ENV=unit mix test --exclude slow
+MIX_ENV=integration mix test --exclude slow
+
 mix profile
 
 # report test coverage to coveralls.io
 # shellcheck disable=SC2037
-MIX_ENV=test mix coveralls.travis
+MIX_ENV=unit mix coveralls.travis
+MIX_ENV=integration mix coveralls.travis
+
 
 # lint code using credo
 # shellcheck disable=SC2037
-MIX_ENV=test mix credo --strict
+MIX_ENV=unit mix credo --strict
+MIX_ENV=integration mix credo --strict
 source script/server
