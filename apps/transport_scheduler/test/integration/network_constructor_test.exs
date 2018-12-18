@@ -5,12 +5,12 @@ defmodule NetworkConstructorTest do
 
   use ExUnit.Case, async: true
   import Mox
-  alias Util.Registry, as: Registry
   alias Util.Connection, as: Connection
   alias Util.Dependency, as: Dependency
   alias Util.Itinerary, as: Itinerary
   alias Util.Preference, as: Preference
   alias Util.Query, as: Query
+  alias Util.Registry, as: Registry
   alias Util.StationStruct, as: StationStruct
 
   # Test to check if the station code and corresponding PIDs are there in registry
@@ -34,8 +34,8 @@ defmodule NetworkConstructorTest do
         src_station: 0,
         mode_of_transport: "train",
         dst_station: 1,
-        dept_time: 10000,
-        arrival_time: 20000
+        dept_time: 10_000,
+        arrival_time: 20_000
       }
     ]
 
@@ -119,8 +119,6 @@ defmodule NetworkConstructorTest do
 
   @moduledoc """
 
-
-
    test "Receive a itinerary search query" do
      # Set function parameters to arbitrary values.
      # effect only after the station has received the query.
@@ -195,7 +193,6 @@ defmodule NetworkConstructorTest do
 
      assert_receive :query_received
    end
-
 
    test "Send completed search query to neighbours" do
 
@@ -284,8 +281,6 @@ defmodule NetworkConstructorTest do
 
      assert_receive :query_forwarded
    end
-
-
 
    test "The correct itinerary is forwarded to the next station" do
      station_state = %StationStruct{

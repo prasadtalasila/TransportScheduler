@@ -8,6 +8,7 @@ defmodule Util.Registry do
   @behaviour Util.RegistryBehaviour
 
   # Starts the Registry process with the name, name.
+  # credo:disable-for-next-line  Credo.Check.Readability.ParenthesesOnZeroArityDefs
   def start_link() do
     GenServer.start_link(__MODULE__, :ok, name: :registry)
   end
