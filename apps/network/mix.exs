@@ -1,6 +1,8 @@
 defmodule Network.MixProject do
   use Mix.Project
 
+  @test_envs [:unit, :integration]
+
   def project do
     [
       app: :network,
@@ -12,11 +14,15 @@ defmodule Network.MixProject do
       elixir: "~> 1.6",
       start_permanent: Mix.env() == :prod,
       test_coverage: [tool: ExCoveralls],
-      preferred_cli_env: [coveralls: :test],
+      preferred_cli_env: [coveralls: @test_envs],
       elixirc_paths: elixirc_paths(Mix.env()),
-      deps: deps()
+      deps: deps(),
+      test_paths: test_paths(Mix.env())
     ]
   end
+
+  defp test_paths(:integration), do: ["test/integration"]
+  defp test_paths(_), do: ["test/unit"]
 
   # Run "mix help compile.app" to learn about applications.
   def application do
@@ -26,7 +32,7 @@ defmodule Network.MixProject do
     ]
   end
 
-  defp elixirc_paths(:test) do
+  defp elixirc_paths(env) when env in @test_envs do
     ["lib", "test/mocks"]
   end
 
@@ -36,9 +42,9 @@ defmodule Network.MixProject do
   defp deps do
     [
       # {:input_parser, in_umbrella: :true},
-      {:mox, "~> 0.3", only: :test},
+      {:mox, "~> 0.3", only: @test_envs},
       # {:excoveralls, "~> 0.8", only: :test},
-      {:credo, "~> 0.8", only: [:dev, :test], runtime: false},
+      {:credo, "~> 0.8", only: [:dev, :unit, :integration], runtime: false},
       {:fsm, "~> 0.3"},
       # ,
       {:logger_file_backend, "~> 0.0.10"},

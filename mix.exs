@@ -1,12 +1,14 @@
 defmodule TransportScheduler.MixProject do
   use Mix.Project
 
+  @test_envs [:unit, :integration]
+
   def project do
     [
       apps_path: "apps",
       start_permanent: Mix.env() == :prod,
       test_coverage: [tool: ExCoveralls],
-      preferred_cli_env: [coveralls: :test],
+      preferred_cli_env: [coveralls: @test_envs],
       deps: deps()
     ]
   end
@@ -18,8 +20,8 @@ defmodule TransportScheduler.MixProject do
   # Run "mix help deps" for examples and options.
   defp deps do
     [
-      {:excoveralls, "~> 0.8", only: :test},
-      {:credo, "~> 0.10.0", only: [:dev, :test], runtime: false}
+      {:excoveralls, "~> 0.8", only: @test_envs},
+      {:credo, "~> 0.10.0", only: [:dev, :unit, :integration], runtime: false}
     ]
   end
 end

@@ -11,5 +11,16 @@
 set -e
 
 cd "$TS_HOME"
-MIX_ENV=unit mix test
+
+#rm -rf ./data/*
+#cp ./unit_data/* ./data/
+
+
+#MIX_ENV=unit mix test
+
+rm -rf ./data/*
+cp ./apps/transport_scheduler/test/data/* ./data/
+
+chmod o+w ./data/* 
+
 MIX_ENV=integration mix test

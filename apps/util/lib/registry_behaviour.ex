@@ -1,4 +1,4 @@
-defmodule Station.RegistryBehaviour do
+defmodule Util.RegistryBehaviour do
   @moduledoc """
   Implements the interface of the Network Constructor.
   """

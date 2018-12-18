@@ -1,6 +1,8 @@
 defmodule Util.MixProject do
   use Mix.Project
 
+  @test_envs [:unit, :integration]
+
   def project do
     [
       app: :util,
@@ -11,14 +13,18 @@ defmodule Util.MixProject do
       lockfile: "../../mix.lock",
       elixir: "~> 1.6",
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      test_paths: test_paths(Mix.env())
     ]
   end
+
+  defp test_paths(:integration), do: ["test/integration"]
+  defp test_paths(_), do: ["test/unit"]
 
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger],
+      # extra_applications: [:logger],
       mod: {Util.Application, []}
     ]
   end

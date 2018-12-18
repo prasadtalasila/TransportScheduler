@@ -152,6 +152,9 @@ defmodule InputParser do
 
   def init(:ok) do
     # values are read from input data files
+    #IO.puts(Mix.env())
+    # IO.puts Application.fetch_env!(:input_parser, :schedule)
+
     station_map = obtain_stations()
     schedule = obtain_schedules()
     loc_var_map = obtain_loc_var_map()
@@ -211,9 +214,10 @@ defmodule InputParser do
   # Obtains Map of stations
   def obtain_stations do
     station_map = Map.new()
+    IO.puts(Application.fetch_env!(:input_parser, :stations))
     {_, file} = open_file(Application.fetch_env!(:input_parser, :stations))
     # n = IO.binread file, [:line] |> String.trim |> String.to_integer
-    n = 2264
+    n = Application.fetch_env!(:input_parser, :n_stations)
     obtain_station(file, n, station_map)
   end
 
@@ -222,7 +226,8 @@ defmodule InputParser do
     schedule = Keyword.new()
     {_, file} = open_file(Application.fetch_env!(:input_parser, :schedule))
     # n = IO.binread file, [:line] |> String.trim |> String.to_integer
-    n = 56_555
+    n = Application.fetch_env!(:input_parser, :n_schedules)
+    # 56555
     obtain_schedule(file, n, schedule)
   end
 
@@ -230,7 +235,8 @@ defmodule InputParser do
   def obtain_other_means do
     other_means = Keyword.new()
     {_, file} = open_file(Application.fetch_env!(:input_parser, :other_means))
-    n = 151
+    n = Application.fetch_env!(:input_parser, :n_other_means)
+    # n = 151
     obtain_other_mean(file, n, other_means)
   end
 
@@ -242,7 +248,8 @@ defmodule InputParser do
       open_file(Application.fetch_env!(:input_parser, :local_variables))
 
     # n = IO.binread file, [:line] |> String.trim |> String.to_integer
-    n = 2264
+    n = Application.fetch_env!(:input_parser, :n_loc_vars)
+    # n = 2264
     obtain_loc_vars(file, n, loc_var_map)
   end
 
@@ -256,6 +263,8 @@ defmodule InputParser do
   defp obtain_station(file, n, station_map) when n > 0 do
     [code | city] =
       file |> IO.binread(:line) |> String.trim() |> String.split(" ", parts: 2)
+
+    #IO.puts([code | city])
 
     city = List.to_string(city)
     code = String.to_integer(code)

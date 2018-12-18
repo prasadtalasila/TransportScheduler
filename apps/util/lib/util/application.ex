@@ -10,8 +10,8 @@ defmodule Util.Application do
 
     children = [
       %{
-        id: Station.Registry,
-        start: {Station.Registry, :start_link, []}
+        id: Util.Registry,
+        start: {Util.Registry, :start_link, []}
       }
     ]
 

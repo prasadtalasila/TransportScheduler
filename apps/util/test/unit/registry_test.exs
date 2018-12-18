@@ -3,7 +3,7 @@ defmodule RegistryTest do
   Tests the correctness of the functions in Registry
   """
   use ExUnit.Case, async: true
-  alias Station.Registry, as: Registry
+  alias Util.Registry, as: Registry
 
   test "Registering a process id in a group and perform lookup" do
     # Start Registry Process

@@ -1,6 +1,8 @@
 defmodule InputParser.Mixfile do
   use Mix.Project
 
+  @test_envs [:unit, :integration]
+
   def project do
     [
       app: :input_parser,
@@ -11,11 +13,15 @@ defmodule InputParser.Mixfile do
       lockfile: "../../mix.lock",
       elixir: "~> 1.6",
       test_coverage: [tool: ExCoveralls],
-      preferred_cli_env: [coveralls: :test],
+      preferred_cli_env: [coveralls: @test_envs],
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      test_paths: test_paths(Mix.env())
     ]
   end
+
+  defp test_paths(:integration), do: ["test/integration"]
+  defp test_paths(_), do: ["test/unit"]
 
   # Run "mix help compile.app" to learn about applications.
   def application do

@@ -4,9 +4,9 @@ defmodule Network.Application do
   """
   use Application
   alias Station.QueryCollector, as: QueryCollector
-  alias Station.Registry, as: Registry
   alias Util.Dependency, as: Dependency
   alias Util.Itinerary, as: Itinerary
+  alias Util.Registry, as: Registry
 
   def start(_type, _args) do
     [tuple] = Supervisor.which_children(InputParser.Supervisor)
