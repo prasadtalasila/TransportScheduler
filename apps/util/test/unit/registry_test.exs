@@ -23,7 +23,7 @@ defmodule RegistryTest do
 
     assert :pg2.get_members(group) == [pid]
 
-    Registry.stop(reg_pid)
+    #Registry.stop(reg_pid)
   end
 
   test "Unregistering a process from a group" do
@@ -50,7 +50,7 @@ defmodule RegistryTest do
 
     assert :pg2.get_members(group) == []
 
-    Registry.stop(reg_pid)
+    #Registry.stop(reg_pid)
   end
 
   test "Process automatically is unregistered on its termination" do
@@ -80,7 +80,7 @@ defmodule RegistryTest do
 
     assert :pg2.get_members(group) == []
 
-    Registry.stop(reg_pid)
+    #Registry.stop(reg_pid)
   end
 
   test "Unregistering a group" do
@@ -107,7 +107,7 @@ defmodule RegistryTest do
 
     assert :pg2.get_members(group) == {:error, {:no_such_group, group}}
 
-    Registry.stop(reg_pid)
+    #Registry.stop(reg_pid)
   end
 
   test "Perform lookup after registering and unregistering a station" do
@@ -137,7 +137,7 @@ defmodule RegistryTest do
 
     assert Registry.lookup_code(station_code) == nil
 
-    Registry.stop(reg_pid)
+    #Registry.stop(reg_pid)
   end
 
   test "Perform lookup after registering and unregistering a station via termination of Station Process" do
@@ -168,7 +168,7 @@ defmodule RegistryTest do
 
     assert Registry.lookup_code(station_code) == nil
 
-    Registry.stop(reg_pid)
+    #Registry.stop(reg_pid)
   end
 
   test "Check status for registered and unregistered query" do
@@ -200,7 +200,7 @@ defmodule RegistryTest do
     # Assert that the query is inactive
     refute Registry.check_active(qid)
 
-    Registry.stop(reg_pid)
+    #Registry.stop(reg_pid)
   end
 
   test "Perform lookup for registered and unregistered query" do
@@ -234,7 +234,7 @@ defmodule RegistryTest do
     # unregistered query returns nil
     assert Registry.lookup_query_id(qid) == nil
 
-    Registry.stop(reg_pid)
+    #Registry.stop(reg_pid)
   end
 
   def wait_for_process_termination(pid) do

@@ -24,8 +24,7 @@ defmodule ItineraryTest do
 
     itinerary = get_itinerary(route: [connection])
 
-    {{_query, _route, preference}, arrival_time} =
-      Itinerary.update_days_travelled(itinerary)
+    {{_query, _route, preference}, arrival_time} = Itinerary.update_days_travelled(itinerary)
 
     assert Itinerary.get_preference(itinerary).day == 0
     assert preference.day == 1
@@ -59,8 +58,7 @@ defmodule ItineraryTest do
       arrival_time: 100_000
     }
 
-    non_self_loop_itinerary =
-      Itinerary.add_link(itinerary, non_self_loop_connection)
+    non_self_loop_itinerary = Itinerary.add_link(itinerary, non_self_loop_connection)
 
     assert Itinerary.check_self_loop(self_loop_itinerary) == true
 
