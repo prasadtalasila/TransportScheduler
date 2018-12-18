@@ -119,7 +119,9 @@ defmodule Util.Itinerary do
       end
 
     Logger.debug(fn ->
-      "The value from _find_valid_connection = #{inspect(result_find_valid_connection)}"
+      "The value from _find_valid_connection = #{
+        inspect(result_find_valid_connection)
+      }"
     end)
 
     result_find_valid_connection
@@ -179,7 +181,9 @@ defmodule Util.Itinerary do
     new_itinerary = [link | itinerary]
 
     Logger.debug(fn ->
-      "The itinerary = #{inspect({query, itinerary, preference})} got link = #{inspect(link)} added to it"
+      "The itinerary = #{inspect({query, itinerary, preference})} got link = #{
+        inspect(link)
+      } added to it"
     end)
 
     {query, new_itinerary, preference}
@@ -206,7 +210,8 @@ defmodule Util.Itinerary do
 
   # Iterate over the schedule to find a valid connection.
   defp _find_valid_connection([
-         {_neighbour_map, [flag | _schedule_tail], _arrival_time, flag, :second_pass},
+         {_neighbour_map, [flag | _schedule_tail], _arrival_time, flag,
+          :second_pass},
          _itinerary_acc,
          _station_struct,
          _dependency
@@ -224,7 +229,8 @@ defmodule Util.Itinerary do
 
     # If query is feasible and preferable
     if _feasibility_check(conn, itinerary_acc, arrival_time, pass) &&
-         _pref_check(conn, itinerary_acc) && neighbour_map[conn.dst_station] == 0 do
+         _pref_check(conn, itinerary_acc) &&
+         neighbour_map[conn.dst_station] == 0 do
       # Append connection to itinerary
       new_itinerary_acc = add_link(itinerary_acc, conn)
       # Send itinerary to neighbour
@@ -261,7 +267,8 @@ defmodule Util.Itinerary do
 
     # Start second pass over the schedule.
     next_itinerary([
-      {neighbour_map, station_struct.schedule, arrival_time, flag, :second_pass},
+      {neighbour_map, station_struct.schedule, arrival_time, flag,
+       :second_pass},
       new_itinerary_acc,
       station_struct,
       dependency

@@ -30,7 +30,9 @@ defmodule Util.Registry do
       neighbour_pid = List.first(stations)
 
       Logger.debug(fn ->
-        "Station code lookup #{station_code} -> #{Kernel.inspect(neighbour_pid)}"
+        "Station code lookup #{station_code} -> #{
+          Kernel.inspect(neighbour_pid)
+        }"
       end)
 
       neighbour_pid

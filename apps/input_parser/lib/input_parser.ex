@@ -152,7 +152,7 @@ defmodule InputParser do
 
   def init(:ok) do
     # values are read from input data files
-    #IO.puts(Mix.env())
+    # IO.puts(Mix.env())
     # IO.puts Application.fetch_env!(:input_parser, :schedule)
 
     station_map = obtain_stations()
@@ -264,7 +264,7 @@ defmodule InputParser do
     [code | city] =
       file |> IO.binread(:line) |> String.trim() |> String.split(" ", parts: 2)
 
-    #IO.puts([code | city])
+    # IO.puts([code | city])
 
     city = List.to_string(city)
     code = String.to_integer(code)
