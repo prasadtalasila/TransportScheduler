@@ -5,6 +5,7 @@ defmodule NetworkConstructorTest do
 
   use ExUnit.Case, async: true
   import Mox
+  alias Station.QueryCollector, as: QueryCollector
   alias Util.Connection, as: Connection
   alias Util.Dependency, as: Dependency
   alias Util.Itinerary, as: Itinerary
@@ -39,20 +40,6 @@ defmodule NetworkConstructorTest do
       }
     ]
 
-    # [tuple] = Supervisor.which_children(InputParser.Supervisor)
-    # ip_pid = elem(tuple, 1)
-
-    # station_state = InputParser.get_station_struct(ip_pid,"Test0")
-
-    # Start the server
-    # dependency = %Dependency{
-    #  station: MockStation,
-    #  registry: MockRegister,
-    #  collector: MockCollector,
-    #  itinerary: Itinerary
-    # }
-
-    # {:ok, pid} = start_supervised({Station, [station_state, dependency]})
     pid = Registry.lookup_code(0)
 
     # Retrieve Time Table
@@ -104,9 +91,6 @@ defmodule NetworkConstructorTest do
       itinerary: Itinerary
     }
 
-    # Start the server
-    # {:ok, pid} = start_supervised({Station, [station_state, dependency]})
-
     pid = Registry.lookup_code(1710)
 
     new_station_state = %{station_state | schedule: new_schedule}
@@ -117,351 +101,54 @@ defmodule NetworkConstructorTest do
     assert Station.get_timetable(pid) == new_schedule
   end
 
-  @moduledoc """
+  test "Receive a itinerary search query" do
+    # Set function parameters to arbitrary values.
+    # effect only after the station has received the query.
+    query =
+      Itinerary.new(
+        %Query{
+          qid: "0300",
+          src_station: 0,
+          dst_station: 3,
+          arrival_time: 0,
+          end_time: 999_999
+        },
+        %Preference{day: 0}
+      )
 
-   test "Receive a itinerary search query" do
-     # Set function parameters to arbitrary values.
-     # effect only after the station has received the query.
-     query =
-       Itinerary.new(
-         %Query{
-           qid: "0300",
-           src_station: 0,
-           dst_station: 3,
-           arrival_time: 0,
-           end_time: 999_999
-         },
-         %Preference{day: 0}
-       )
+    test_proc = self()
 
-     # Any errors due to invalid values do not matter as they will come into
+    # Create NetworkConstructor Mock
+    MockUQC
+    |> expect(:receive_search_results, fn _ ->
+      send(test_proc, :query_received)
+      false
+    end)
 
-     #[tuple] = Supervisor.which_children(InputParser.Supervisor)
-     #ip_pid = elem(tuple, 1)
+    opts = %{max_itineraries: 1, timeout: 100}
 
-     #station_state = InputParser.get_station_struct(ip_pid,"Test1")
+    pid = Registry.lookup_code(1)
 
-     #station_state = %StationStruct{
-     #  loc_vars: %{delay: 0.38, congestion: "low", disturbance: "no"},
-     #  schedule: [
-     #    %Connection{
-     #      vehicleID: "100",
-     #      src_station: 1,
-     #      mode_of_transport: "bus",
-     #      dst_station: 2,
-     #      dept_time: 25_000,
-     #      arrival_time: 35_000
-     #    }
-     #  ],
-     #  station_number: 1,
-     #  congestion_low: 4,
-     #  choose_fn: 1
-     #}
+    dependency = %{
+      station: Station,
+      registry: Registry,
+      uqc: MockUQC,
+      itinerary: Itinerary
+    }
 
-     test_proc = self()
+    # Send query to station
+    # Station.send_query(pid, query)
 
-     # Create NetworkConstructor Mock
-     MockRegister
-     |> expect(:check_active, fn _ ->
-       send(test_proc, :query_received)
-       false
-     end)
+    {:ok, qc_pid} = QueryCollector.start_link(query, opts, dependency)
 
-     dependency = %Dependency{
-       station: MockStation,
-       registry: MockRegister,
-       collector: MockCollector,
-       itinerary: Itinerary
-     }
+    Registry.register_query("0300", qc_pid)
 
-     # start station
-     # {:ok, pid} = Station.start_link([station_state, dependency])
-     pid = Registry.lookup_code(1)
+    allow(MockUQC, test_proc, qc_pid)
 
-     # Give The Station Process access to mocks defined in the test process
-     allow(MockRegister, test_proc, pid)
-     allow(MockCollector, test_proc, pid)
-     allow(MockStation, test_proc, pid)
+    QueryCollector.search_itinerary(qc_pid)
 
-     # Send query to station
-     Station.send_query(pid, query)
-     # Stop station normally
-     Station.stop(pid)
+    QueryCollector.collect(query, dependency)
 
-     # Wait for the Station process to terminate
-     wait_for_process_termination(pid)
-
-     assert_receive :query_received
-   end
-
-   test "Send completed search query to neighbours" do
-
-     [tuple] = Supervisor.which_children(InputParser.Supervisor)
-     ip_pid = elem(tuple, 1)
-
-     station_state = InputParser.get_station_struct(ip_pid,"Test1")
-
-     #station_state = %StationStruct{
-     #  loc_vars: %{delay: 0.38, congestion: "low", disturbance: "no"},
-     #  schedule: [
-     #    %Connection{
-     #      vehicleID: "100",
-     #      src_station: 1,
-     #      mode_of_transport: "bus",
-     #      dst_station: 2,
-     #      dept_time: 25_000,
-     #      arrival_time: 35_000
-     #    }
-     #  ],
-     #  station_number: 1,
-     #  congestion_low: 4,
-     #  choose_fn: 1
-     #}
-
-     # Station state of Neighbour : %StationStruct{loc_vars: %{"delay": 0.38,
-     # 	"congestion": "low", "disturbance": "no"},
-     # 	schedule: [], congestion_low: 4, choose_fn: 1}
-
-     itinerary =
-       Itinerary.new(
-         %Query{
-           qid: "0300",
-           src_station: 0,
-           dst_station: 3,
-           arrival_time: 0,
-           end_time: 999_999
-         },
-         [
-           %Connection{
-             vehicleID: "99",
-             src_station: 0,
-             mode_of_transport: "train",
-             dst_station: 1,
-             dept_time: 10_000,
-             arrival_time: 20_000
-           }
-         ],
-         %Preference{day: 0}
-       )
-
-     test_proc = self()
-
-     dependency = %Dependency{
-       station: MockStation,
-       registry: MockRegister,
-       collector: MockCollector,
-       itinerary: Itinerary
-     }
-
-     {:ok, pid} = Station.start_link([station_state, dependency])
-
-     # Define the expectation for the Mock of the Network Constructor
-     MockRegister
-     |> expect(:lookup_code, fn _ -> test_proc end)
-     |> expect(:check_active, fn _ -> true end)
-
-     MockStation
-     |> expect(:send_query, fn ^test_proc, _ ->
-       send(test_proc, :query_forwarded)
-     end)
-
-     # Give The Station Process access to mocks defined in the test process
-     allow(MockRegister, test_proc, pid)
-     allow(MockCollector, test_proc, pid)
-     allow(MockStation, test_proc, pid)
-
-     # Send query to station
-     Station.send_query(pid, itinerary)
-     # Stop station normally
-     Station.stop(pid)
-
-     # Wait for the Station process to terminate
-
-     wait_for_process_termination(pid)
-
-     assert_receive :query_forwarded
-   end
-
-   test "The correct itinerary is forwarded to the next station" do
-     station_state = %StationStruct{
-       loc_vars: %{delay: 0.38, congestion: "low", disturbance: "no"},
-       schedule: [
-         %Connection{
-           vehicleID: "100",
-           src_station: 1,
-           mode_of_transport: "bus",
-           dst_station: 2,
-           dept_time: 25_000,
-           arrival_time: 35_000
-         }
-       ],
-       station_number: 1,
-       congestion_low: 4,
-       choose_fn: 1
-     }
-
-     # Station state of Neighbour : %StationStruct{loc_vars: %{"delay": 0.38,
-     # 	"congestion": "low", "disturbance": "no"},
-     # 	schedule: [], congestion_low: 4, choose_fn: 1}
-
-     itinerary =
-       Itinerary.new(
-         %Query{
-           qid: "0300",
-           src_station: 0,
-           dst_station: 3,
-           arrival_time: 0,
-           end_time: 999_999
-         },
-         [
-           %Connection{
-             vehicleID: "99",
-             src_station: 0,
-             mode_of_transport: "train",
-             dst_station: 1,
-             dept_time: 10_000,
-             arrival_time: 20_000
-           }
-         ],
-         %Preference{day: 0}
-       )
-
-     proper_itinerary =
-       Itinerary.add_link(itinerary, %Connection{
-         vehicleID: "100",
-         src_station: 1,
-         mode_of_transport: "bus",
-         dst_station: 2,
-         dept_time: 25_000,
-         arrival_time: 35_000
-       })
-
-     test_proc = self()
-
-     dependency = %Dependency{
-       station: MockStation,
-       registry: MockRegister,
-       collector: MockCollector,
-       itinerary: Itinerary
-     }
-
-     {:ok, pid} = Station.start_link([station_state, dependency])
-
-     # Define the expectation for the Mock of the Network Constructor
-     MockRegister
-     |> expect(:lookup_code, fn _ -> test_proc end)
-     |> expect(:check_active, fn _ -> true end)
-
-     MockStation
-     |> expect(:send_query, fn ^test_proc, itinerary ->
-       send(test_proc, {:itinerary_received, itinerary})
-     end)
-
-     # Give The Station Process access to mocks defined in the test process
-     allow(MockRegister, test_proc, pid)
-     allow(MockCollector, test_proc, pid)
-     allow(MockStation, test_proc, pid)
-
-     # Send query to station
-     Station.send_query(pid, itinerary)
-     # Stop station normally
-     Station.stop(pid)
-
-     # Wait for the Station process to terminate
-     wait_for_process_termination(pid)
-
-     assert_receive({:itinerary_received, ^proper_itinerary})
-   end
-
-   test "Terminated queries are handed over to query collector with correct itinerary" do
-     station_state = %StationStruct{
-       loc_vars: %{delay: 0.38, congestion: "low", disturbance: "no"},
-       schedule: [
-         %Connection{
-           vehicleID: "100",
-           src_station: 1,
-           mode_of_transport: "bus",
-           dst_station: 2,
-           dept_time: 25_000,
-           arrival_time: 35_000
-         }
-       ],
-       congestion_low: 4,
-       choose_fn: 1
-     }
-
-     itinerary =
-       Itinerary.new(
-         %Query{
-           qid: "0100",
-           src_station: 0,
-           dst_station: 1,
-           arrival_time: 0,
-           end_time: 999_999
-         },
-         [
-           %Connection{
-             vehicleID: "99",
-             src_station: 0,
-             mode_of_transport: "train",
-             dst_station: 1,
-             dept_time: 10_000,
-             arrival_time: 20_000
-           }
-         ],
-         %Preference{day: 0}
-       )
-
-     test_proc = self()
-
-     dependency = %Dependency{
-       station: MockStation,
-       registry: MockRegister,
-       collector: MockCollector,
-       itinerary: Itinerary
-     }
-
-     # Define the expectation for the Mock of the Network Constructor
-     MockRegister
-     |> expect(:check_active, fn _ -> true end)
-
-     # Define the expectation for the Mock of the Query Collector
-     MockCollector
-     |> expect(:collect, fn itinerary, ^dependency ->
-       send(test_proc, {:itinerary_received, itinerary})
-     end)
-
-     MockStation
-     |> expect(:send_query, fn _, _ ->
-       send(test_proc, :collected_query_forwarded)
-     end)
-
-     {:ok, pid} = Station.start_link([station_state, dependency])
-
-     # Give The Station Process access to mocks defined in the test process
-     allow(MockRegister, test_proc, pid)
-     allow(MockCollector, test_proc, pid)
-     allow(MockStation, test_proc, pid)
-
-     # Send query to station
-     Station.send_query(pid, itinerary)
-     # Stop station normally
-     Station.stop(pid)
-
-     # Wait for the Station process to terminate
-     wait_for_process_termination(pid)
-
-     # Assert that the query collector collects the itinerary
-     assert_receive({:itinerary_received, ^itinerary})
-     refute_receive :collected_query_forwarded
-   end
-   
-
-   def wait_for_process_termination(pid) do
-     if Process.alive?(pid) do
-       :timer.sleep(10)
-       wait_for_process_termination(pid)
-     end
-   end
-  """
+    assert_receive :query_received
+  end
 end
