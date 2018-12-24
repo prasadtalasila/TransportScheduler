@@ -7,7 +7,7 @@ defmodule InputParserUnitTest do
   use ExUnit.Case
 
   test "Populate data structures" do
-    assert {:ok, pid} = InputParser.start_link()
+    assert {:ok, pid} = InputParser.start_link([])
     code = InputParser.get_city_code(pid, "Alnavar Junction")
     assert code === 5
 

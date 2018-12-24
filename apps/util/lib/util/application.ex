@@ -1,4 +1,4 @@
-defmodule InputParser.Application do
+defmodule Util.Application do
   # See https://hexdocs.pm/elixir/Application.html
   # for more information on OTP Applications
   @moduledoc false
@@ -9,14 +9,15 @@ defmodule InputParser.Application do
     # List all child processes to be supervised
 
     children = [
-      {InputParser, %{id: InputParser, start: {InputParser, :start_link, []}}}
-      # Starts a worker by calling: InputParser.Worker.start_link(arg)
-      # {InputParser.Worker, arg},
+      %{
+        id: Util.Registry,
+        start: {Util.Registry, :start_link, []}
+      }
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
-    opts = [strategy: :one_for_one, name: InputParser.Supervisor]
+    opts = [strategy: :one_for_one, name: Util.Supervisor]
     Supervisor.start_link(children, opts)
   end
 end

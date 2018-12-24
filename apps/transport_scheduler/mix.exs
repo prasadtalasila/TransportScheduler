@@ -1,6 +1,8 @@
 defmodule TransportScheduler.Mixfile do
   use Mix.Project
 
+  @test_envs [:unit, :integration]
+
   def project do
     [
       app: :transport_scheduler,
@@ -13,9 +15,13 @@ defmodule TransportScheduler.Mixfile do
       test_coverage: [tool: ExCoveralls],
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      test_paths: test_paths(Mix.env())
     ]
   end
+
+  defp test_paths(:integration), do: ["test/integration"]
+  defp test_paths(_), do: ["test/unit"]
 
   # Run "mix help compile.app" to learn about applications.
   def application do
@@ -25,7 +31,7 @@ defmodule TransportScheduler.Mixfile do
     ]
   end
 
-  defp elixirc_paths(:test) do
+  defp elixirc_paths(env) when env in @test_envs do
     ["lib", "test/mocks"]
   end
 
@@ -38,7 +44,8 @@ defmodule TransportScheduler.Mixfile do
       # {:input_parser, in_umbrella: :true}
       # {:input_parser, in_umbrella: :true}
       # {:dep_from_hexpm, "~> 0.3.0"},
-      # {:sibling_app_in_umbrella, in_umbrella: true},
+      {:input_parser, in_umbrella: true},
+      {:network, in_umbrella: true}
     ]
   end
 end

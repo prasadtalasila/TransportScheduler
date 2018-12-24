@@ -27,7 +27,7 @@ defmodule InputParser do
   reason}. Otherwise, if it returns {:stop, reason} or :ignore, the process is
   terminated and this function returns {:error, reason} or :ignore, respectively.
   """
-  def start_link do
+  def start_link(_) do
     GenServer.start_link(__MODULE__, :ok)
   end
 
@@ -152,6 +152,9 @@ defmodule InputParser do
 
   def init(:ok) do
     # values are read from input data files
+    # IO.puts(Mix.env())
+    # IO.puts Application.fetch_env!(:input_parser, :schedule)
+
     station_map = obtain_stations()
     schedule = obtain_schedules()
     loc_var_map = obtain_loc_var_map()
@@ -211,35 +214,42 @@ defmodule InputParser do
   # Obtains Map of stations
   def obtain_stations do
     station_map = Map.new()
-    {_, file} = open_file("../../data/stations.txt")
+    IO.puts(Application.fetch_env!(:input_parser, :stations))
+    {_, file} = open_file(Application.fetch_env!(:input_parser, :stations))
     # n = IO.binread file, [:line] |> String.trim |> String.to_integer
-    n = 2264
+    n = Application.fetch_env!(:input_parser, :n_stations)
     obtain_station(file, n, station_map)
   end
 
   # Obtains Map of schedules
   def obtain_schedules do
     schedule = Keyword.new()
-    {_, file} = open_file("../../data/schedule.txt")
+    {_, file} = open_file(Application.fetch_env!(:input_parser, :schedule))
     # n = IO.binread file, [:line] |> String.trim |> String.to_integer
-    n = 56_555
+    n = Application.fetch_env!(:input_parser, :n_schedules)
+    # 56555
     obtain_schedule(file, n, schedule)
   end
 
   # Obtains list of other means transport
   def obtain_other_means do
     other_means = Keyword.new()
-    {_, file} = open_file("../../data/OMT.txt")
-    n = 151
+    {_, file} = open_file(Application.fetch_env!(:input_parser, :other_means))
+    n = Application.fetch_env!(:input_parser, :n_other_means)
+    # n = 151
     obtain_other_mean(file, n, other_means)
   end
 
   # Obtains Map of local variables
   def obtain_loc_var_map do
     loc_var_map = Map.new()
-    {_, file} = open_file("../../data/local_variables.txt")
+
+    {_, file} =
+      open_file(Application.fetch_env!(:input_parser, :local_variables))
+
     # n = IO.binread file, [:line] |> String.trim |> String.to_integer
-    n = 2264
+    n = Application.fetch_env!(:input_parser, :n_loc_vars)
+    # n = 2264
     obtain_loc_vars(file, n, loc_var_map)
   end
 
@@ -253,6 +263,8 @@ defmodule InputParser do
   defp obtain_station(file, n, station_map) when n > 0 do
     [code | city] =
       file |> IO.binread(:line) |> String.trim() |> String.split(" ", parts: 2)
+
+    # IO.puts([code | city])
 
     city = List.to_string(city)
     code = String.to_integer(code)

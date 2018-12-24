@@ -1,14 +1,15 @@
-defmodule Station.Registry do
+defmodule Util.Registry do
   @moduledoc """
   Acts as the registry for any data that should be managed globally in the application.
   This includes the mapping between station code to station pid and query id to query status.
   """
   use GenServer, async: true
   require Logger
-  @behaviour Station.RegistryBehaviour
+  @behaviour Util.RegistryBehaviour
 
   # Starts the Registry process with the name, name.
-  def start_link do
+  # credo:disable-for-next-line  Credo.Check.Readability.ParenthesesOnZeroArityDefs
+  def start_link() do
     GenServer.start_link(__MODULE__, :ok, name: :registry)
   end
 

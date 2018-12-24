@@ -1,0 +1,7 @@
+1 delay 0.38 congestion low disturbance no
+1710 delay 0.12 congestion low disturbance no
+0 delay 0.38 congestion low disturbance no
+2 delay 0.12 congestion low disturbance no
+3 delay 0.38 congestion low disturbance no
+4 delay 0.38 congestion low disturbance no
+5 delay 0.12 congestion low disturbance no

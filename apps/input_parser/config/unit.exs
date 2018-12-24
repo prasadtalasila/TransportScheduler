@@ -1,6 +1,6 @@
 use Mix.Config
 
-IO.puts("In input_parser/config/debug.exs")
+IO.puts("In input_parser/config/unit.exs")
 
 config :input_parser,
   stations: Path.expand("../unit_data/stations.txt", "TransportScheduler"),
